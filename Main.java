@@ -13,6 +13,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class Main {
 
     public static void main(String[] args) throws Exception {
+        JsonHelper j=new JsonHelper();
+        TestBean t=new TestBean();
+        t.setAge(20);
+        t.setName("Calo");
+        String json=j.convertToJson(t);
+
         System.out.println("Hello world");
         System.out.println(args.length == 0);
         int port = (args.length == 0 ? 8001 : Integer.valueOf(args[0]));
