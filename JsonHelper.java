@@ -17,7 +17,7 @@ public class JsonHelper {
             String mn=m.getName();
             if(mn.startsWith("get") && Character.isUpperCase(mn.charAt(3))){
                 String key=mn.substring(3);
-                Object value=m.invoke(src,null);
+                Object value=m.invoke(src);
                 if(value.getClass()==Integer.class){
 
                 }
