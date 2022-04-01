@@ -32,7 +32,7 @@ public abstract class Controller {
         return exchangeHelper.requestBodyMap;
     }
     protected String request(String key){
-        return query(key)==""?requestBody().get(key):query(key);
+        return query(key)==""||query(key)==null?requestBody().get(key):query(key);
     }
 
     protected Object getRequestHeader(Object key){
