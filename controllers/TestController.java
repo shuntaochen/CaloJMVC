@@ -1,6 +1,10 @@
+package controllers;
+
 import java.io.IOException;
 
+import beans.TestBean;
 import com.sun.net.httpserver.HttpExchange;
+import core.Controller;
 
 public class TestController extends Controller {
 
@@ -10,11 +14,15 @@ public class TestController extends Controller {
     }
 
     public void aa() throws IOException {
-        System.out.println("Hello controller");
-        exchange.sendResponseHeaders(200, 0);//header must be sent first before writing response content;
-        exchange.getResponseBody().write("Hello me.".getBytes());
-        exchange.getResponseBody().close();
+        OK("Hi aa");
+    }
 
+    public void bb() throws IOException {
+        OK("how are you");
+    }
+
+    public void cc() throws Exception {
+        Json(new TestBean("calo",20));
     }
 
 }
