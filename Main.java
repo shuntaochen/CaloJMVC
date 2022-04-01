@@ -38,8 +38,6 @@ public class Main {
                 System.out.println(requestUri);
                 String[] routeParts = requestUri.substring(1).split("/");
                 char ctlLeading = Character.toUpperCase(routeParts[0].charAt(0));
-                Class.forName(ctlLeading + routeParts[0].substring(1) + "Controller")
-                        .getConstructors();
                 Constructor ctor = Class
                         .forName(ctlLeading + routeParts[0].substring(1) + "Controller")
                         .getConstructors()[0];
@@ -47,9 +45,7 @@ public class Main {
                 Method method = ctrl.getClass().getDeclaredMethod(routeParts[1]);
                 method.invoke(ctrl);
 
-            } catch (IOException ie) {
-                ie.printStackTrace();
-            } catch (Exception e) {
+            }  catch (Exception e) {
                 e.printStackTrace();
             }
         }
