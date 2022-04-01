@@ -5,11 +5,12 @@ import java.io.IOException;
 import beans.TestBean;
 import com.sun.net.httpserver.HttpExchange;
 import core.Controller;
+import utils.PropertyUtil;
 
 public class TestController extends Controller {
 
-    public TestController(HttpExchange exchange) {
-        super(exchange);
+    public TestController(HttpExchange exchange, PropertyUtil properties) {
+        super(exchange, properties);
         // TODO Auto-generated constructor stub
     }
 

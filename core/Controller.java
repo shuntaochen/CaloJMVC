@@ -9,13 +9,13 @@ import java.lang.reflect.InvocationTargetException;
 public abstract class Controller {
     protected HttpExchange exchange;
     protected JsonHelper jsonHelper;
-    protected PropertyUtil propertyUtil;
+    protected PropertyUtil properties;
 
-    public Controller(HttpExchange exchange) {
+    public Controller(HttpExchange exchange,PropertyUtil properties) {
         super();
         this.exchange = exchange;
         this.jsonHelper=new JsonHelper();
-        this.propertyUtil=new PropertyUtil();
+        this.properties=properties;
     }
 
     protected void OK(String content) throws IOException {
@@ -30,7 +30,7 @@ public abstract class Controller {
     }
 
     protected String getProperty(String name){
-        return propertyUtil.getValue(name);
+        return properties.getValue(name);
     }
 
     protected String getAppInfo(){

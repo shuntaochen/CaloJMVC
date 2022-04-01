@@ -13,16 +13,23 @@ import core.*;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        System.out.println(args.length == 0);
-        int port = (args.length == 0 ? 8001 : Integer.valueOf(args[0]));
+        PropertyUtil propertyUtil=new PropertyUtil();
+        String portConfig= propertyUtil.getValue("port");
+        int port = (args.length == 0 ? Integer.valueOf(portConfig) : Integer.valueOf(args[0]));
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         System.out.println("Calo system listening on:"+server.getAddress());
         server.setExecutor( Executors.newFixedThreadPool(10));
-        server.createContext("/", new TestHandler());
+        server.createContext("/", new CaloHandler(propertyUtil));
         server.start();
     }
 
-    static class TestHandler implements HttpHandler {
+    static class CaloHandler implements HttpHandler {
+        private PropertyUtil propertyUtil;
+
+        public CaloHandler(PropertyUtil propertyUtil) {
+            this.propertyUtil = propertyUtil;
+        }
+
         @Override
         public void handle(HttpExchange exchange) {
             try {
@@ -32,15 +39,18 @@ public class Main {
                 System.out.println(requestUri);
                 String[] routeParts = requestUri.substring(1).split("/");
                 char ctlLeading = Character.toUpperCase(routeParts[0].charAt(0));
-                Constructor<?> constructor = Class
+                Constructor<?>[] constructors = Class
                         .forName("controllers."+ctlLeading + routeParts[0].toLowerCase().substring(1) + "Controller")
-                        .getConstructors()[0];
-                Controller ctrl = (Controller) constructor.newInstance(exchange);
+                        .getConstructors();
+                Controller ctrl = (Controller) constructors[0].newInstance(exchange,propertyUtil);
                 Method method = ctrl.getClass().getDeclaredMethod(routeParts[1]);
                 method.invoke(ctrl);
 
-            }  catch (Exception e) {
-//                e.printStackTrace();
+            }catch (ClassNotFoundException cnfe){
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
