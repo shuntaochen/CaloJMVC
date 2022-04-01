@@ -18,7 +18,7 @@ public class TestController extends Controller {
     }
 
     public void bb() throws IOException {
-        OK("how are you");
+        OK("Calo App Info:"+getAppInfo());
     }
 
     public void cc() throws Exception {

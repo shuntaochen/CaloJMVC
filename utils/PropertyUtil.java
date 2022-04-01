@@ -11,7 +11,7 @@ public class PropertyUtil {
     /**
      * properties
      */
-    private static Properties properties = null;
+    private Properties properties = null;
 
     /**
      * 根据key获取value值
@@ -19,7 +19,7 @@ public class PropertyUtil {
      * @param key
      * @return
      */
-    public static String getValue(String key) {
+    public String getValue(String key) {
         if (properties == null) {
             properties = loadConfProperties();
         }
@@ -33,7 +33,7 @@ public class PropertyUtil {
      *
      * @return
      */
-    public static Properties loadConfProperties() {
+    public Properties loadConfProperties() {
         Properties properties = new Properties();
         InputStream in = null;
 
