@@ -39,7 +39,7 @@ public class PropertyUtil {
 
         // 优先从项目路径获取连接信息
         String confPath = System.getProperty("user.dir");
-        confPath = confPath + File.separator + "conn.properties";
+        confPath = confPath + File.separator + "calo.properties";
         File file = new File(confPath);
         if (file.exists()) {
             System.out.println("配置文件路径---->>" + confPath);
@@ -53,7 +53,7 @@ public class PropertyUtil {
         // 未传入路径时，读取classpath路径
         else {
             System.out.println("项目路径[" + confPath + "]下无连接信息，从classpath路径下加载");
-            in = PropertyUtil.class.getClassLoader().getResourceAsStream("conn.properties");
+            in = PropertyUtil.class.getClassLoader().getResourceAsStream("calo.properties");
         }
         try {
             properties.load(in);
