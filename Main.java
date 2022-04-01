@@ -41,8 +41,9 @@ public class Main {
                 Constructor<?>[] constructors = Class
                         .forName("controllers."+ctlLeading + routeParts[0].toLowerCase().substring(1) + "Controller")
                         .getConstructors();
-                Controller ctrl = (Controller) constructors[0].newInstance(exchange,propertyUtil);
-                Method method = ctrl.getClass().getDeclaredMethod(routeParts[1]);
+                Controller ctrl = (Controller) constructors[0].newInstance(helper,propertyUtil);
+                int questionIndex=routeParts[1].indexOf("?");
+                Method method = ctrl.getClass().getDeclaredMethod(routeParts[1].substring(0,questionIndex!=-1?questionIndex:routeParts[1].length()));
                 method.invoke(ctrl);
 
             }catch (ClassNotFoundException cnfe){

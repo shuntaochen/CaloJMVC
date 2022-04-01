@@ -2,6 +2,7 @@ package controllers;
 
 import com.sun.net.httpserver.HttpExchange;
 import core.Controller;
+import utils.ExchangeHelper;
 import utils.PropertyUtil;
 
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.io.IOException;
 public class FacadeController extends Controller {
 
 
-    public FacadeController(HttpExchange exchange, PropertyUtil properties) {
+    public FacadeController(ExchangeHelper exchange, PropertyUtil properties) {
         super(exchange, properties);
     }
 

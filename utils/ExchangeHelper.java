@@ -16,8 +16,8 @@ import java.util.Map;
 public class ExchangeHelper {
 
     public HttpExchange _exchange;
-    protected Map<String, String> queryString;
-    protected Map<String, String> body;
+    public Map<String, String> queryMap;
+    public Map<String, String> requestBodyMap;
     protected OutputStream response;
 
     protected void StatusCode(int code) throws IOException {
@@ -28,13 +28,13 @@ public class ExchangeHelper {
         super();
         _exchange = exchange;
         String query = exchange.getRequestURI().getQuery();
-        queryString = formData2Dic(query);
+        queryMap = formDataToMap(query);
         String postString = readStreamToString(exchange.getRequestBody());
-        body = formData2Dic(postString);
+        requestBodyMap = formDataToMap(postString);
         response = exchange.getResponseBody();
     }
 
-    public static String readStreamToString(InputStream input) throws IOException {
+    public String readStreamToString(InputStream input) throws IOException {
         StringBuilder ret = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(input));
         while (br.read() != -1) {
@@ -43,7 +43,8 @@ public class ExchangeHelper {
         return ret.toString();
     }
 
-    public static Map<String, String> formData2Dic(String formData) {
+
+    public Map<String, String> formDataToMap(String formData) {
         Map<String, String> result = new HashMap<>();
         if (formData == null || formData.trim().length() == 0) {
             return result;
