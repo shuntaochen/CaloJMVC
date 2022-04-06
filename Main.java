@@ -12,6 +12,7 @@ import core.*;
 public class Main {
 
     public static void main(String[] args) throws Exception {
+        new TypeChecker().Check();
         PropertyUtil propertyUtil=new PropertyUtil();
         String portConfig= propertyUtil.getValue("port");
         int port = (args.length == 0 ? Integer.valueOf(portConfig) : Integer.valueOf(args[0]));

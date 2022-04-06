@@ -32,7 +32,7 @@ public class JsonHelper {
                     for(Object member:(List)value){
                         mid+= (value instanceof Object? convertToJson(value):value)+",";
                     }
-                    value="["+mid.stripTrailing()+"]";
+                    value="["+mid.substring(0,mid.length()-1)+"]";
                 }
                 else if(value.getClass()==String.class){
                     value="\""+value+"\"";
