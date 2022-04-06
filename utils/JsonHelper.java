@@ -25,13 +25,14 @@ public class JsonHelper {
                 String key=mn.substring(3);
                 Object value=m.invoke(src);
                 if(value.getClass()==Integer.class){
-
+                    //or use switch case instead,
                 }
                 else if (List.class.isAssignableFrom(value.getClass())){
-                    value="[]";
-                    for(Object member:(ArrayList)value){
-                        value+=convertToJson(value)+",";
+                    String mid="";
+                    for(Object member:(List)value){
+                        mid+= (value instanceof Object? convertToJson(value):value)+",";
                     }
+                    value="["+mid.stripTrailing()+"]";
                 }
                 else if(value.getClass()==String.class){
                     value="\""+value+"\"";
