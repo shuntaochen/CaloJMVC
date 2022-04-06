@@ -1,7 +1,11 @@
 package utils;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class JsonHelper {
@@ -22,6 +26,12 @@ public class JsonHelper {
                 Object value=m.invoke(src);
                 if(value.getClass()==Integer.class){
 
+                }
+                else if (List.class.isAssignableFrom(value.getClass())){
+                    value="[]";
+                    for(Object member:(ArrayList)value){
+                        value+=convertToJson(value)+",";
+                    }
                 }
                 else if(value.getClass()==String.class){
                     value="\""+value+"\"";
