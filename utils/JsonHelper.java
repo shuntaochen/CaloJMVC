@@ -3,8 +3,10 @@ package utils;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -27,10 +29,15 @@ public class JsonHelper {
                 if(value.getClass()==Integer.class){
                     //or use switch case instead,
                 }
-                else if (List.class.isAssignableFrom(value.getClass())){
+                else if (TypeChecker.isCollection(value)||TypeChecker.isArray(value)){
                     String mid="";
-                    for(Object member:(List)value){
-                        mid+= (value instanceof Object? convertToJson(value):value)+",";
+                    List looper=new ArrayList();
+                    if(TypeChecker.isCollection(value))
+                        looper=(List)value;
+                    if(TypeChecker.isArray(value))
+                        looper=TypeChecker.convertArrayToList(value);
+                    for(Object member:(List)looper){
+                        mid+= (!TypeChecker.isValueObject(member) ? convertToJson(member):member)+",";
                     }
                     value="["+mid.substring(0,mid.length()-1)+"]";
                 }

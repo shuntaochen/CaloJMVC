@@ -1,5 +1,8 @@
 package beans;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public  class TestBean{
     private String name;
     private int age;
@@ -23,5 +26,17 @@ public  class TestBean{
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public int[] getAr(){
+        return new int[]{2,3,4};
+    }
+
+    public List<TestBean1> getLi(){
+        List<TestBean1> ret= new ArrayList<TestBean1>(){
+        };
+        ret.add(new TestBean1("a"));
+        ret.add(new TestBean1("b"));
+        return ret;
     }
 }

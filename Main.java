@@ -1,3 +1,5 @@
+import beans.TestBean;
+import beans.TestBean1;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -6,13 +8,22 @@ import utils.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Executors;
 import core.*;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
+
+
         new TypeChecker().Check();
+        String json= new JsonHelper().convertToJson(new TestBean1("5"));
+        String json1= new JsonHelper().convertToJson(new TestBean("5",3));
+
+
         PropertyUtil propertyUtil=new PropertyUtil();
         String portConfig= propertyUtil.getValue("port");
         int port = (args.length == 0 ? Integer.valueOf(portConfig) : Integer.valueOf(args[0]));
