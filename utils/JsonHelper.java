@@ -36,7 +36,7 @@ public class JsonHelper {
                         looper=(List)value;
                     if(TypeChecker.isArray(value))
                         looper=TypeChecker.convertArrayToList(value);
-                    for(Object member:(List)looper){
+                    for(Object member:(List)looper){//boxing numbers to Object so that below check can be possible,
                         mid+= (!TypeChecker.isValueObject(member) ? convertToJson(member):member)+",";
                     }
                     value="["+mid.substring(0,mid.length()-1)+"]";

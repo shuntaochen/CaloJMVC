@@ -58,14 +58,73 @@ public class TypeChecker {
             Object y=x.get(0);
 
             String typeName= y.getClass().getComponentType().getSimpleName();//"int",
-            //int,String
+            //int,String,long,double,float,boolean,byte,char,short
             String typeName1= new TestBean1("a").getClass().getSimpleName();//"TestBean1",
             String typeName2= Object.class.getSimpleName();//"Object",
             String typeName3= String.class.getSimpleName();//"String",
             boolean canAssign= Object.class.isAssignableFrom(y.getClass().getComponentType().getClass());//int, false
-            int[] z=(int[])src;
-            for(int z0:z){
-                ret.add(z0);
+            switch (typeName){
+                case "int":
+                    int[] z=(int[])src;
+                    for(int z0:z){
+                        ret.add(z0);
+                    }
+                    break;
+                    case "String":
+                    String[] z1=(String[])src;
+                    for(String z0:z1){
+                        ret.add(z0);
+                    }
+                    break;
+                    case "long":
+                    long[] z2=(long[])src;
+                    for(long z0:z2){
+                        ret.add(z0);
+                    }
+                    break;
+                    case "double":
+                    double[] z3=(double[])src;
+                    for(double z0:z3){
+                        ret.add(z0);
+                    }
+                    break;
+                    case "float":
+                    float[] z4=(float[])src;
+                    for(float z0:z4){
+                        ret.add(z0);
+                    }
+                    break;
+                    case "boolean":
+                    boolean[] z5=(boolean[])src;
+                    for(boolean z0:z5){
+                        ret.add(z0);
+                    }
+                    break;
+                    case "short":
+                        short[] z6=(short[])src;
+                    for(short z0:z6){
+                        ret.add(z0);
+                    }
+                    break;
+                    case "byte":
+                        byte[] z7=(byte[])src;
+                    for(byte z0:z7){
+                        ret.add(z0);
+                    }
+                    break;
+                    case "char":
+                        char[] z8=(char[])src;
+                    for(char z0:z8){
+                        ret.add(z0);
+                    }
+                    break;
+
+                default:
+                    Object[] z9=(Object[]) src;
+                    for(Object z0:z9){
+                        ret.add(z0);
+                    }
+
             }
         }
         return ret;

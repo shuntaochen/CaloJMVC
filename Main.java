@@ -18,6 +18,10 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
+        Object[] aa=new TestBean1[]{
+                new TestBean1("a"),
+                new TestBean1("b")
+        };
 
         new TypeChecker().Check();
         String json= new JsonHelper().convertToJson(new TestBean1("5"));
