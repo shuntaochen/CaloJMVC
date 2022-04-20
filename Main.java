@@ -84,8 +84,8 @@ public class Main {
                 List<Method> methods= Arrays.asList(ctrl.getClass().getDeclaredMethods());
                 for (Method m:methods
                      ) {
-                    String name=m.getName();
-                    boolean b= name.equals(methodName);
+                    String name=m.getName().toLowerCase();
+                    boolean b= name.equals(methodName.toLowerCase());
                     boolean b1=name==methodName;//not applies to string,
                     if(b){
                         m.invoke(ctrl);
