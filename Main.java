@@ -80,12 +80,12 @@ public class Main {
                         .getConstructors();
                 Controller ctrl = (Controller) constructors[0].newInstance(helper,propertyUtil);
                 int questionIndex=routeParts[1].indexOf("?");
-                String methodName= routeParts[1].substring(0,questionIndex!=-1?questionIndex:routeParts[1].length());
+                String methodName= routeParts[1].substring(0,questionIndex!=-1?questionIndex:routeParts[1].length()).toLowerCase();
                 List<Method> methods= Arrays.asList(ctrl.getClass().getDeclaredMethods());
                 for (Method m:methods
                      ) {
                     String name=m.getName().toLowerCase();
-                    boolean b= name.equals(methodName.toLowerCase());
+                    boolean b= name.equals(methodName);
                     boolean b1=name==methodName;//not applies to string,
                     if(b){
                         m.invoke(ctrl);
