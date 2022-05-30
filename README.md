@@ -1,10 +1,10 @@
 # CaloJMVC
 An MVC project in java, my custom MVC project for use
 
-这个项目打算用来弄一个MVC类型的框架，路由开始使用最基本的按路由创建处理控制器，然后按照方法进行调用；
-这个项目会改成一个maven的项目，使用maven进行包的管理；
-这个项目在输入的地方，会使用java的一些包，如fastjson什么的，来做json的处理；
-会添加不同的utilities方法，里面有一些我已经实现的方法，基本也算基本够用，如json序列化，对java所有数据类型的判断；
+.这个项目打算用来弄一个MVC类型的框架，路由开始使用最基本的按路由创建处理控制器，然后按照方法进行调用；
+.这个项目会改成一个maven的项目，使用maven进行包的管理；
+.这个项目在输入的地方，会使用java的一些包，如fastjson什么的，来做json的处理；
+l会添加不同的utilities方法，里面有一些我已经实现的方法，基本也算基本够用，如json序列化，对java所有数据类型的判断；
 
 
 
