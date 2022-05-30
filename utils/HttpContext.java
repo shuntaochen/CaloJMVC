@@ -1,6 +1,7 @@
 package utils;
 
 import com.sun.net.httpserver.HttpExchange;
+import core.Principle;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,8 +14,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExchangeHelper {
+public class HttpContext {
 
+    public Principle User;
     public HttpExchange _exchange;
     public Map<String, String> queryMap;
     public Map<String, String> requestBodyMap;
@@ -24,7 +26,7 @@ public class ExchangeHelper {
         _exchange.sendResponseHeaders(code, 0);
     }
 
-    public ExchangeHelper(HttpExchange exchange) throws IOException {
+    public HttpContext(HttpExchange exchange) throws IOException {
         super();
         _exchange = exchange;
         String query = exchange.getRequestURI().getQuery();

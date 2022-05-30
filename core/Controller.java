@@ -1,6 +1,6 @@
 package core;
 import com.sun.net.httpserver.HttpExchange;
-import utils.ExchangeHelper;
+import utils.HttpContext;
 import utils.JsonHelper;
 import utils.PropertyUtil;
 
@@ -10,26 +10,26 @@ import java.util.Map;
 
 public abstract class Controller {
     protected HttpExchange exchange;
-    protected ExchangeHelper exchangeHelper;
+    protected HttpContext httpContext;
     protected JsonHelper jsonHelper;
     protected PropertyUtil properties;
 
-    public Controller(ExchangeHelper exchange, PropertyUtil properties) {
+    public Controller(HttpContext exchange, PropertyUtil properties) {
         super();
-        this.exchangeHelper =exchange;
+        this.httpContext =exchange;
         this.exchange = exchange._exchange;
         this.jsonHelper=new JsonHelper();
         this.properties=properties;
     }
 
     protected Map<String,String> query(){
-        return exchangeHelper.queryMap;
+        return httpContext.queryMap;
     }
     protected String query(String key){
-        return exchangeHelper.queryMap.get(key);
+        return httpContext.queryMap.get(key);
     }
     protected Map<String,String> requestBody(){
-        return exchangeHelper.requestBodyMap;
+        return httpContext.requestBodyMap;
     }
     protected String request(String key){
         return query(key)==""||query(key)==null?requestBody().get(key):query(key);
