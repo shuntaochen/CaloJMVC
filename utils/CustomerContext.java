@@ -16,8 +16,11 @@ import java.util.Map;
 
 public class CustomerContext {
 
+    public HttpExchange getHttpExchange(){
+        return _exchange;
+    }
     public Principle Customer;
-    public HttpExchange _exchange;
+    private HttpExchange _exchange;
     public Map<String, String> queryMap;
     public Map<String, String> requestBodyMap;
     protected OutputStream response;

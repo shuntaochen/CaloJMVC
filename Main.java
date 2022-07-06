@@ -23,7 +23,7 @@ public class Main {
         String portConfig= propertyUtil.getValue("port");
         int port = (args.length == 0 ? Integer.valueOf(portConfig) : Integer.valueOf(args[0]));
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-        System.out.println("Calo system listening on:"+server.getAddress());
+        System.out.println("Customer system listening on:"+server.getAddress());
         server.setExecutor( Executors.newFixedThreadPool(100));
         server.createContext("/", new CustomersHandler(propertyUtil));
         server.start();
@@ -40,7 +40,7 @@ public class Main {
         public void handle(HttpExchange exchange) throws IOException {
             try {
                 CustomerContext helper = new CustomerContext(exchange);
-                String path = helper._exchange.getHttpContext().getPath();// "/"
+                String path = exchange.getHttpContext().getPath();
                 String requestUri = exchange.getRequestURI().toString();
                 System.out.println(requestUri);
                 String[] routeParts = requestUri.substring(1).split("/");

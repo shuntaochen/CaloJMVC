@@ -17,7 +17,7 @@ public abstract class SatisfyCustomer {
     public SatisfyCustomer(CustomerContext exchange, PropertyUtil properties) {
         super();
         this.customerContext =exchange;
-        this.exchange = exchange._exchange;
+        this.exchange = exchange.getHttpExchange();
         this.jsonHelper=new JsonHelper();
         this.properties=properties;
     }
