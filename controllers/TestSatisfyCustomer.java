@@ -12,8 +12,8 @@ import utils.PropertyUtil;
 public class TestSatisfyCustomer extends SatisfyCustomer {
 
 
-    public TestSatisfyCustomer(CustomerContext exchange, PropertyUtil properties) {
-        super(exchange, properties);
+    public TestSatisfyCustomer(CustomerContext context, PropertyUtil properties) {
+        super(context, properties);
     }
 
     public void aa() throws IOException, InvocationTargetException, IllegalAccessException {

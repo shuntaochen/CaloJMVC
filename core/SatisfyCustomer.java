@@ -14,10 +14,10 @@ public abstract class SatisfyCustomer {
     protected JsonHelper jsonHelper;
     protected PropertyUtil properties;
 
-    public SatisfyCustomer(CustomerContext exchange, PropertyUtil properties) {
+    public SatisfyCustomer(CustomerContext context, PropertyUtil properties) {
         super();
-        this.customerContext =exchange;
-        this.exchange = exchange.getHttpExchange();
+        this.customerContext =context;
+        this.exchange = context.getHttpExchange();
         this.jsonHelper=new JsonHelper();
         this.properties=properties;
     }
