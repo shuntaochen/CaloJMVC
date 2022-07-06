@@ -1,15 +1,15 @@
 package controllers;
 
-import core.SatisfyCustomer;
+import core.Satisfact;
 import utils.CustomerContext;
 import utils.PropertyUtil;
 
 import java.io.IOException;
 
-public class FacadeSatisfyCustomer extends SatisfyCustomer {
+public class FacadeSatisfact extends Satisfact {
 
 
-    public FacadeSatisfyCustomer(CustomerContext exchange, PropertyUtil properties) {
+    public FacadeSatisfact(CustomerContext exchange, PropertyUtil properties) {
         super(exchange, properties);
     }
 

@@ -6,15 +6,11 @@ import utils.*;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.Executors;
-import java.util.logging.Handler;
 
 import core.*;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class Main {
 
@@ -47,9 +43,9 @@ public class Main {
                 if(routeParts.length!=2)return;
                 char ctlLeading = Character.toUpperCase(routeParts[0].charAt(0));
                 Constructor<?>[] constructors = Class
-                        .forName("controllers."+ctlLeading + routeParts[0].toLowerCase().substring(1) + "SatisfyCustomer")
+                        .forName("controllers."+ctlLeading + routeParts[0].toLowerCase().substring(1) + "Satisfact")
                         .getConstructors();
-                SatisfyCustomer ctrl = (SatisfyCustomer) constructors[0].newInstance(helper,propertyUtil);
+                Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper,propertyUtil);
                 int questionIndex=routeParts[1].indexOf("?");
                 String methodName= routeParts[1].substring(0,questionIndex!=-1?questionIndex:routeParts[1].length()).toLowerCase();
                 List<Method> methods= Arrays.asList(ctrl.getClass().getDeclaredMethods());

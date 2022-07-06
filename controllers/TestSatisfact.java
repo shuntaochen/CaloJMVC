@@ -5,14 +5,14 @@ import java.lang.reflect.InvocationTargetException;
 
 import beans.TestBean;
 
-import core.SatisfyCustomer;
+import core.Satisfact;
 import utils.CustomerContext;
 import utils.PropertyUtil;
 
-public class TestSatisfyCustomer extends SatisfyCustomer {
+public class TestSatisfact extends Satisfact {
 
 
-    public TestSatisfyCustomer(CustomerContext context, PropertyUtil properties) {
+    public TestSatisfact(CustomerContext context, PropertyUtil properties) {
         super(context, properties);
     }
 

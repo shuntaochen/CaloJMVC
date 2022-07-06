@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-public abstract class SatisfyCustomer {
+public abstract class Satisfact {
     protected HttpExchange exchange;
     protected CustomerContext customerContext;
     protected JsonHelper jsonHelper;
     protected PropertyUtil properties;
 
-    public SatisfyCustomer(CustomerContext context, PropertyUtil properties) {
+    public Satisfact(CustomerContext context, PropertyUtil properties) {
         super();
         this.customerContext =context;
         this.exchange = context.getHttpExchange();
