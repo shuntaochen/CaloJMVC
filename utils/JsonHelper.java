@@ -37,6 +37,7 @@ public class JsonHelper {
                         looper = TypeChecker.convertArrayToList(value);
                     for (Object member : (List) looper) {//boxing numbers to Object
                         mid += (!TypeChecker.isValueOrString(member) ? convertToJson(member) : member) + ",";//member is object? json:
+                        //hashmap, same with class
                     }
                     value = "[" + mid.substring(0, mid.length() - 1) + "]";//concat object json or to value type single array,
                 } else if (value.getClass() == String.class) {
@@ -49,6 +50,6 @@ public class JsonHelper {
                 ret.append("\"" + key + "\":" + value + ",");//"key":value
             }
         }
-        return ret.toString().substring(0, ret.length() - 1) + "}";
+        return ret.toString().substring(0, ret.length() - 1) + "}"; //finishing up one object
     }
 }
