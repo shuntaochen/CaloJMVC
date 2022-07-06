@@ -140,9 +140,14 @@ public class TypeChecker {
         return list;
     }
 
-    public static boolean isValueObject(Object src){
+    public static boolean isValueOrString(Object src){
         boolean ret;
         ret=Number.class.isAssignableFrom(src.getClass())||src.getClass()==String.class||src.getClass()==Boolean.class;
+        return ret;
+    }
+    public static boolean isValueObject(Object src){
+        boolean ret;
+        ret=Number.class.isAssignableFrom(src.getClass())||src.getClass()==Boolean.class;
         return ret;
     }
 }

@@ -31,8 +31,8 @@ public class TestSatisfyCustomer extends SatisfyCustomer {
         json(new TestBean("calo",20));
     }
 
-    public void generateJwtToken(){
-
+    public void generateJwtToken() throws IOException {
+        OK("");
     }
 
 }

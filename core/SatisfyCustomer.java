@@ -40,7 +40,7 @@ public abstract class SatisfyCustomer {
     }
 
     protected void OK(String content) throws IOException {
-        exchange.sendResponseHeaders(200, 0);
+        exchange.sendResponseHeaders(200, content.length());
         exchange.getResponseBody().write(content.getBytes());
         exchange.getResponseBody().close();
     }

@@ -58,6 +58,7 @@ public class Main {
                     throw new Exception("method not found");
                 }
                 m.invoke(ctrl);
+
             }
             catch (ClassNotFoundException cnfe){
                 TerminateResponseWith500(exchange,cnfe.getMessage());
@@ -65,6 +66,9 @@ public class Main {
             catch (Exception e) {
                 e.printStackTrace();
                 TerminateResponseWith500(exchange,e.getMessage());
+            }
+            finally {
+
             }
         }
 
