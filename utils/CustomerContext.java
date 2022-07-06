@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HttpContext {
+public class CustomerContext {
 
-    public Principle User;
+    public Principle Customer;
     public HttpExchange _exchange;
     public Map<String, String> queryMap;
     public Map<String, String> requestBodyMap;
@@ -26,7 +26,7 @@ public class HttpContext {
         _exchange.sendResponseHeaders(code, 0);
     }
 
-    public HttpContext(HttpExchange exchange) throws IOException {
+    public CustomerContext(HttpExchange exchange) throws IOException {
         super();
         _exchange = exchange;
         String query = exchange.getRequestURI().getQuery();

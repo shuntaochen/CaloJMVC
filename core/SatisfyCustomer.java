@@ -1,6 +1,6 @@
 package core;
 import com.sun.net.httpserver.HttpExchange;
-import utils.HttpContext;
+import utils.CustomerContext;
 import utils.JsonHelper;
 import utils.PropertyUtil;
 
@@ -8,28 +8,28 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-public abstract class Controller {
+public abstract class SatisfyCustomer {
     protected HttpExchange exchange;
-    protected HttpContext httpContext;
+    protected CustomerContext customerContext;
     protected JsonHelper jsonHelper;
     protected PropertyUtil properties;
 
-    public Controller(HttpContext exchange, PropertyUtil properties) {
+    public SatisfyCustomer(CustomerContext exchange, PropertyUtil properties) {
         super();
-        this.httpContext =exchange;
+        this.customerContext =exchange;
         this.exchange = exchange._exchange;
         this.jsonHelper=new JsonHelper();
         this.properties=properties;
     }
 
     protected Map<String,String> query(){
-        return httpContext.queryMap;
+        return customerContext.queryMap;
     }
     protected String query(String key){
-        return httpContext.queryMap.get(key);
+        return customerContext.queryMap.get(key);
     }
     protected Map<String,String> requestBody(){
-        return httpContext.requestBodyMap;
+        return customerContext.requestBodyMap;
     }
     protected String request(String key){
         return query(key)==""||query(key)==null?requestBody().get(key):query(key);
@@ -40,13 +40,14 @@ public abstract class Controller {
     }
 
     protected void OK(String content) throws IOException {
-        exchange.sendResponseHeaders(200, 0);//header must be sent first before writing response content;
+        exchange.sendResponseHeaders(200, 0);
         exchange.getResponseBody().write(content.getBytes());
         exchange.getResponseBody().close();
     }
 
-    protected void Json(Object src) throws InvocationTargetException, IllegalAccessException, IOException {
+    protected void json(Object src) throws InvocationTargetException, IllegalAccessException, IOException {
         String content=jsonHelper.convertToJson(src);
+        exchange.getResponseHeaders().set("content-type", "application/json");
         OK(content);
     }
 
