@@ -1,18 +1,18 @@
 package controllers;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-
 import beans.TestBean;
-
 import core.Satisfact;
 import utils.CustomerContext;
 import utils.PropertyUtil;
 
-public class TestSatisfact extends Satisfact {
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+public class AuthSatisfact extends Satisfact {
 
 
-    public TestSatisfact(CustomerContext context, PropertyUtil properties) {
+    public AuthSatisfact(CustomerContext context, PropertyUtil properties) {
+        //jwtverify
         super(context, properties);
     }
 
