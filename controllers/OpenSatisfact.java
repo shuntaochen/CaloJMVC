@@ -17,9 +17,8 @@ public class OpenSatisfact extends Satisfact {
     }
 
     public TestBean aa() throws Exception {
-        throw new Exception("fd");
-//        TestBean ret=new TestBean("a",5);
-//        return ret;
+        TestBean ret=new TestBean("a",5);
+        return ret;
     }
 
     public String bb()  {
@@ -30,6 +29,10 @@ public class OpenSatisfact extends Satisfact {
 
     public TestBean cc()  {
         return new TestBean("calo",20);
+    }
+
+    public void upload() throws Exception {
+        throw new Exception("fd");
     }
 
 

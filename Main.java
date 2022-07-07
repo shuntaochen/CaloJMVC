@@ -1,6 +1,4 @@
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.*;
 import utils.*;
 
 import java.io.IOException;
@@ -10,6 +8,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.util.*;
 import java.util.concurrent.Executors;
 
@@ -22,6 +21,7 @@ public class Main {
         String portConfig= propertyUtil.getValue("port");
         int port = (args.length == 0 ? Integer.valueOf(portConfig) : Integer.valueOf(args[0]));
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+
         System.out.println("Customer system listening on:"+server.getAddress());
         server.setExecutor( Executors.newFixedThreadPool(100));
         server.createContext("/", new CustomersHandler(propertyUtil));
@@ -38,20 +38,39 @@ public class Main {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
+                {
+                    System.out.println("-- headers --");
+                    Headers requestHeaders = exchange.getRequestHeaders();
+                    requestHeaders.entrySet().forEach(System.out::println);
+
+                    System.out.println("-- principle --");
+                    HttpPrincipal principal = exchange.getPrincipal();
+                    System.out.println(principal);
+
+                    System.out.println("-- HTTP method --");
+                    String requestMethod = exchange.getRequestMethod();
+                    System.out.println(requestMethod);
+
+                    System.out.println("-- query --");
+                    URI requestURI = exchange.getRequestURI();
+                    String query = requestURI.getQuery();
+                    System.out.println(query);
+                }
+
                 CustomerContext helper = new CustomerContext(exchange);
                 JsonHelper jsonHelper=new JsonHelper();
-                String path = exchange.getHttpContext().getPath();
-                String requestUri = exchange.getRequestURI().toString();
-                System.out.println(requestUri);
-                String[] routeParts = requestUri.substring(1).split("/");
+                String rootPath = exchange.getHttpContext().getPath();
+                System.out.println(rootPath);
+                URI requestUri = exchange.getRequestURI();
+                String path=requestUri.getPath();
+                String[] routeParts = path.substring(1).split("/");
                 if(routeParts.length!=2)return;
                 char ctlLeading = Character.toUpperCase(routeParts[0].charAt(0));
                 Constructor<?>[] constructors = Class
                         .forName("controllers."+ctlLeading + routeParts[0].toLowerCase().substring(1) + "Satisfact")
                         .getConstructors();
                 Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper,propertyUtil);
-                int questionIndex=routeParts[1].indexOf("?");
-                String methodName= routeParts[1].substring(0,questionIndex!=-1?questionIndex:routeParts[1].length()).toLowerCase();
+                String methodName= routeParts[1].toLowerCase();
                 List<Method> methods= Arrays.asList(ctrl.getClass().getDeclaredMethods());
                 Method m=getMethodName(methods,methodName);
                 if(m==null){

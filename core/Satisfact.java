@@ -44,7 +44,8 @@ public abstract class Satisfact {
     }
 
     protected String getProperty(String name){
-        return properties.getValue(name);
+        String ret= properties.getValue(name);
+        return ret;
     }
 
     protected String getAppInfo(){
