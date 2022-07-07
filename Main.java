@@ -4,7 +4,10 @@ import com.sun.net.httpserver.HttpServer;
 import utils.*;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.*;
@@ -36,6 +39,7 @@ public class Main {
         public void handle(HttpExchange exchange) throws IOException {
             try {
                 CustomerContext helper = new CustomerContext(exchange);
+                JsonHelper jsonHelper=new JsonHelper();
                 String path = exchange.getHttpContext().getPath();
                 String requestUri = exchange.getRequestURI().toString();
                 System.out.println(requestUri);
@@ -53,15 +57,36 @@ public class Main {
                 if(m==null){
                     throw new Exception("method not found");
                 }
-                m.invoke(ctrl);
+                Object ret= m.invoke(ctrl);
+                String result="";
+                if(!TypeChecker.isValueOrString(ret)){
+                 result=jsonHelper.convertToJson(ret);
+                }else
+                {
+                    result=ret.toString();
+                }
+                int code= exchange.getResponseCode();
+                if(code==-1){
+                    exchange.sendResponseHeaders(200, result.length());
+                }
+                exchange.getResponseBody().write(result.getBytes());
+                exchange.getResponseBody().close();
+                exchange.close();
 
             }
             catch (ClassNotFoundException cnfe){
                 TerminateResponseWith500(exchange,cnfe.getMessage());
             }
+            catch (InvocationTargetException e){
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                String message= e.getTargetException().getMessage()+sw.toString();
+                TerminateResponseWith500(exchange,message);
+            }
             catch (Exception e) {
                 e.printStackTrace();
-                TerminateResponseWith500(exchange,e.getMessage());
+                TerminateResponseWith500(exchange,e.toString());
             }
             finally {
 
