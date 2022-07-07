@@ -16,6 +16,7 @@ public class OpenSatisfact extends Satisfact {
 
     public OpenSatisfact(CustomerContext context, PropertyUtil properties) {
         super(context, properties);
+        //todo: add db helper, maybe mysql,
     }
 
     public TestBean aa() throws Exception {
