@@ -16,9 +16,10 @@ public class OpenSatisfact extends Satisfact {
         super(context, properties);
     }
 
-    public TestBean aa()  {
-        TestBean ret=new TestBean("a",5);
-        return ret;
+    public TestBean aa() throws Exception {
+        throw new Exception("fd");
+//        TestBean ret=new TestBean("a",5);
+//        return ret;
     }
 
     public String bb()  {

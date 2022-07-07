@@ -81,7 +81,7 @@ public class Main {
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw);
                 e.printStackTrace(pw);
-                String message= e.getTargetException().getMessage()+sw.toString();
+                String message= e.getTargetException().getMessage()+ sw;
                 TerminateResponseWith500(exchange,message);
             }
             catch (Exception e) {
