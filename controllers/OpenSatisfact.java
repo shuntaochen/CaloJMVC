@@ -39,5 +39,12 @@ public class OpenSatisfact extends Satisfact {
         return new int[]{2,3,4};
     }
 
+    public TestBean[] ee(){
+        return new TestBean[]{
+                new TestBean("calo",21),
+                new TestBean("chen",22),
+        };
+    }
+
 
 }
