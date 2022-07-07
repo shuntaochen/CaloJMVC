@@ -34,7 +34,8 @@ public class JsonHelper {
             String value="";
             HashMap<Object,Object> looper=(HashMap<Object,Object>) src;
             for (Object k : looper.keySet()) {
-                mid += (!TypeChecker.isValueOrString(looper.get(k)) ? convertToJson(looper.get(k)) : (k+":"+looper.get(k)) + ",");
+                Object v=looper.get(k);
+                mid += (!TypeChecker.isValueOrString(looper.get(k)) ? convertToJson(looper.get(k)) : ("\""+k+"\""+":"+ (v.getClass()==String.class?("\""+ looper.get(k)+"\""):looper.get(k)))+  ",");
             }
             value = "{" + mid.substring(0, mid.length() - 1) + "}";
             return value;

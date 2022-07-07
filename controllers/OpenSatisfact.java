@@ -51,7 +51,7 @@ public class OpenSatisfact extends Satisfact {
     public HashMap<String,Integer> ff(){
         HashMap<String,Integer> ret= new HashMap<>();
         ret.put("name",22);
-        ret.put("age",30);
+        ret.put("age",23);
         boolean b= TypeChecker.isMap(ret);
         Class<?> t=ret.getClass();
         return ret;
