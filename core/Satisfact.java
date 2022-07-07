@@ -39,16 +39,8 @@ public abstract class Satisfact {
         return exchange.getRequestHeaders().get(key);
     }
 
-    protected void OK(String content) throws IOException {
-        exchange.sendResponseHeaders(200, content.length());
-        exchange.getResponseBody().write(content.getBytes());
-        exchange.getResponseBody().close();
-    }
-
-    protected void json(Object src) throws InvocationTargetException, IllegalAccessException, IOException {
-        String content=jsonHelper.convertToJson(src);
+    protected void jsonResponseHeader(){
         exchange.getResponseHeaders().set("content-type", "application/json");
-        OK(content);
     }
 
     protected String getProperty(String name){

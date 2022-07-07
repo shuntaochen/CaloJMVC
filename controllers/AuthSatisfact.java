@@ -16,23 +16,20 @@ public class AuthSatisfact extends Satisfact {
         super(context, properties);
     }
 
-    public void aa() throws IOException, InvocationTargetException, IllegalAccessException {
-        Object ret=new TestBean("a",5);
-        json(ret);
+    public TestBean aa()  {
+        TestBean ret=new TestBean("a",5);
+        return ret;
     }
 
-    public void bb() throws IOException {
+    public String bb() {
         String name=request("name");
         String age=request("age");
-        OK("Calo App Info:"+getAppInfo()+name+age);
+        return "Calo App Info:"+getAppInfo()+name+age;
     }
 
-    public void cc() throws Exception {
-        json(new TestBean("calo",20));
+    public TestBean cc()   {
+        return new TestBean("calo",20);
     }
 
-    public void generateJwtToken() throws IOException {
-        OK("");
-    }
 
 }
