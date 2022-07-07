@@ -34,7 +34,7 @@ public class JsonHelper {
             String value="";
             HashMap<Object,Object> looper=(HashMap<Object,Object>) src;
             for (Object k : looper.keySet()) {
-                if(!TypeChecker.isValueOrString(k)) throw new UnsupportedOperationException("Object as key serialization is not supported in json.");
+                if(!TypeChecker.isValueOrString(k)) throw new UnsupportedOperationException("Object as Hashmap key serialization is not supported in json.");
                 Object v=looper.get(k);
                 mid += (!TypeChecker.isValueOrString(looper.get(k)) ? convertToJson(looper.get(k)) : ("\""+k+"\""+":"+ (v.getClass()==String.class?("\""+ looper.get(k)+"\""):looper.get(k)))+  ",");
             }
