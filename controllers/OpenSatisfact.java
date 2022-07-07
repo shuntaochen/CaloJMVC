@@ -35,5 +35,9 @@ public class OpenSatisfact extends Satisfact {
         throw new Exception("fd");
     }
 
+    public int[] dd(){
+        return new int[]{2,3,4};
+    }
+
 
 }

@@ -18,6 +18,20 @@ public class JsonHelper {
     }
 
     public String convertToJson(Object src) throws InvocationTargetException, IllegalAccessException {
+        if (TypeChecker.isCollection(src) || TypeChecker.isArray(src)) {
+            String ret = "";
+            String mid = "";
+            List looper = new ArrayList();
+            if (TypeChecker.isCollection(src))
+                looper = (List) src;
+            if (TypeChecker.isArray(src))
+                looper = TypeChecker.convertArrayToList(src);
+            for (Object member : (List) looper) {
+                mid += (TypeChecker.isValueOrString(member) ? member : convertToJson(member)) + ",";//member is object? json:
+            }
+            ret = "[" + mid.substring(0, mid.length() - 1) + "]";
+            return ret;
+        }
         StringBuffer ret = new StringBuffer("{");
         Method[] methods = src.getClass().getDeclaredMethods();
         for (Method m : methods) {
