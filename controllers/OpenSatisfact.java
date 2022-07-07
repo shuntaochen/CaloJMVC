@@ -19,7 +19,11 @@ public class OpenSatisfact extends Satisfact {
     }
 
     public TestBean aa() throws Exception {
+        HashMap<String,Integer> ret1= new HashMap<>();
+        ret1.put("name",22);
+        ret1.put("age",23);
         TestBean ret=new TestBean("a",5);
+        ret.setBMap(ret1);
         return ret;
     }
 

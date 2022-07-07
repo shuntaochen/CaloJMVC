@@ -1,6 +1,7 @@
 package beans;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public  class TestBean{
@@ -32,11 +33,22 @@ public  class TestBean{
         return new int[]{2,3,4};
     }
 
+    private HashMap<String,Integer> BMap;
+
     public List<TestBean1> getLi(){
         List<TestBean1> ret= new ArrayList<TestBean1>(){
         };
         ret.add(new TestBean1("a"));
         ret.add(new TestBean1("b"));
         return ret;
+    }
+
+
+    public HashMap<String, Integer> getBMap() {
+        return BMap;
+    }
+
+    public void setBMap(HashMap<String, Integer> BMap) {
+        this.BMap = BMap;
     }
 }
