@@ -2,10 +2,7 @@ package utils;
 
 import beans.TestBean1;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class TypeChecker {
 
@@ -140,6 +137,10 @@ public class TypeChecker {
         return list;
     }
 
+
+    public static boolean isMap(Object src){
+        return Map.class.isAssignableFrom(src.getClass());
+    }
     public static boolean isValueOrString(Object src){
         boolean ret;
         ret=Number.class.isAssignableFrom(src.getClass())||src.getClass()==String.class||src.getClass()==Boolean.class;

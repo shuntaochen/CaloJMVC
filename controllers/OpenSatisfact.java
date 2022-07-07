@@ -2,12 +2,14 @@ package controllers;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 
 import beans.TestBean;
 
 import core.Satisfact;
 import utils.CustomerContext;
 import utils.PropertyUtil;
+import utils.TypeChecker;
 
 public class OpenSatisfact extends Satisfact {
 
@@ -44,6 +46,15 @@ public class OpenSatisfact extends Satisfact {
                 new TestBean("calo",21),
                 new TestBean("chen",22),
         };
+    }
+
+    public HashMap<String,Integer> ff(){
+        HashMap<String,Integer> ret= new HashMap<>();
+        ret.put("name",22);
+        ret.put("age",30);
+        boolean b= TypeChecker.isMap(ret);
+        Class<?> t=ret.getClass();
+        return ret;
     }
 
 

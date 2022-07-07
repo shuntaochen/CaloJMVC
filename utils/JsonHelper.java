@@ -4,10 +4,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 public class JsonHelper {
@@ -27,14 +24,24 @@ public class JsonHelper {
             if (TypeChecker.isArray(src))
                 looper = TypeChecker.convertArrayToList(src);
             for (Object member : (List) looper) {
-                mid += (TypeChecker.isValueOrString(member) ? member : convertToJson(member)) + ",";//member is object? json:
+                mid += (TypeChecker.isValueOrString(member) ? member : convertToJson(member)) + ",";
             }
             ret = "[" + mid.substring(0, mid.length() - 1) + "]";
             return ret;
         }
+        else if(TypeChecker.isMap(src)){
+            String mid = "";
+            String value="";
+            HashMap<Object,Object> looper=(HashMap<Object,Object>) src;
+            for (Object k : looper.keySet()) {
+                mid += (!TypeChecker.isValueOrString(looper.get(k)) ? convertToJson(looper.get(k)) : (k+":"+looper.get(k)) + ",");
+            }
+            value = "{" + mid.substring(0, mid.length() - 1) + "}";
+            return value;
+        }
         StringBuffer ret = new StringBuffer("{");
         Method[] methods = src.getClass().getDeclaredMethods();
-        for (Method m : methods) {
+        for (Method m : methods) {//for object type
             String mn = m.getName();
             if (mn.startsWith("get") && Character.isUpperCase(mn.charAt(3))) {
                 String key = mn.substring(3);
@@ -54,7 +61,9 @@ public class JsonHelper {
                         //hashmap, same with class
                     }
                     value = "[" + mid.substring(0, mid.length() - 1) + "]";//concat object json or to value type single array,
-                } else if (value.getClass() == String.class) {
+                }
+
+                else if (value.getClass() == String.class) {
                     //string needs quotation symbol "key":"value"
                     value = "\"" + value + "\"";
                 } else {
