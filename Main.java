@@ -1,4 +1,3 @@
-import com.auth0.jwt.JWT;
 import com.sun.net.httpserver.*;
 import utils.*;
 
@@ -25,7 +24,10 @@ public class Main {
 
         System.out.println("Customer system listening on:" + server.getAddress());
         server.setExecutor(Executors.newFixedThreadPool(100));
-        HttpContext ctx = server.createContext("/", new CustomersHandler(propertyUtil));
+        HttpHandler handler = new CustomersHandler(propertyUtil);
+        HttpContext ctx = server.createContext("/",handler);
+        CustomFilter f = new CustomFilter();
+        ctx.getFilters().add(new CustomFilter());//filter runs before handler,
         ctx.setAuthenticator(new CustomAuthenticator());
         server.start();
     }
@@ -41,13 +43,15 @@ public class Main {
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-
             try {
+                URI requestUri = exchange.getRequestURI();
+                String path = requestUri.getPath();
+                if(path.equals("/favicon.ico"))return;
+
                 {
                     System.out.println("-- headers --");
                     Headers requestHeaders = exchange.getRequestHeaders();
                     requestHeaders.entrySet().forEach(System.out::println);
-
                     System.out.println("-- principle --");
                     HttpPrincipal principal = exchange.getPrincipal();
                     System.out.println(principal);
@@ -73,8 +77,6 @@ public class Main {
                 JsonHelper jsonHelper = new JsonHelper();
                 String rootPath = exchange.getHttpContext().getPath();
                 System.out.println(rootPath);
-                URI requestUri = exchange.getRequestURI();
-                String path = requestUri.getPath();
                 String[] routeParts = path.substring(1).split("/");
                 if (routeParts.length != 2) return;
                 char ctlLeading = Character.toUpperCase(routeParts[0].charAt(0));
@@ -95,6 +97,7 @@ public class Main {
                 } else {
                     result = ret.toString();
                 }
+                new ResultFilter(exchange);
                 int code = exchange.getResponseCode();
                 if (code == -1) {
                     exchange.sendResponseHeaders(200, result.length());
