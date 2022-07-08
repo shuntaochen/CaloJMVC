@@ -50,7 +50,7 @@ public abstract class Satisfact {
     }
 
     protected String request(String key) {
-        return query(key).equals("") || query(key) == null ? requestBody().get(key) : query(key);
+        return query(key) == null || query(key).equals("") ? requestBody().get(key) : query(key);
     }
 
     protected List<String> getRequestHeader(Object key) {

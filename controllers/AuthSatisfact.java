@@ -9,26 +9,25 @@ import utils.PropertyUtil;
 
 public class AuthSatisfact extends Satisfact {
 
-    public AuthSatisfact(CustomerContext context, PropertyUtil properties,JwtUtil jwtUtil) throws Exception {
-        super(context, properties,jwtUtil);
-        jwtFilter();
+    public AuthSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
+        super(context, properties, jwtUtil);
     }
 
 
-
-    public TestBean aa()  {
-        TestBean ret=new TestBean("a",5);
+    public TestBean aa() throws Exception {
+        jwtFilter();
+        TestBean ret = new TestBean("a", 5);
         return ret;
     }
 
     public String bb() {
-        String name=request("name");
-        String age=request("age");
-        return "Calo App Info:"+getAppInfo()+name+age;
+        String name = request("name");
+        String age = request("age");
+        return "Calo App Info:" + getAppInfo() + name + age;
     }
 
-    public TestBean cc()   {
-        return new TestBean("calo",20);
+    public TestBean cc() {
+        return new TestBean("calo", 20);
     }
 
 
