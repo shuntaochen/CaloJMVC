@@ -15,6 +15,12 @@ import java.util.Map;
 public class JwtUtil {
 
 
+    private PropertyUtil propertyUtil;
+
+    public JwtUtil(PropertyUtil propertyUtil) {
+
+        this.propertyUtil = propertyUtil;
+    }
 
     /*
 

@@ -11,12 +11,12 @@ public class AuthSatisfact extends Satisfact {
 
     JwtUtil jwtUtil;
 
-    public AuthSatisfact(CustomerContext context, PropertyUtil properties) {
-        //jwtverify
-        super(context, properties);
-
-
+    public AuthSatisfact(CustomerContext context, PropertyUtil properties,JwtUtil jwtUtil) throws Exception {
+        super(context, properties,jwtUtil);
+        jwtFilter();
     }
+
+
 
     public TestBean aa()  {
 

@@ -1,3 +1,4 @@
+import com.auth0.jwt.JWT;
 import com.sun.net.httpserver.*;
 import utils.*;
 
@@ -30,9 +31,11 @@ public class Main {
 
     static class CustomersHandler implements HttpHandler {
         private PropertyUtil propertyUtil;
+        private JwtUtil jwtUtil;
 
         public CustomersHandler(PropertyUtil propertyUtil) {
             this.propertyUtil = propertyUtil;
+            jwtUtil=new JwtUtil(propertyUtil);
         }
 
         @Override
@@ -69,7 +72,7 @@ public class Main {
                 Constructor<?>[] constructors = Class
                         .forName("controllers."+ctlLeading + routeParts[0].toLowerCase().substring(1) + "Satisfact")
                         .getConstructors();
-                Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper,propertyUtil);
+                Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper,propertyUtil,jwtUtil);
                 String methodName= routeParts[1].toLowerCase();
                 List<Method> methods= Arrays.asList(ctrl.getClass().getDeclaredMethods());
                 Method m=getMethodName(methods,methodName);

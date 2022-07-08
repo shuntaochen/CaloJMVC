@@ -1,54 +1,72 @@
 package core;
+
 import com.sun.net.httpserver.HttpExchange;
 import utils.CustomerContext;
 import utils.JsonHelper;
+import utils.JwtUtil;
 import utils.PropertyUtil;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Map;
 
 public abstract class Satisfact {
+
+    protected void jwtFilter() throws Exception {
+        List<String> authHeaders = getRequestHeader("Authorization");
+        if (authHeaders != null && authHeaders.size() == 1) {
+            String token = authHeaders.get(0).split(" ")[1];
+            jwtUtil.verify(token);
+        }
+        throw new Exception("Jwt verification failed.");
+    }
+
     protected HttpExchange exchange;
+    protected JwtUtil jwtUtil;
     protected CustomerContext customerContext;
     protected JsonHelper jsonHelper;
     protected PropertyUtil properties;
 
-    public Satisfact(CustomerContext context, PropertyUtil properties) {
+    public Satisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
         super();
-        this.customerContext =context;
+        this.customerContext = context;
         this.exchange = context.getHttpExchange();
-        this.jsonHelper=new JsonHelper();
-        this.properties=properties;
+        this.jwtUtil = jwtUtil;
+        this.jsonHelper = new JsonHelper();
+        this.properties = properties;
     }
 
-    protected Map<String,String> query(){
+    protected Map<String, String> query() {
         return customerContext.queryMap;
     }
-    protected String query(String key){
+
+    protected String query(String key) {
         return customerContext.queryMap.get(key);
     }
-    protected Map<String,String> requestBody(){
+
+    protected Map<String, String> requestBody() {
         return customerContext.requestBodyMap;
     }
-    protected String request(String key){
-        return query(key)==""||query(key)==null?requestBody().get(key):query(key);
+
+    protected String request(String key) {
+        return query(key) == "" || query(key) == null ? requestBody().get(key) : query(key);
     }
 
-    protected Object getRequestHeader(Object key){
+    protected List<String> getRequestHeader(Object key) {
         return exchange.getRequestHeaders().get(key);
     }
 
-    protected void jsonResponseHeader(){
+    protected void jsonResponseHeader() {
         exchange.getResponseHeaders().set("content-type", "application/json");
     }
 
-    protected String getProperty(String name){
-        String ret= properties.getValue(name);
+    protected String getProperty(String name) {
+        String ret = properties.getValue(name);
         return ret;
     }
 
-    protected String getAppInfo(){
-        return getProperty("calo.app.name")+";"+getProperty("calo.app.version");
+    protected String getAppInfo() {
+        return getProperty("calo.app.name") + ";" + getProperty("calo.app.version");
     }
 }

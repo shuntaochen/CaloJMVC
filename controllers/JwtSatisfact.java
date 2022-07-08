@@ -8,11 +8,9 @@ import utils.JwtUtil;
 import utils.PropertyUtil;
 
 public class JwtSatisfact extends Satisfact {
-    JwtUtil jwtUtil;
 
-    public JwtSatisfact(CustomerContext context, PropertyUtil properties) {
-        super(context, properties);
-        jwtUtil = new JwtUtil();
+    public JwtSatisfact(CustomerContext context, PropertyUtil properties,JwtUtil jwtUtil) {
+        super(context, properties,jwtUtil);
     }
 
     public String create(){

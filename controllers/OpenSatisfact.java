@@ -8,14 +8,15 @@ import beans.TestBean;
 
 import core.Satisfact;
 import utils.CustomerContext;
+import utils.JwtUtil;
 import utils.PropertyUtil;
 import utils.TypeChecker;
 
 public class OpenSatisfact extends Satisfact {
 
 
-    public OpenSatisfact(CustomerContext context, PropertyUtil properties) {
-        super(context, properties);
+    public OpenSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
+        super(context, properties,jwtUtil);
         //todo: add db helper, maybe mysql,
     }
 
