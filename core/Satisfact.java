@@ -19,7 +19,7 @@ public abstract class Satisfact {
             String token = authHeaders.get(0).split(" ")[1];
             jwtUtil.verify(token);
         } else
-        throw new Exception("Jwt verification failed with improper authHeaders.");
+            throw new Exception("Jwt verification failed with improper authHeaders.");
     }
 
     protected HttpExchange exchange;
@@ -50,7 +50,7 @@ public abstract class Satisfact {
     }
 
     protected String request(String key) {
-        return query(key) == "" || query(key) == null ? requestBody().get(key) : query(key);
+        return query(key).equals("") || query(key) == null ? requestBody().get(key) : query(key);
     }
 
     protected List<String> getRequestHeader(Object key) {
