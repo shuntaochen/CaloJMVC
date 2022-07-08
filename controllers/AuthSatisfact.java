@@ -10,6 +10,7 @@ import utils.JwtUtil;
 import utils.PropertyUtil;
 
 
+//@Permission(name= PermissionNames.GeneralRead)
 public class AuthSatisfact extends Satisfact {
 
     public AuthSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
@@ -22,7 +23,6 @@ public class AuthSatisfact extends Satisfact {
         TestBean ret = new TestBean("a", 5);
         return ret;
     }
-
     @Permission(name= PermissionNames.GeneralRead)
     public String bb() {
         String name = request("name");

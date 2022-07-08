@@ -25,7 +25,7 @@ public class Main {
         System.out.println("Customer system listening on:" + server.getAddress());
         server.setExecutor(Executors.newFixedThreadPool(100));
         HttpHandler handler = new CustomersHandler(propertyUtil);
-        HttpContext ctx = server.createContext("/",handler);
+        HttpContext ctx = server.createContext("/", handler);
         CustomFilter f = new CustomFilter();
         ctx.getFilters().add(new CustomFilter());//filter runs before handler,
         ctx.setAuthenticator(new CustomAuthenticator());
@@ -46,7 +46,8 @@ public class Main {
             try {
                 URI requestUri = exchange.getRequestURI();
                 String path = requestUri.getPath();
-                if(path.equals("/favicon.ico"))return;
+                if (path.equals("/favicon.ico")) return;
+                String realm = exchange.getPrincipal().getRealm();
 
                 {
                     System.out.println("-- headers --");
@@ -84,9 +85,11 @@ public class Main {
                         .forName("controllers." + ctlLeading + routeParts[0].toLowerCase().substring(1) + "Satisfact")
                         .getConstructors();
                 Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper, propertyUtil, jwtUtil);
+                checkPermission(ctrl.getClass(), realm);
                 String methodName = routeParts[1].toLowerCase();
                 List<Method> methods = Arrays.asList(ctrl.getClass().getDeclaredMethods());
                 Method m = getMethodName(methods, methodName);
+                checkPermission(m, realm);
                 if (m == null) {
                     throw new Exception("method not found");
                 }
@@ -119,6 +122,18 @@ public class Main {
                 TerminateResponseWith500(exchange, e.toString());
             } finally {
 
+            }
+        }
+
+        private void checkPermission(Object src, String realm) throws Exception {
+            if (src != null) {
+                Permission perm1 = src.getClass() == Method.class ? ((Method) src).getDeclaredAnnotation(Permission.class) : ((Class<?>) src).getDeclaredAnnotation(Permission.class);
+                if (perm1 != null) {
+                    String pname1 = perm1.name();
+                    if (realm.indexOf("[" + pname1 + "]") == -1) {
+                        throw new Exception("No Permission");
+                    }
+                }
             }
         }
 
