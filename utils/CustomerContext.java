@@ -1,7 +1,6 @@
 package utils;
 
 import com.sun.net.httpserver.HttpExchange;
-import core.Principle;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +18,6 @@ public class CustomerContext {
     public HttpExchange getHttpExchange(){
         return _exchange;
     }
-    public Principle Customer;
     private HttpExchange _exchange;
     public Map<String, String> queryMap;
     public Map<String, String> requestBodyMap;
