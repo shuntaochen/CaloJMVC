@@ -2,6 +2,8 @@ package controllers;
 
 import beans.TestBean;
 import com.sun.net.httpserver.HttpPrincipal;
+import core.Permission;
+import core.PermissionNames;
 import core.Satisfact;
 import utils.CustomerContext;
 import utils.JwtUtil;
@@ -21,6 +23,7 @@ public class AuthSatisfact extends Satisfact {
         return ret;
     }
 
+    @Permission(name= PermissionNames.GeneralRead)
     public String bb() {
         String name = request("name");
         String age = request("age");
