@@ -41,6 +41,7 @@ public class Main {
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
+
             try {
                 {
                     System.out.println("-- headers --");
@@ -59,6 +60,13 @@ public class Main {
                     URI requestURI = exchange.getRequestURI();
                     String query = requestURI.getQuery();
                     System.out.println(query);
+                    if(query!=null&&query.toLowerCase().startsWith("sleep=")){
+                        try {
+                            Thread.sleep(100000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
 
                 CustomerContext helper = new CustomerContext(exchange);
