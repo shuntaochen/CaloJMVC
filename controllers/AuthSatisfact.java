@@ -31,9 +31,13 @@ public class AuthSatisfact extends Satisfact {
         return "Calo App Info:" + getAppInfo() + name + age;
     }
 
+    @Permission(name= PermissionNames.GeneralWrite)
     public TestBean cc() {
         return new TestBean("calo", 20);
     }
 
+    public TestBean dd() {
+        return new TestBean("dd", 20);
+    }
 
 }

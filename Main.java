@@ -26,7 +26,6 @@ public class Main {
         server.setExecutor(Executors.newFixedThreadPool(100));
         HttpHandler handler = new CustomersHandler(propertyUtil);
         HttpContext ctx = server.createContext("/", handler);
-        CustomFilter f = new CustomFilter();
         ctx.getFilters().add(new CustomFilter());//filter runs before handler,
         ctx.setAuthenticator(new CustomAuthenticator());
         server.start();
