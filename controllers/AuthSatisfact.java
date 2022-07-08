@@ -23,7 +23,7 @@ public class AuthSatisfact extends Satisfact {
         TestBean ret = new TestBean("a", 5);
         return ret;
     }
-    @Permission(name= PermissionNames.GeneralRead)
+    @Permission(name= PermissionNames.GeneralWrite)
     public String bb() {
         String name = request("name");
         String age = request("age");
