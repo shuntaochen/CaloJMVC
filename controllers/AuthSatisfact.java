@@ -1,7 +1,7 @@
 package controllers;
 
 import beans.TestBean;
-import com.sun.net.httpserver.HttpPrincipal;
+import core.Anonymous;
 import core.Permission;
 import core.PermissionNames;
 import core.Satisfact;
@@ -23,6 +23,7 @@ public class AuthSatisfact extends Satisfact {
         TestBean ret = new TestBean("a", 5);
         return ret;
     }
+    @Anonymous
     @Permission(name= PermissionNames.GeneralWrite)
     public String bb() {
         String name = request("name");

@@ -127,6 +127,8 @@ public class Main {
 
         private void checkPermission(Object src, String realm) throws Exception {
             if (src != null) {
+                Anonymous am = src.getClass() == Method.class ? ((Method) src).getDeclaredAnnotation(Anonymous.class) : ((Class<?>) src).getDeclaredAnnotation(Anonymous.class);
+                if (am != null) return;
                 Permission perm1 = src.getClass() == Method.class ? ((Method) src).getDeclaredAnnotation(Permission.class) : ((Class<?>) src).getDeclaredAnnotation(Permission.class);
                 if (perm1 != null) {
                     String pname1 = perm1.name();
