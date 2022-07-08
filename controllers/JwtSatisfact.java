@@ -9,23 +9,23 @@ import utils.PropertyUtil;
 
 public class JwtSatisfact extends Satisfact {
 
-    public JwtSatisfact(CustomerContext context, PropertyUtil properties,JwtUtil jwtUtil) {
-        super(context, properties,jwtUtil);
+    public JwtSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
+        super(context, properties, jwtUtil);
     }
 
-    public String create(){
-        String token=jwtUtil.create();
+    public String create() {
+        String token = jwtUtil.create();
         return token;
     }
 
-    public boolean verify(){
-        String token=request("token");
-        return jwtUtil.verify(token);
+    public void verify() {
+        String token = request("token");
+        jwtUtil.verify(token);
     }
 
-    public String decode(){
-        String token=request("token");
-        String audence= jwtUtil.decode(token);
+    public String decode() {
+        String token = request("token");
+        String audence = jwtUtil.decode(token);
         return audence;
     }
 }

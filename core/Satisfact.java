@@ -19,7 +19,7 @@ public abstract class Satisfact {
             String token = authHeaders.get(0).split(" ")[1];
             jwtUtil.verify(token);
         } else
-        throw new Exception("Jwt verification failed.");
+        throw new Exception("Jwt verification failed with improper authHeaders.");
     }
 
     protected HttpExchange exchange;

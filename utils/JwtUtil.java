@@ -31,8 +31,8 @@ public class JwtUtil {
             Algorithm algorithm = Algorithm.HMAC256("secret");
             String token = JWT.create()
                     .withJWTId("23")
-                    .withClaim("username","chen")
-                    .withClaim("age",18)
+                    .withClaim("username", "chen")
+                    .withClaim("age", 18)
                     .withExpiresAt(new Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000))
                     .withIssuedAt(new Date(System.currentTimeMillis()))
                     .withIssuer("auth0")
@@ -45,19 +45,12 @@ public class JwtUtil {
     }
 
 
-    public boolean verify(String token) {
-        try {
-            Algorithm algorithm = Algorithm.HMAC256("secret"); //use more secure key
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer("auth0")
-                    .build(); //Reusable verifier instance
-            verifier.verify(token);
-            return true;
-
-        } catch (JWTVerificationException exception) {
-            //Invalid signature/claims
-            return false;
-        }
+    public void verify(String token) {
+        Algorithm algorithm = Algorithm.HMAC256("secret"); //use more secure key
+        JWTVerifier verifier = JWT.require(algorithm)
+                .withIssuer("auth0")
+                .build(); //Reusable verifier instance
+        verifier.verify(token);
     }
 
     public String decode(String token) {
