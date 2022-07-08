@@ -9,8 +9,6 @@ import utils.PropertyUtil;
 
 public class AuthSatisfact extends Satisfact {
 
-    JwtUtil jwtUtil;
-
     public AuthSatisfact(CustomerContext context, PropertyUtil properties,JwtUtil jwtUtil) throws Exception {
         super(context, properties,jwtUtil);
         jwtFilter();
@@ -19,8 +17,6 @@ public class AuthSatisfact extends Satisfact {
 
 
     public TestBean aa()  {
-
-
         TestBean ret=new TestBean("a",5);
         return ret;
     }

@@ -18,7 +18,7 @@ public abstract class Satisfact {
         if (authHeaders != null && authHeaders.size() == 1) {
             String token = authHeaders.get(0).split(" ")[1];
             jwtUtil.verify(token);
-        }
+        } else
         throw new Exception("Jwt verification failed.");
     }
 
