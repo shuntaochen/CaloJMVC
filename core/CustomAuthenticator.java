@@ -9,5 +9,7 @@ public class CustomAuthenticator extends Authenticator {
     @Override
     public Result authenticate(HttpExchange exch) {
         return new Success(new HttpPrincipal("chen","calo"));
+//        return new Failure(500);
+//        return new Retry(301);//503,429,
     }
 }

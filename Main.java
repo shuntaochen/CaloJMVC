@@ -18,14 +18,14 @@ import core.*;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        PropertyUtil propertyUtil=new PropertyUtil();
-        String portConfig= propertyUtil.getValue("port");
+        PropertyUtil propertyUtil = new PropertyUtil();
+        String portConfig = propertyUtil.getValue("port");
         int port = (args.length == 0 ? Integer.valueOf(portConfig) : Integer.valueOf(args[0]));
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
-        System.out.println("Customer system listening on:"+server.getAddress());
-        server.setExecutor( Executors.newFixedThreadPool(100));
-        HttpContext ctx= server.createContext("/", new CustomersHandler(propertyUtil));
+        System.out.println("Customer system listening on:" + server.getAddress());
+        server.setExecutor(Executors.newFixedThreadPool(100));
+        HttpContext ctx = server.createContext("/", new CustomersHandler(propertyUtil));
         ctx.setAuthenticator(new CustomAuthenticator());
         server.start();
     }
@@ -36,7 +36,7 @@ public class Main {
 
         public CustomersHandler(PropertyUtil propertyUtil) {
             this.propertyUtil = propertyUtil;
-            jwtUtil=new JwtUtil(propertyUtil);
+            jwtUtil = new JwtUtil(propertyUtil);
         }
 
         @Override
@@ -60,7 +60,7 @@ public class Main {
                     URI requestURI = exchange.getRequestURI();
                     String query = requestURI.getQuery();
                     System.out.println(query);
-                    if(query!=null&&query.toLowerCase().startsWith("sleep=")){
+                    if (query != null && query.toLowerCase().startsWith("sleep=")) {
                         try {
                             Thread.sleep(100000);
                         } catch (InterruptedException e) {
@@ -70,75 +70,70 @@ public class Main {
                 }
 
                 CustomerContext helper = new CustomerContext(exchange);
-                JsonHelper jsonHelper=new JsonHelper();
+                JsonHelper jsonHelper = new JsonHelper();
                 String rootPath = exchange.getHttpContext().getPath();
                 System.out.println(rootPath);
                 URI requestUri = exchange.getRequestURI();
-                String path=requestUri.getPath();
+                String path = requestUri.getPath();
                 String[] routeParts = path.substring(1).split("/");
-                if(routeParts.length!=2)return;
+                if (routeParts.length != 2) return;
                 char ctlLeading = Character.toUpperCase(routeParts[0].charAt(0));
                 Constructor<?>[] constructors = Class
-                        .forName("controllers."+ctlLeading + routeParts[0].toLowerCase().substring(1) + "Satisfact")
+                        .forName("controllers." + ctlLeading + routeParts[0].toLowerCase().substring(1) + "Satisfact")
                         .getConstructors();
-                Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper,propertyUtil,jwtUtil);
-                String methodName= routeParts[1].toLowerCase();
-                List<Method> methods= Arrays.asList(ctrl.getClass().getDeclaredMethods());
-                Method m=getMethodName(methods,methodName);
-                if(m==null){
+                Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper, propertyUtil, jwtUtil);
+                String methodName = routeParts[1].toLowerCase();
+                List<Method> methods = Arrays.asList(ctrl.getClass().getDeclaredMethods());
+                Method m = getMethodName(methods, methodName);
+                if (m == null) {
                     throw new Exception("method not found");
                 }
-                Object ret= m.invoke(ctrl);
-                String result="";
-                if(!TypeChecker.isValueOrString(ret)){
-                 result=jsonHelper.convertToJson(ret);
-                }else
-                {
-                    result=ret.toString();
+                Object ret = m.invoke(ctrl);
+                String result = "";
+                if (!TypeChecker.isValueOrString(ret)) {
+                    result = jsonHelper.convertToJson(ret);
+                } else {
+                    result = ret.toString();
                 }
-                int code= exchange.getResponseCode();
-                if(code==-1){
+                int code = exchange.getResponseCode();
+                if (code == -1) {
                     exchange.sendResponseHeaders(200, result.length());
                 }
                 exchange.getResponseBody().write(result.getBytes());
                 exchange.getResponseBody().close();
                 exchange.close();
 
-            }
-            catch (ClassNotFoundException cnfe){
-                TerminateResponseWith500(exchange,cnfe.getMessage());
-            }
-            catch (InvocationTargetException e){
+            } catch (ClassNotFoundException cnfe) {
+                TerminateResponseWith500(exchange, cnfe.getMessage());
+            } catch (InvocationTargetException e) {
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw);
                 e.printStackTrace(pw);
-                String message= e.getTargetException().getMessage()+ sw;
-                TerminateResponseWith500(exchange,message);
-            }
-            catch (Exception e) {
+                String message = e.getTargetException().getMessage() + sw;
+                TerminateResponseWith500(exchange, message);
+            } catch (Exception e) {
                 e.printStackTrace();
-                TerminateResponseWith500(exchange,e.toString());
-            }
-            finally {
+                TerminateResponseWith500(exchange, e.toString());
+            } finally {
 
             }
         }
 
-        private Method getMethodName(List<Method> methods, String methodName){
-            for (Method m:methods
+        private Method getMethodName(List<Method> methods, String methodName) {
+            for (Method m : methods
             ) {
-                String name=m.getName().toLowerCase();
-                boolean found= name.equals(methodName);
-                if(found){
+                String name = m.getName().toLowerCase();
+                boolean found = name.equals(methodName);
+                if (found) {
                     return m;
-                }
-                else{
+                } else {
                     System.out.println(name);
                 }
             }
             return null;
         }
-        public void TerminateResponseWith500(HttpExchange exchange,String message) throws IOException {
+
+        public void TerminateResponseWith500(HttpExchange exchange, String message) throws IOException {
             exchange.sendResponseHeaders(500, message.length());
             exchange.getResponseBody().write(message.getBytes());
             exchange.getResponseBody().close();
