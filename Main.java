@@ -25,7 +25,8 @@ public class Main {
 
         System.out.println("Customer system listening on:"+server.getAddress());
         server.setExecutor( Executors.newFixedThreadPool(100));
-        server.createContext("/", new CustomersHandler(propertyUtil));
+        HttpContext ctx= server.createContext("/", new CustomersHandler(propertyUtil));
+        ctx.setAuthenticator(new CustomAuthenticator());
         server.start();
     }
 
