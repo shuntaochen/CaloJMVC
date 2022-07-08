@@ -3,20 +3,24 @@ package controllers;
 import beans.TestBean;
 import core.Satisfact;
 import utils.CustomerContext;
+import utils.JwtUtil;
 import utils.PropertyUtil;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 public class AuthSatisfact extends Satisfact {
 
+    JwtUtil jwtUtil;
 
     public AuthSatisfact(CustomerContext context, PropertyUtil properties) {
         //jwtverify
         super(context, properties);
+
+
     }
 
     public TestBean aa()  {
+
+
         TestBean ret=new TestBean("a",5);
         return ret;
     }
