@@ -26,7 +26,6 @@ public class ReflectionHelperTest {
         char x = b.getId4();
         b.setName("calo");
 //        b.setId(5);
-        String s = String.join(",", reflectionHelper.getPresentFieldsMap(b).keySet());
         String s1 = String.join(" and ", reflectionHelper.buildPresentFields(b));
         String se = String.join(" and ", new ArrayList<String>());
         assert se.equals("");

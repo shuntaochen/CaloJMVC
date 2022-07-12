@@ -11,7 +11,7 @@ import java.util.Map;
 public class ReflectionHelper {
 
 
-    private boolean isBaseDefaultValue(Object src) {//boolean is not included,
+    private boolean isBaseDefaultValue(Object src) {
         Class<?> clazz = src.getClass();
         if (clazz.equals(Byte.class)) {
             return (byte) src == 0;
@@ -42,7 +42,7 @@ public class ReflectionHelper {
     }
 
 
-    public <TBean> HashMap<String, String> getPresentFieldsMap(TBean bean) throws InvocationTargetException, IllegalAccessException {
+    private <TBean> HashMap<String, String> getPresentFieldsMap(TBean bean) throws InvocationTargetException, IllegalAccessException {
         HashMap<String, String> ret = new HashMap<>();
         Method[] methods = bean.getClass().getDeclaredMethods();
         for (Method m : methods) {
@@ -50,7 +50,9 @@ public class ReflectionHelper {
                 String name = m.getName().substring(3).toLowerCase();
                 Object val = m.invoke(bean);
                 if (val != null && !isBaseDefaultValue(val)) {
-                    ret.put(name, "'" + val + "'");
+                    if (!val.getClass().equals(Boolean.class))
+                        ret.put(name, "'" + val + "'");
+                    else ret.put(name, val.toString());
                 }
             }
         }
@@ -72,22 +74,19 @@ public class ReflectionHelper {
 
     public <TBean> String createSelectSql(TBean bean) throws InvocationTargetException, IllegalAccessException {
         ArrayList<String> parts = buildPresentFields(bean);
-        String dest = "";
+        String sqlwhere = "";
         if (!parts.isEmpty()) {
-            String sql = String.join(" and ", parts);
-            dest = sql.equals("") ? "" : " and " + sql;
+            String conds = String.join(" and ", parts);
+            sqlwhere = conds.equals("") ? "" : " and " + conds;
         }
-        return "select " + String.join(",", getPresentFieldsMap(bean).keySet()) + " from " + bean.getClass().getSimpleName().toLowerCase() + " where 1=1 " + dest;
+        return "select " + String.join(",", getPresentFieldsMap(bean).keySet()) + " from " + bean.getClass().getSimpleName().toLowerCase() + " where 1=1 " + sqlwhere;
     }
 
     public <TBean extends Entity> String createUpdateSql(TBean bean) throws InvocationTargetException, IllegalAccessException {
-        ArrayList<String> parts = buildPresentFields(bean);
+        HashMap<String, String> m = getPresentFieldsMap(bean);
         String tableName = bean.getClass().getSimpleName().toLowerCase();
-        String dest = "";
-        if (!parts.isEmpty()) {
-            dest = String.join(" and ", parts);
-        }
-        return "update " + tableName + "(" + String.join(",", getPresentFieldsMap(bean).keySet()) + ") " + " set" + dest + " where id= " + bean.getId();
+        String dest = String.join(",", buildPresentFields(bean));
+        return "update " + tableName + " set " + dest + " where id=" + bean.getId();
     }
 
     public <TBean extends Entity> String createDeleteSql(TBean bean) throws InvocationTargetException, IllegalAccessException {
