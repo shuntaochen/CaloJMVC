@@ -13,7 +13,11 @@ public class MysqlHelper {
         conn.commit();
     }
 
-    public void connect(){
+    public void rollback() throws SQLException {
+        conn.rollback();
+    }
+
+    public void connect() {
         String dbURL = "jdbc:mysql://localhost:3306/sampledb";
         String username = "root";
         String password = "secret";
@@ -22,7 +26,7 @@ public class MysqlHelper {
 
             Connection conne = DriverManager.getConnection(dbURL, username, password);
             conne.setAutoCommit(false);//open transaction
-            conn=conne;
+            conn = conne;
             if (conn != null) {
                 System.out.println("Connected");
             }
@@ -31,7 +35,7 @@ public class MysqlHelper {
         }
     }
 
-    public void select() throws SQLException {
+    public void select() throws SQLException {//get list,
         String sql = "SELECT * FROM Users";
 
         Statement statement = conn.createStatement();
@@ -39,7 +43,7 @@ public class MysqlHelper {
 
         int count = 0;
 
-        while (result.next()){
+        while (result.next()) {
             String name = result.getString(2);
             String pass = result.getString(3);
             String fullname = result.getString("fullname");
@@ -50,7 +54,7 @@ public class MysqlHelper {
         }
     }
 
-    public void insert() throws SQLException {
+    public void insert() throws SQLException {//insert
         String sql = "INSERT INTO Users (username, password, fullname, email) VALUES (?, ?, ?, ?)";
 
         PreparedStatement statement = conn.prepareStatement(sql);
@@ -65,7 +69,7 @@ public class MysqlHelper {
         }
     }
 
-    public void update() throws SQLException {
+    public void update() throws SQLException {//update
 
         String sql = "UPDATE Users SET password=?, fullname=?, email=? WHERE username=?";
 
@@ -81,7 +85,7 @@ public class MysqlHelper {
         }
     }
 
-    public void delete() throws SQLException {
+    public void delete() throws SQLException {//delete
         String sql = "DELETE FROM Users WHERE username=?";
 
         PreparedStatement statement = conn.prepareStatement(sql);

@@ -56,6 +56,7 @@ public class JwtUtil {
     public String decode(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
+            jwt.getClaims();
             return jwt.getIssuer();
         } catch (JWTDecodeException exception) {
             //Invalid token
