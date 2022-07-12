@@ -1,4 +1,4 @@
-package org.caloch.beans;
+package org.caloch.core;
 
 public class Entity {
     public int getId() {

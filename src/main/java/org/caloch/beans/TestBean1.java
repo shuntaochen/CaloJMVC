@@ -1,5 +1,7 @@
 package org.caloch.beans;
 
+import org.caloch.core.Entity;
+
 public class TestBean1 extends Entity {
 
     public TestBean1(String name) {

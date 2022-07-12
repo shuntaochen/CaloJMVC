@@ -1,10 +1,12 @@
 package org.caloch.beans;
 
+import org.caloch.core.Entity;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public  class TestBean extends Entity{
+public  class TestBean extends Entity {
     private String name;
     private int age;
 

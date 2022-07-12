@@ -1,5 +1,7 @@
 package org.caloch.beans;
 
+import org.caloch.core.Entity;
+
 public class BaseTypeBean2 extends Entity {
 
 
