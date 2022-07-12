@@ -3,6 +3,7 @@ package org.caloch.utils;
 import org.caloch.beans.BaseTypeBean2;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
@@ -38,6 +39,13 @@ public class ReflectionSqlBuilderTest {
         b.setId(2);
         b.setName("calo");
         b.setId7(false);
+
+        Field[] fields=b.getClass().getDeclaredFields();
+        for (Field f:fields){
+            String n=f.getName();
+//            f.set(b,6);
+        }
+
         String sql = reflectionSqlBuilder.createSelectSql(b);
         String sql1 = reflectionSqlBuilder.createUpdateSql(b);
         String sql2 = reflectionSqlBuilder.createInsertSql(b);
