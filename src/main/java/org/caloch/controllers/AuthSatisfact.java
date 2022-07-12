@@ -17,17 +17,20 @@ public class AuthSatisfact extends Satisfact {
     public TestBean aa() throws Exception {
         jwtFilter();
         TestBean ret = new TestBean("a", 5);
+        ret = ReflectionSqlBuilder.inflate(ret, o -> request(o));
+        ret = ReflectionSqlBuilder.inflateNew(TestBean.class, o -> request(o));
         return ret;
     }
+
     @Anonymous
-    @Permission(name= PermissionNames.GeneralWrite)
+    @Permission(name = PermissionNames.GeneralWrite)
     public String bb() {
         String name = request("name");
         String age = request("age");
         return "Calo App Info:" + getAppInfo() + name + age;
     }
 
-    @Permission(name= PermissionNames.GeneralWrite)
+    @Permission(name = PermissionNames.GeneralWrite)
     public TestBean cc() {
         return new TestBean("calo", 20);
     }

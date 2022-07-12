@@ -11,6 +11,33 @@ import java.util.Map;
 
 public class ReflectionSqlBuilder {
 
+    public interface getReqParam {
+        public String get(String name);
+    }
+
+    public static <TBean> TBean inflate(TBean bean, getReqParam op) throws InvocationTargetException, IllegalAccessException {
+        Method[] methods = bean.getClass().getDeclaredMethods();
+        for (Method m : methods) {
+            if (m.getName().startsWith("set")) {
+                String paramName = m.getName().substring(3).toLowerCase();
+                m.invoke(bean, op.get(paramName));
+            }
+        }
+        return bean;
+    }
+
+    public static <TBean> TBean inflateNew(Class tp, getReqParam op) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
+        Method[] methods = tp.getClass().getDeclaredMethods();
+        TBean instance = (TBean) tp.getDeclaredConstructor().newInstance();
+        for (Method m : methods) {
+            if (m.getName().startsWith("set")) {
+                String paramName = m.getName().substring(3).toLowerCase();
+                m.invoke(instance, op.get(paramName));
+            }
+        }
+        return instance;
+    }
+
 
     private boolean isBasicDefaultValue(Object src) {
         Class<?> clazz = src.getClass();
@@ -51,7 +78,7 @@ public class ReflectionSqlBuilder {
                 String name = m.getName().substring(3).toLowerCase();
                 Object val = m.invoke(bean);
                 if (val != null && !isBasicDefaultValue(val)) {
-                    if (!val.getClass().equals(Boolean.class)&&!(val instanceof Number))
+                    if (!val.getClass().equals(Boolean.class) && !(val instanceof Number))
                         ret.put(name, "'" + val + "'");
                     else ret.put(name, val.toString());
 
