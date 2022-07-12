@@ -39,6 +39,9 @@ public class ReflectionSqlBuilderTest {
         BaseTypeBean2 b = new BaseTypeBean2();
         char x = b.getId4();
         b.setId(2);
+        b.setId4('c');
+        short a1=4;
+        b.setId2(a1);
         b.setName("calo");
         b.setId7(false);
 
