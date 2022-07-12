@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReflectionHelper {
+public class ReflectionSqlBuilder {
 
 
-    private boolean isBaseDefaultValue(Object src) {
+    private boolean isBasicDefaultValue(Object src) {
         Class<?> clazz = src.getClass();
         if (clazz.equals(Byte.class)) {
             return (byte) src == 0;
@@ -42,14 +42,14 @@ public class ReflectionHelper {
     }
 
 
-    private <TBean> HashMap<String, String> getPresentFieldsMap(TBean bean) throws InvocationTargetException, IllegalAccessException {
+    public  <TBean> HashMap<String, String> getPresentFieldsMap(TBean bean) throws InvocationTargetException, IllegalAccessException {
         HashMap<String, String> ret = new HashMap<>();
         Method[] methods = bean.getClass().getDeclaredMethods();
         for (Method m : methods) {
             if (m.getName().startsWith("get")) {
                 String name = m.getName().substring(3).toLowerCase();
                 Object val = m.invoke(bean);
-                if (val != null && !isBaseDefaultValue(val)) {
+                if (val != null && !isBasicDefaultValue(val)) {
                     if (!val.getClass().equals(Boolean.class))
                         ret.put(name, "'" + val + "'");
                     else ret.put(name, val.toString());
@@ -63,7 +63,7 @@ public class ReflectionHelper {
         return "(" + src + ")";
     }
 
-    public <TBean> ArrayList<String> buildPresentFields(TBean bean) throws InvocationTargetException, IllegalAccessException {
+    private  <TBean> ArrayList<String> buildPresentFields(TBean bean) throws InvocationTargetException, IllegalAccessException {
         ArrayList<String> ret = new ArrayList<>();
         HashMap<String, String> m = getPresentFieldsMap(bean);
         for (Map.Entry<String, String> e : m.entrySet()) {
