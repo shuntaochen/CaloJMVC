@@ -15,10 +15,12 @@ public class AuthSatisfact extends Satisfact {
 
 
     public TestBean aa() throws Exception {
-        jwtFilter();
+//        jwtFilter();
+        ReflectionSqlBuilder rsb = new ReflectionSqlBuilder();
         TestBean ret = new TestBean("a", 5);
-        ret = ReflectionSqlBuilder.inflate(ret, o -> request(o));
-        ret = ReflectionSqlBuilder.inflateNew(TestBean.class, o -> request(o));
+        ret = ReflectionSqlBuilder.inflate(new TestBean(), o -> request(o));
+//        ret = ReflectionSqlBuilder.inflateNew(TestBean.class, o -> request(o));
+        String sql = rsb.createInsertSql(ret);
         return ret;
     }
 

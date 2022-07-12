@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public  class TestBean{
+public  class TestBean extends Entity{
     private String name;
     private int age;
+
+    public TestBean() {
+    }
 
     public TestBean(String name, int age) {
         this.name = name;

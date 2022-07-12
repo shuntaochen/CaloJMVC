@@ -2,6 +2,7 @@ package org.caloch.utils;
 
 import org.caloch.beans.Entity;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -16,23 +17,44 @@ public class ReflectionSqlBuilder {
     }
 
     public static <TBean> TBean inflate(TBean bean, getReqParam op) throws InvocationTargetException, IllegalAccessException {
-        Method[] methods = bean.getClass().getDeclaredMethods();
-        for (Method m : methods) {
-            if (m.getName().startsWith("set")) {
-                String paramName = m.getName().substring(3).toLowerCase();
-                m.invoke(bean, op.get(paramName));
+        Field[] fields = bean.getClass().getDeclaredFields();
+        for (Field m : fields) {
+            for (Field field : fields) {
+                String result = op.get(field.getName());
+                if (result != null) {
+                    boolean flag = field.canAccess(bean);
+                    field.setAccessible(true);
+                    String ft = field.getType().getSimpleName();
+                    if ("int".equals(ft)) {
+                        field.setInt(bean, Integer.parseInt(result));
+                    } else {
+                        field.set(bean, result);
+                    }
+
+                    field.setAccessible(flag);
+                }
             }
         }
         return bean;
     }
 
     public static <TBean> TBean inflateNew(Class tp, getReqParam op) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
-        Method[] methods = tp.getClass().getDeclaredMethods();
+        Field[] fields = tp.getDeclaredFields();
         TBean instance = (TBean) tp.getDeclaredConstructor().newInstance();
-        for (Method m : methods) {
-            if (m.getName().startsWith("set")) {
-                String paramName = m.getName().substring(3).toLowerCase();
-                m.invoke(instance, op.get(paramName));
+        for (Field m : fields) {
+            for (Field field : fields) {
+                String result = op.get(field.getName());
+                if (result != null) {
+                    boolean flag = field.canAccess(instance);
+                    field.setAccessible(true);
+                    String ft = field.getType().getSimpleName();
+                    if ("int".equals(ft)) {
+                        field.setInt(instance, Integer.parseInt(result));
+                    } else {
+                        field.set(instance, result);
+                    }
+                    field.setAccessible(flag);
+                }
             }
         }
         return instance;

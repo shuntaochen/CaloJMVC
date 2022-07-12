@@ -1,6 +1,6 @@
 package org.caloch.beans;
 
-public class TestBean1 {
+public class TestBean1 extends Entity {
 
     public TestBean1(String name) {
         this.name = name;
