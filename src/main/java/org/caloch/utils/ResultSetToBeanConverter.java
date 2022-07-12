@@ -1,5 +1,6 @@
 package org.caloch.utils;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
@@ -12,8 +13,8 @@ public class ResultSetToBeanConverter {
     private ResultSetToBeanConverter() {
     }
 
-    public static <T> List getBeans(ResultSet resultSet, Class className) {
-        List list = new ArrayList();
+    public static <T> ArrayList<T> getBeans(ResultSet resultSet, Class className) {
+        ArrayList<T> list = new ArrayList();
         Field fields[] = className.getDeclaredFields();
         try {
             while (resultSet.next()) {

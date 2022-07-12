@@ -5,6 +5,8 @@ import org.caloch.beans.TestBean;
 import org.caloch.utils.*;
 import org.caloch.core.*;
 
+import java.util.ArrayList;
+
 
 //@Permission(name= PermissionNames.GeneralRead)
 public class AuthSatisfact extends Satisfact {
@@ -21,6 +23,7 @@ public class AuthSatisfact extends Satisfact {
         ret = ReflectionSqlBuilder.inflate(new TestBean(), o -> request(o));
 //        ret = ReflectionSqlBuilder.inflateNew(TestBean.class, o -> request(o));
         String sql = rsb.createInsertSql(ret);
+        ArrayList<TestBean> r= new MysqlObjectHelper(rsb).select(ret);
         return ret;
     }
 

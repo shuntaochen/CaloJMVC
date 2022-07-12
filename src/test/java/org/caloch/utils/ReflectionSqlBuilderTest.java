@@ -55,10 +55,10 @@ public class ReflectionSqlBuilderTest {
         String sql1 = reflectionSqlBuilder.createUpdateSql(b);
         String sql2 = reflectionSqlBuilder.createInsertSql(b);
         String sql3 = reflectionSqlBuilder.createDeleteSql(b);
-        String sql4 = reflectionSqlBuilder.createSelectStatement(b);
-        String sql5 = reflectionSqlBuilder.createInsertStatement(b);
-        String sql6 = reflectionSqlBuilder.createUpdateStatement(b);
-        String sql7 = reflectionSqlBuilder.createDeleteStatement(b);
+//        String sql4 = reflectionSqlBuilder.createSelectStatement(b);
+//        String sql5 = reflectionSqlBuilder.createInsertStatement(b);
+//        String sql6 = reflectionSqlBuilder.createUpdateStatement(b);
+//        String sql7 = reflectionSqlBuilder.createDeleteStatement(b);
 //        assert sql4.equals("select name,id,id7 from basetypebean2 where 1=1  and name=? and id=? and id7=?");
 //        assert sql.equals("select name,id7 from basetypebean2 where 1=1  and name='calo' and id7=
         assert true;

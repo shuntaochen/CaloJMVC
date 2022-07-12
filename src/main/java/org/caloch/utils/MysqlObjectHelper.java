@@ -1,11 +1,23 @@
 package org.caloch.utils;
 
 import com.mysql.jdbc.ResultSet;
+import org.caloch.core.Entity;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MysqlObjectHelper {
 
+
+    private ReflectionSqlBuilder sqlBuilder;
+
+    public MysqlObjectHelper(ReflectionSqlBuilder sqlBuilder) {
+        this.sqlBuilder = sqlBuilder;
+    }
 
     private Connection conn;
 
@@ -21,7 +33,6 @@ public class MysqlObjectHelper {
         String dbURL = "jdbc:mysql://localhost:3306/sampledb";
         String username = "root";
         String password = "secret";
-
         try {
 
             Connection conne = DriverManager.getConnection(dbURL, username, password);
@@ -35,23 +46,11 @@ public class MysqlObjectHelper {
         }
     }
 
-    public void select() throws SQLException {//get list,
-        String sql = "SELECT * FROM Users";
-
+    public <T extends Entity> ArrayList<T> select(T bean) throws SQLException, InvocationTargetException, IllegalAccessException {
+        String sql = sqlBuilder.createInsertSql(bean);
         Statement statement = conn.createStatement();
         ResultSet result = (ResultSet) statement.executeQuery(sql);
-
-        int count = 0;
-
-        while (result.next()) {
-            String name = result.getString(2);
-            String pass = result.getString(3);
-            String fullname = result.getString("fullname");
-            String email = result.getString("email");
-
-            String output = "User #%d: %s - %s - %s - %s";
-            System.out.println(String.format(output, ++count, name, pass, fullname, email));
-        }
+        return ResultSetToBeanConverter.getBeans(result, bean.getClass());
     }
 
     public void insert() throws SQLException {//insert
