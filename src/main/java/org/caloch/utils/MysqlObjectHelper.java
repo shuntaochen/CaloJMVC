@@ -32,11 +32,11 @@ public class MysqlObjectHelper {
     public void connect() {
         String dbURL = "jdbc:mysql://localhost:3306/sampledb";
         String username = "root";
-        String password = "secret";
+        String password = "cst";
         try {
 
             Connection conne = DriverManager.getConnection(dbURL, username, password);
-            conne.setAutoCommit(false);//open transaction
+            conne.setAutoCommit(false);
             conn = conne;
             if (conn != null) {
                 System.out.println("Connected");
@@ -46,7 +46,7 @@ public class MysqlObjectHelper {
         }
     }
 
-    public <T extends Entity> ArrayList<T> select(T bean) throws SQLException, InvocationTargetException, IllegalAccessException {
+    public <T extends Entity> ArrayList<T> select(T bean) throws SQLException, IllegalAccessException {
         String sql = sqlBuilder.createInsertSql(bean);
         Statement statement = conn.createStatement();
         ResultSet result = (ResultSet) statement.executeQuery(sql);
@@ -57,6 +57,7 @@ public class MysqlObjectHelper {
         String sql = "INSERT INTO Users (username, password, fullname, email) VALUES (?, ?, ?, ?)";
 
         PreparedStatement statement = conn.prepareStatement(sql);
+        //get the hashmap, create a counter, couter+1, set to bean.getid(), get the type of fields by name,
         statement.setString(1, "bill");
         statement.setString(2, "secretpass");
         statement.setString(3, "Bill Gates");

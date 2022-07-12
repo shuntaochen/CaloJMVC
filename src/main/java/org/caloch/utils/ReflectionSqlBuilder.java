@@ -88,6 +88,25 @@ public class ReflectionSqlBuilder {
     }
 
 
+    public <TBean> HashMap<String, Map.Entry<String, Object>> getPresentFieldValuesWithoutId(TBean bean) throws IllegalAccessException {
+        HashMap<String, Map.Entry<String, Object>> ret = new HashMap<>();
+        Field[] fields = bean.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            String fieldName = field.getName().toLowerCase();
+            boolean flag = field.canAccess(bean);
+            field.setAccessible(true);
+            Object val = field.get(bean);
+            field.setAccessible(flag);
+            if (val != null && !isBasicDefaultValue(val)) {
+                if (!fieldName.equals("id")) {
+                    AbstractMap.SimpleEntry<String, Object> entry = new AbstractMap.SimpleEntry(field.getType(), val);
+                    ret.put(fieldName, entry);
+                }
+            }
+        }
+        return ret;
+    }
+
     public <TBean> HashMap<String, Object> getPresentFieldValuesMapWithoutId(TBean bean) throws IllegalAccessException {
         HashMap<String, Object> ret = new HashMap<>();
         Field[] fields = bean.getClass().getDeclaredFields();
