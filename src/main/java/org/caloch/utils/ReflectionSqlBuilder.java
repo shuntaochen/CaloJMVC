@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ReflectionSqlBuilder {
@@ -42,7 +43,7 @@ public class ReflectionSqlBuilder {
     }
 
 
-    public  <TBean> HashMap<String, String> getPresentFieldsMap(TBean bean) throws InvocationTargetException, IllegalAccessException {
+    public <TBean> HashMap<String, String> getPresentFieldsMap(TBean bean) throws InvocationTargetException, IllegalAccessException {
         HashMap<String, String> ret = new HashMap<>();
         Method[] methods = bean.getClass().getDeclaredMethods();
         for (Method m : methods) {
@@ -63,11 +64,20 @@ public class ReflectionSqlBuilder {
         return "(" + src + ")";
     }
 
-    private  <TBean> ArrayList<String> buildPresentFields(TBean bean) throws InvocationTargetException, IllegalAccessException {
+    private <TBean> ArrayList<String> buildPresentFields(TBean bean) throws InvocationTargetException, IllegalAccessException {
         ArrayList<String> ret = new ArrayList<>();
         HashMap<String, String> m = getPresentFieldsMap(bean);
         for (Map.Entry<String, String> e : m.entrySet()) {
             ret.add(e.getKey() + "=" + e.getValue());
+        }
+        return ret;
+    }
+
+    private <TBean> ArrayList<String> buildPresentFieldsTemplate(TBean bean) throws InvocationTargetException, IllegalAccessException {
+        ArrayList<String> ret = new ArrayList<>();
+        HashMap<String, String> m = getPresentFieldsMap(bean);
+        for (Map.Entry<String, String> e : m.entrySet()) {
+            ret.add(e.getKey() + "=?");
         }
         return ret;
     }
@@ -101,5 +111,38 @@ public class ReflectionSqlBuilder {
         return "insert into " + tableName + "(" + String.join(",", m.keySet()) + ") " + "values" + wrap(dest);
     }
 
+    public <TBean extends Entity> String createSelectStatement(TBean bean) throws InvocationTargetException, IllegalAccessException {
+        ArrayList<String> parts = buildPresentFieldsTemplate(bean);
+        String sqlwhere = "";
+        if (!parts.isEmpty()) {
+            String conds = String.join(" and ", parts);
+            sqlwhere = conds.equals("") ? "" : " and " + conds;
+        }
+        return "select " + String.join(",", getPresentFieldsMap(bean).keySet()) + " from " + bean.getClass().getSimpleName().toLowerCase() + " where 1=1 " + sqlwhere;
+    }
+
+    public <TBean extends Entity> String createUpdateStatement(TBean bean) throws InvocationTargetException, IllegalAccessException {
+        HashMap<String, String> m = getPresentFieldsMap(bean);
+        String tableName = bean.getClass().getSimpleName().toLowerCase();
+        String dest = String.join(",", buildPresentFieldsTemplate(bean));
+        return "update " + tableName + " set " + dest + " where id=?";
+    }
+
+    public <TBean extends Entity> String createDeleteStatement(TBean bean) throws InvocationTargetException, IllegalAccessException {
+        String tableName = bean.getClass().getSimpleName().toLowerCase();
+        return "delete from " + tableName + " where id= ?";
+    }
+
+
+    public <TBean extends Entity> String createInsertStatement(TBean bean) throws InvocationTargetException, IllegalAccessException {
+        HashMap<String, String> m = getPresentFieldsMap(bean);
+        List<String> vs = new ArrayList<>();
+        for (int i = 0; i < m.values().size(); i++) {
+            vs.add("?");
+        }
+        String dest = String.join(",", vs);
+        String tableName = bean.getClass().getSimpleName().toLowerCase();
+        return "insert into " + tableName + "(" + String.join(",", m.keySet()) + ") " + "values" + wrap(dest);
+    }
 
 }

@@ -3,6 +3,7 @@ package org.caloch.utils;
 import org.caloch.beans.BaseTypeBean2;
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -18,12 +19,13 @@ public class ReflectionSqlBuilderTest {
     }
 
     @org.junit.Test
-    public void getPresentFields() throws InvocationTargetException, IllegalAccessException {
+    public void getPresentFields() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         assert Integer.class.equals(((Object) 5).getClass());
         assert Character.class.equals(((Object) 'c').getClass());
 
         ReflectionSqlBuilder reflectionSqlBuilder = new ReflectionSqlBuilder();
         BaseTypeBean2 b = new BaseTypeBean2();
+        Constructor t=b.getClass().getDeclaredConstructor();
         char x = b.getId4();
         b.setName("calo");
 //        b.setId(5);
@@ -50,6 +52,11 @@ public class ReflectionSqlBuilderTest {
         String sql1 = reflectionSqlBuilder.createUpdateSql(b);
         String sql2 = reflectionSqlBuilder.createInsertSql(b);
         String sql3 = reflectionSqlBuilder.createDeleteSql(b);
+        String sql4 = reflectionSqlBuilder.createSelectStatement(b);
+        String sql5 = reflectionSqlBuilder.createInsertStatement(b);
+        String sql6 = reflectionSqlBuilder.createUpdateStatement(b);
+        String sql7 = reflectionSqlBuilder.createDeleteStatement(b);
+        assert sql4.equals("select name,id,id7 from basetypebean2 where 1=1  and name=? and id=? and id7=?");
         assert sql.equals("select name,id7 from basetypebean2 where 1=1  and name='calo' and id7='false'");
     }
 }
