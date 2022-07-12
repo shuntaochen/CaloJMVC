@@ -51,9 +51,10 @@ public class ReflectionSqlBuilder {
                 String name = m.getName().substring(3).toLowerCase();
                 Object val = m.invoke(bean);
                 if (val != null && !isBasicDefaultValue(val)) {
-                    if (!val.getClass().equals(Boolean.class))
+                    if (!val.getClass().equals(Boolean.class) && !(val instanceof Number))
                         ret.put(name, "'" + val + "'");
                     else ret.put(name, val.toString());
+
                 }
             }
         }
