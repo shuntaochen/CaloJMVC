@@ -52,7 +52,7 @@ public class BeanDbParser<T extends Entity> {
             }
             field.setAccessible(flag);
             String type = field.getType().getSimpleName();
-            if (val != null && !TypeChecker.isBasicDefaultValue(val)) {
+            if (val != null) {//&& !TypeChecker.isBasicDefaultValue(val), do not skip default values, only skip id,
                 if (!fieldName.equalsIgnoreCase("id")) {
                     AbstractMap.SimpleEntry<String, Object> entry = new AbstractMap.SimpleEntry(type, val);
                     ret.put(fieldName, entry);
