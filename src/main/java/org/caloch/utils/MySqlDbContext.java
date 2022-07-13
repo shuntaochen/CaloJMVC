@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MysqlObjectHelper {
+public class MySqlDbContext {
 
 
-    public MysqlObjectHelper() {
+    public MySqlDbContext() {
 
     }
 
@@ -41,12 +41,20 @@ public class MysqlObjectHelper {
         }
     }
 
-    public <T extends Entity> ArrayList<T> select(T bean) throws SQLException, IllegalAccessException {
+
+    public <T extends Entity> T single(T bean) throws SQLException{
+        return select(bean).get(0);
+    }
+    public <T extends Entity> ArrayList<T> select(T bean) throws SQLException {
         BeanDbParser<T> sqlParser = new BeanDbParser<>(bean);
         sqlParser.parse();
         String sql = sqlParser.buildSelectSqlTemplate();
         PreparedStatement statement = conn.prepareStatement(sql);
-        preparePreparedStatement(statement, sqlParser.beanInfo);
+        if (bean.getId() != 0)
+            statement.setInt(1, bean.getId());
+        else {
+            preparePreparedStatement(statement, sqlParser.beanInfo);
+        }
         ResultSet result = (ResultSet) statement.executeQuery(sql);
         return ResultSetToBeanConverter.getBeans(result, bean.getClass());
     }
@@ -64,24 +72,20 @@ public class MysqlObjectHelper {
         return bean;
     }
 
-    public <T extends Entity> void update(T bean) throws SQLException {//update
-
+    public <T extends Entity> void update(T bean) throws SQLException {
+        if (bean.getId() == 0) throw new IllegalArgumentException("id for update mandatory.");
         BeanDbParser parser = new BeanDbParser(bean);
         parser.parse();
-        String sql = parser.buildDeleteSqlTemplate();
+        String sql = parser.buildUpdateSqlTemplate();
         PreparedStatement statement = conn.prepareStatement(sql);
-        if (bean.getId() != 0)
-            statement.setInt(1, bean.getId());
-        else {
-            preparePreparedStatement(statement, parser.beanInfo);
-        }
+        statement.setInt(1, bean.getId());
         int rowsUpdated = statement.executeUpdate();
         if (rowsUpdated > 0) {
             System.out.println("An existing bean was updated successfully!");
         }
     }
 
-    public <T extends Entity> int delete(T bean) throws SQLException {//delete
+    public <T extends Entity> int delete(T bean) throws SQLException {
         BeanDbParser parser = new BeanDbParser(bean);
         parser.parse();
         String sql = parser.buildDeleteSqlTemplate();

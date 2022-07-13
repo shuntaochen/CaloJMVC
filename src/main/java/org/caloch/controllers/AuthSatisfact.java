@@ -1,6 +1,5 @@
 package org.caloch.controllers;
 
-import org.caloch.beans.*;
 import org.caloch.beans.TestBean;
 import org.caloch.utils.*;
 import org.caloch.core.*;
@@ -23,7 +22,7 @@ public class AuthSatisfact extends Satisfact {
         ret = ReflectionSqlBuilder.inflate(new TestBean(), o -> request(o));
 //        ret = ReflectionSqlBuilder.inflateNew(TestBean.class, o -> request(o));
         String sql = rsb.createInsertSql(ret);
-        ArrayList<TestBean> r= new MysqlObjectHelper().select(ret);
+        ArrayList<TestBean> r= new MySqlDbContext().select(ret);
         return ret;
     }
 
