@@ -1,12 +1,17 @@
 package org.caloch.beans;
 
+import org.caloch.core.Column;
 import org.caloch.core.Entity;
+import org.caloch.core.Table;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Table(name="tb1")
 public  class TestBean extends Entity {
+
+    @Column(name = "")
     private String name;
     private int age;
 

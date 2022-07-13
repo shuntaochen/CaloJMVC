@@ -1,11 +1,14 @@
 package org.caloch.utils;
 
 import org.caloch.beans.BaseTypeBean2;
+import org.caloch.beans.Roles;
 import org.junit.Test;
 
+import javax.management.relation.Role;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,5 +80,27 @@ public class ReflectionSqlBuilderTest {
         String sql3 = beanDbParser.buildUpdateSqlTemplate();
 
         assert true;
+    }
+
+    @Test
+    public void testDb() throws SQLException {
+        MySqlDbContext ctx=new MySqlDbContext();
+        ctx.connect();
+        Roles r=new Roles();
+        r.setName("chen");
+        ctx.insert(r);
+        ctx.commit();
+    }
+
+    @Test
+    public void updateTest() throws SQLException {
+        MySqlDbContext ctx=new MySqlDbContext();
+        ctx.connect();
+        Roles r=new Roles();
+        r.setId(1);
+//        r.setName("chen.tao");
+        r=ctx.single(r);
+
+        ctx.commit();
     }
 }

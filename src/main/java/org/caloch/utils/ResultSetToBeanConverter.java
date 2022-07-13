@@ -15,7 +15,7 @@ public class ResultSetToBeanConverter {
 
     public static <T> ArrayList<T> getBeans(ResultSet resultSet, Class className) {
         ArrayList<T> list = new ArrayList();
-        Field fields[] = className.getDeclaredFields();
+        Field fields[] = className.getFields();
         try {
             while (resultSet.next()) {
                 T instance = (T) className.getDeclaredConstructor().newInstance();
@@ -46,7 +46,7 @@ public class ResultSetToBeanConverter {
         T instance = null;
         try {
             instance = (T) className.getDeclaredConstructor().newInstance();
-            Field fields[] = className.getDeclaredFields();
+            Field fields[] = className.getFields();
             for (Field field : fields) {
                 Object result = resultSet.getObject(field.getName());
                 boolean flag = field.canAccess(instance);

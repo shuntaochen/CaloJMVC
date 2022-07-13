@@ -1,12 +1,14 @@
 package org.caloch.utils;
 
-import com.mysql.jdbc.ResultSet;
+import java.sql.ResultSet;
 import org.caloch.core.Entity;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.mysql.cj.jdbc.Driver;
 
 public class MySqlDbContext {
 
@@ -26,10 +28,11 @@ public class MySqlDbContext {
     }
 
     public void connect() {
-        String dbURL = "jdbc:mysql://localhost:3306/sampledb";
+        String dbURL = "jdbc:mysql://localhost:3306/mycms?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
         String username = "root";
         String password = "cst";
         try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conne = DriverManager.getConnection(dbURL, username, password);
             conne.setAutoCommit(false);
             conn = conne;
@@ -38,13 +41,16 @@ public class MySqlDbContext {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
 
-    public <T extends Entity> T single(T bean) throws SQLException{
+    public <T extends Entity> T single(T bean) throws SQLException {
         return select(bean).get(0);
     }
+
     public <T extends Entity> ArrayList<T> select(T bean) throws SQLException {
         BeanDbParser<T> sqlParser = new BeanDbParser<>(bean);
         sqlParser.parse();
@@ -55,7 +61,7 @@ public class MySqlDbContext {
         else {
             preparePreparedStatement(statement, sqlParser.beanInfo);
         }
-        ResultSet result = (ResultSet) statement.executeQuery(sql);
+        ResultSet result = statement.executeQuery();
         return ResultSetToBeanConverter.getBeans(result, bean.getClass());
     }
 
@@ -78,7 +84,8 @@ public class MySqlDbContext {
         parser.parse();
         String sql = parser.buildUpdateSqlTemplate();
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setInt(1, bean.getId());
+        int index = preparePreparedStatement(statement, parser.beanInfo);
+        statement.setInt(index, bean.getId());
         int rowsUpdated = statement.executeUpdate();
         if (rowsUpdated > 0) {
             System.out.println("An existing bean was updated successfully!");
@@ -102,9 +109,9 @@ public class MySqlDbContext {
         return rowsDeleted;
     }
 
-    private void preparePreparedStatement(PreparedStatement statement, HashMap<String, Map.Entry<String, Object>> fieldInfoNoId) throws SQLException {
+    private int preparePreparedStatement(PreparedStatement statement, HashMap<String, Map.Entry<String, Object>> fieldInfoNoId) throws SQLException {
+        int index = 1;
         for (Map.Entry<String, Map.Entry<String, Object>> it : fieldInfoNoId.entrySet()) {
-            int index = 1;
             Map.Entry<String, Object> valo = it.getValue();
             String type = valo.getKey();
             Object val = valo.getValue();
@@ -125,6 +132,7 @@ public class MySqlDbContext {
             }
             index++;
         }
+        return index;
     }
 
 }

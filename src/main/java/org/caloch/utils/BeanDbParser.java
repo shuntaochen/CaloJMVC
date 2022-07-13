@@ -1,6 +1,8 @@
 package org.caloch.utils;
 
+import org.caloch.core.Column;
 import org.caloch.core.Entity;
+import org.caloch.core.Table;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -8,18 +10,38 @@ import java.util.*;
 public class BeanDbParser<T extends Entity> {
 
 
+    T bean;
+
     public BeanDbParser(T bean) {
+        this.bean = bean;
         this.beanInfo = getPresentFieldsInfoWithoutId(bean);
-        this.tableName = bean.getClass().getSimpleName();
+        this.tableName = mapTable();
         if (bean.getId() != 0)
             id = bean.getId();
+    }
+
+
+    private String mapTable() {
+        Table table = bean.getClass().getDeclaredAnnotation(Table.class);
+        if (table != null) {
+            return table.name();
+        }
+        return bean.getClass().getSimpleName();
+    }
+
+    private String mapColumn(Field field) {
+        Column col = field.getDeclaredAnnotation(Column.class);
+        if (col != null) {
+            return col.name();
+        }
+        return field.getName();
     }
 
     public <TBean> HashMap<String, Map.Entry<String, Object>> getPresentFieldsInfoWithoutId(TBean bean) {
         HashMap<String, Map.Entry<String, Object>> ret = new HashMap<>();
         Field[] fields = bean.getClass().getDeclaredFields();
         for (Field field : fields) {
-            String fieldName = field.getName().toLowerCase();
+            String fieldName = mapColumn(field);
             boolean flag = field.canAccess(bean);
             field.setAccessible(true);
             Object val;
@@ -31,7 +53,7 @@ public class BeanDbParser<T extends Entity> {
             field.setAccessible(flag);
             String type = field.getType().getSimpleName();
             if (val != null && !TypeChecker.isBasicDefaultValue(val)) {
-                if (!fieldName.equals("id")) {
+                if (!fieldName.equalsIgnoreCase("id")) {
                     AbstractMap.SimpleEntry<String, Object> entry = new AbstractMap.SimpleEntry(type, val);
                     ret.put(fieldName, entry);
                 }
@@ -91,15 +113,15 @@ public class BeanDbParser<T extends Entity> {
     }
 
     public String buildSelectSqlTemplate() {
-        if (id != 0) return "select * from " + tableName + " where id=?";//select * from tb where id=?
+        if (id != 0) return "select * from " + tableName + "  WHERE Id=?";//select * from tb where id=?
         return "select * from " + tableName + whereStringTemplate;//select * from tb where a=? and b=?
     }
 
     public String buildUpdateSqlTemplate() {
         if (fieldNamesString.equals("")) throw new IllegalArgumentException("Bean has no fields to update");
-        String updateFields = wrapParethesis(fieldNamesString + ",id");//a,b,c,id
+        String updateFields = wrapParethesis(fieldNamesString + ",Id");//a,b,c,id
         String setEqualStrings = equalsStringComma.equals("") ? "" : (" set " + equalsStringCommaTemplate);//""/set a=?, b=?
-        return "update " + tableName + updateFields + setEqualStrings + " where id=?";//update tb(a,b,c) set (a=2,b=3) where id=?
+        return "update " + tableName + setEqualStrings + " where Id=?";//update tb(a,b,c) set (a=?,b=?) where id=?
     }
 
     public String buildInsertSqlTemplate() {
@@ -108,7 +130,7 @@ public class BeanDbParser<T extends Entity> {
     }
 
     public String buildDeleteSqlTemplate() {
-        if (id != 0) return "delete from " + tableName + " where id=?";//delete from tb where id=?
+        if (id != 0) return "delete from " + tableName + " where Id=?";//delete from tb where id=?
         return "delete from " + tableName + whereStringTemplate;//delete from tb where a=? and b=?
     }
 

@@ -1,9 +1,11 @@
 package org.caloch.controllers;
 
+import org.caloch.beans.Roles;
 import org.caloch.beans.TestBean;
 import org.caloch.utils.*;
 import org.caloch.core.*;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -39,7 +41,13 @@ public class AuthSatisfact extends Satisfact {
         return new TestBean("calo", 20);
     }
 
-    public TestBean dd() {
+    public TestBean dd() throws SQLException {
+        MySqlDbContext ctx=new MySqlDbContext();
+        ctx.connect();
+        Roles r=new Roles();
+        r.setName("chen");
+        ctx.insert(r);
+        ctx.commit();
         return new TestBean("dd", 20);
     }
 
