@@ -15,5 +15,5 @@ public class Roles extends Entity {
     }
 
     @Column(name = "Name")
-    String name;
+    public String name;
 }

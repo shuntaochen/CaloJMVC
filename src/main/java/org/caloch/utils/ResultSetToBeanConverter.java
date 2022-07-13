@@ -1,24 +1,22 @@
 package org.caloch.utils;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class ResultSetToBeanConverter {
     private ResultSetToBeanConverter() {
     }
 
-    public static <T> ArrayList<T> getBeans(ResultSet resultSet, Class className) {
+    public static <T> ArrayList<T> getBeans(ResultSet resultSet, Class clazz) {
         ArrayList<T> list = new ArrayList();
-        Field fields[] = className.getFields();
+        Field fields[] = clazz.getFields();
         try {
             while (resultSet.next()) {
-                T instance = (T) className.getDeclaredConstructor().newInstance();
+                T instance = (T) clazz.getDeclaredConstructor().newInstance();
                 for (Field field : fields) {
                     Object result = resultSet.getObject(field.getName());
                     boolean flag = field.canAccess(instance);
@@ -42,11 +40,11 @@ public class ResultSetToBeanConverter {
         return list;
     }
 
-    public static <T> T getBean(ResultSet resultSet, Class className) {
+    public static <T> T getBean(ResultSet resultSet, Class clazz) {
         T instance = null;
         try {
-            instance = (T) className.getDeclaredConstructor().newInstance();
-            Field fields[] = className.getFields();
+            instance = (T) clazz.getDeclaredConstructor().newInstance();
+            Field fields[] = clazz.getFields();
             for (Field field : fields) {
                 Object result = resultSet.getObject(field.getName());
                 boolean flag = field.canAccess(instance);
