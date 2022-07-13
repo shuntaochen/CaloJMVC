@@ -1,6 +1,7 @@
 package org.caloch.utils;
 
 import java.sql.ResultSet;
+
 import org.caloch.core.Entity;
 
 import java.sql.*;
@@ -69,9 +70,13 @@ public class MySqlDbContext {
         BeanDbParser<T> sqlParser = new BeanDbParser<>(bean);
         sqlParser.parse();
         String sql = sqlParser.buildInsertSqlTemplate();
-        PreparedStatement statement = conn.prepareStatement(sql);
+        PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         preparePreparedStatement(statement, sqlParser.beanInfo);
         int rowsInserted = statement.executeUpdate();
+        ResultSet rs = statement.getGeneratedKeys();
+        if (rs != null && rs.next()) {
+            bean.setId(rs.getInt(1));
+        }
         if (rowsInserted > 0) {
             System.out.println("A new bean was inserted successfully!");
         }

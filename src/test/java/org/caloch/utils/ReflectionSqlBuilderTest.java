@@ -98,8 +98,9 @@ public class ReflectionSqlBuilderTest {
         ctx.connect();
         Roles r=new Roles();
         r.setId(1);
-//        r.setName("chen.tao");
+        r.setName("chen.tao");
         r=ctx.single(r);
+        ctx.delete(r);
 
         ctx.commit();
     }
