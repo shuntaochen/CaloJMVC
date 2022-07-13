@@ -12,8 +12,8 @@ import java.util.List;
 public  class TestBean extends Entity {
 
     @Column(name = "")
-    private String name;
-    private int age;
+    public String name;
+    public int age;
 
     public TestBean() {
     }

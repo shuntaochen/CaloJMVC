@@ -84,22 +84,22 @@ public class ReflectionSqlBuilderTest {
 
     @Test
     public void testDb() throws SQLException {
-        MySqlDbContext ctx=new MySqlDbContext();
+        MySqlDbContext ctx = new MySqlDbContext();
         ctx.connect();
-        Roles r=new Roles();
+        Roles r = new Roles();
         r.setName("chen");
-        ctx.insert(r);
+        r = ctx.insert(r);
         ctx.commit();
     }
 
     @Test
     public void updateTest() throws SQLException {
-        MySqlDbContext ctx=new MySqlDbContext();
+        MySqlDbContext ctx = new MySqlDbContext();
         ctx.connect();
-        Roles r=new Roles();
+        Roles r = new Roles();
         r.setId(1);
         r.setName("chen.tao");
-        r=ctx.single(r);
+        r = ctx.single(r);
         ctx.delete(r);
 
         ctx.commit();

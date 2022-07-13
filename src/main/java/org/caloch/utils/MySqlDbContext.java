@@ -83,7 +83,7 @@ public class MySqlDbContext {
         return bean;
     }
 
-    public <T extends Entity> void update(T bean) throws SQLException {
+    public <T extends Entity> int update(T bean) throws SQLException {
         if (bean.getId() == 0) throw new IllegalArgumentException("id for update mandatory.");
         BeanDbParser parser = new BeanDbParser(bean);
         parser.parse();
@@ -95,6 +95,7 @@ public class MySqlDbContext {
         if (rowsUpdated > 0) {
             System.out.println("An existing bean was updated successfully!");
         }
+        return rowsUpdated;
     }
 
     public <T extends Entity> int delete(T bean) throws SQLException {

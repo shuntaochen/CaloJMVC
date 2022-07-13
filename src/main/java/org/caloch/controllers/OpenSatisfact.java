@@ -34,7 +34,9 @@ public class OpenSatisfact extends Satisfact {
     }
 
     public TestBean cc()  {
-        return new TestBean("calo",20);
+        TestBean t=new TestBean("calo",20);
+        t.setId(22);
+        return t;
     }
 
     public void upload() throws Exception {
