@@ -23,7 +23,7 @@ public class AuthSatisfact extends Satisfact {
         ret = ReflectionSqlBuilder.inflate(new TestBean(), o -> request(o));
 //        ret = ReflectionSqlBuilder.inflateNew(TestBean.class, o -> request(o));
         String sql = rsb.createInsertSql(ret);
-        ArrayList<TestBean> r= new MysqlObjectHelper(rsb).select(ret);
+        ArrayList<TestBean> r= new MysqlObjectHelper().select(ret);
         return ret;
     }
 

@@ -7,6 +7,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ReflectionSqlBuilderTest {
 
@@ -25,7 +27,7 @@ public class ReflectionSqlBuilderTest {
 
         ReflectionSqlBuilder reflectionSqlBuilder = new ReflectionSqlBuilder();
         BaseTypeBean2 b = new BaseTypeBean2();
-        Constructor t=b.getClass().getDeclaredConstructor();
+        Constructor t = b.getClass().getDeclaredConstructor();
         char x = b.getId4();
         b.setName("calo");
 //        b.setId(5);
@@ -35,32 +37,45 @@ public class ReflectionSqlBuilderTest {
 
     @Test
     public void UnitedTest() throws InvocationTargetException, IllegalAccessException {
-        ReflectionSqlBuilder reflectionSqlBuilder = new ReflectionSqlBuilder();
         BaseTypeBean2 b = new BaseTypeBean2();
+        b.setId5(5.3f);
+
+        BeanDbParser beanDbParser = new BeanDbParser(b);
+        beanDbParser.parse();
+
+        String tps = "";
+        Field[] fields = b.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            String type = field.getType().getSimpleName();
+            String t = type;
+            tps += type;
+        }
+        assert tps.equals("Stringintbyteshortlongcharfloatdoublebooleanbyte");
+
+        HashMap<String, Map.Entry<String, Object>> h = beanDbParser.getPresentFieldsInfoWithoutId(b);
+        for (Map.Entry<String, Map.Entry<String, Object>> it : h.entrySet()) {
+            String name = it.getKey();
+            Map.Entry<String, Object> valo = it.getValue();
+            String type = valo.getKey();
+            Object val = valo.getValue();
+            if (type.equals("float")) {
+                float f = (float) val;
+            }
+        }
+
+
         char x = b.getId4();
         b.setId(2);
         b.setId4('c');
-        short a1=4;
+        short a1 = 4;
         b.setId2(a1);
         b.setName("calo");
         b.setId7(false);
+        String sql = beanDbParser.buildSelectSqlTemplate();
+        String sql1 = beanDbParser.buildInsertSqlTemplate();
+        String sql2 = beanDbParser.buildDeleteSqlTemplate();
+        String sql3 = beanDbParser.buildUpdateSqlTemplate();
 
-        Field[] fields=b.getClass().getDeclaredFields();
-        for (Field f:fields){
-            String n=f.getName();
-//            f.set(b,6);
-        }
-
-        String sql = reflectionSqlBuilder.createSelectSql(b);
-        String sql1 = reflectionSqlBuilder.createUpdateSql(b);
-        String sql2 = reflectionSqlBuilder.createInsertSql(b);
-        String sql3 = reflectionSqlBuilder.createDeleteSql(b);
-//        String sql4 = reflectionSqlBuilder.createSelectStatement(b);
-//        String sql5 = reflectionSqlBuilder.createInsertStatement(b);
-//        String sql6 = reflectionSqlBuilder.createUpdateStatement(b);
-//        String sql7 = reflectionSqlBuilder.createDeleteStatement(b);
-//        assert sql4.equals("select name,id,id7 from basetypebean2 where 1=1  and name=? and id=? and id7=?");
-//        assert sql.equals("select name,id7 from basetypebean2 where 1=1  and name='calo' and id7=
         assert true;
     }
 }

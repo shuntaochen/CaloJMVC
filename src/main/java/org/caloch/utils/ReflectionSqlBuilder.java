@@ -8,6 +8,7 @@ import java.util.*;
 
 public class ReflectionSqlBuilder {
 
+
     public interface getReqParam {
         public String get(String name);
     }
@@ -57,57 +58,7 @@ public class ReflectionSqlBuilder {
     }
 
 
-    private boolean isBasicDefaultValue(Object src) {
-        Class<?> clazz = src.getClass();
-        if (clazz.equals(Byte.class)) {
-            return (byte) src == 0;
-        }
-        if (clazz.equals(Integer.class)) {
-            return (int) src == 0;
-        }
-        if (clazz.equals(Short.class)) {
-            return (short) src == 0;
-        }
-        if (clazz.equals(Long.class)) {
-            return (long) src == 0;
-        }
-        if (clazz.equals(Character.class)) {
-            return (char) src == '\u0000';
-        }
-        if (clazz.equals(Float.class)) {
-            return (float) src == 0.0;
-        }
-        if (clazz.equals(Double.class)) {
-            return (double) src == 0.0;
-        }
-//        if (clazz.equals(Boolean.class)) {
-//            return (boolean) src == false;
-//        }
-
-        return false;
-    }
-
-
-    public <TBean> HashMap<String, Map.Entry<String, Object>> getPresentFieldValuesWithoutId(TBean bean) throws IllegalAccessException {
-        HashMap<String, Map.Entry<String, Object>> ret = new HashMap<>();
-        Field[] fields = bean.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            String fieldName = field.getName().toLowerCase();
-            boolean flag = field.canAccess(bean);
-            field.setAccessible(true);
-            Object val = field.get(bean);
-            field.setAccessible(flag);
-            if (val != null && !isBasicDefaultValue(val)) {
-                if (!fieldName.equals("id")) {
-                    AbstractMap.SimpleEntry<String, Object> entry = new AbstractMap.SimpleEntry(field.getType(), val);
-                    ret.put(fieldName, entry);
-                }
-            }
-        }
-        return ret;
-    }
-
-    public <TBean> HashMap<String, Object> getPresentFieldValuesMapWithoutId(TBean bean) throws IllegalAccessException {
+    public <TBean> HashMap<String, Object> getKeyValueMapWithoutId(TBean bean) throws IllegalAccessException {
         HashMap<String, Object> ret = new HashMap<>();
         Field[] fields = bean.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -116,7 +67,7 @@ public class ReflectionSqlBuilder {
             field.setAccessible(true);
             Object val = field.get(bean);
             field.setAccessible(flag);
-            if (val != null && !isBasicDefaultValue(val)) {
+            if (val != null && !TypeChecker.isBasicDefaultValue(val)) {
                 if (!fieldName.equals("id"))
                     ret.put(fieldName, val);
             }
@@ -132,7 +83,7 @@ public class ReflectionSqlBuilder {
     private <TBean> ArrayList<String> buildFieldExpressionsWithoutId(TBean bean) throws
             IllegalAccessException {
         ArrayList<String> ret = new ArrayList<>();
-        HashMap<String, Object> m = getPresentFieldValuesMapWithoutId(bean);
+        HashMap<String, Object> m = getKeyValueMapWithoutId(bean);
         for (Map.Entry<String, Object> e : m.entrySet()) {
             ret.add(e.getKey() + "=" + e.getValue());
         }
@@ -151,7 +102,7 @@ public class ReflectionSqlBuilder {
                 sqlwhere = " and id=" + bean.getId();
             }
         }
-        return "select " + String.join(",", getPresentFieldValuesMapWithoutId(bean).keySet()) + " from " + tableName + " where 1=1 " + sqlwhere;
+        return "select " + String.join(",", getKeyValueMapWithoutId(bean).keySet()) + " from " + tableName + " where 1=1 " + sqlwhere;
     }
 
 
@@ -185,9 +136,6 @@ public class ReflectionSqlBuilder {
         return "insert into " + tableName + "(" + String.join(",", m.keySet()) + ") " + "values" + wrap(dest);
     }
 
-
-    //region statements
-
     public <TBean> HashMap<String, String> getPresentFieldsConditionMapWithoutId(TBean bean) throws IllegalAccessException {
         HashMap<String, String> ret = new HashMap<>();
         Field[] fields = bean.getClass().getDeclaredFields();
@@ -197,7 +145,7 @@ public class ReflectionSqlBuilder {
             field.setAccessible(true);
             Object val = field.get(bean);
             field.setAccessible(flag);
-            if (val != null && !isBasicDefaultValue(val) && !field.equals("id")) {
+            if (val != null && !TypeChecker.isBasicDefaultValue(val) && !field.equals("id")) {
                 if (!val.getClass().equals(Boolean.class) && !(val instanceof Number))
                     ret.put(fieldName, "'" + val + "'");
                 else ret.put(fieldName, val.toString());
@@ -206,53 +154,5 @@ public class ReflectionSqlBuilder {
         return ret;
     }
 
-    private <TBean> ArrayList<String> buildPresentFieldsTemplate(TBean bean) throws
-            IllegalAccessException {
-        ArrayList<String> ret = new ArrayList<>();
-        HashMap<String, String> m = getPresentFieldsConditionMapWithoutId(bean);
-        for (Map.Entry<String, String> e : m.entrySet()) {
-            ret.add(e.getKey() + "=?");
-        }
-        return ret;
-    }
-
-    public <TBean extends Entity> String createSelectStatement(TBean bean) throws
-            IllegalAccessException {
-        ArrayList<String> parts = buildPresentFieldsTemplate(bean);
-        String sqlwhere = "";
-        if (!parts.isEmpty()) {
-            String conds = String.join(" and ", parts);
-            sqlwhere = conds.equals("") ? "" : " and " + conds;
-        }
-        return "select " + String.join(",", getPresentFieldValuesMapWithoutId(bean).keySet()) + " from " + bean.getClass().getSimpleName().toLowerCase() + " where 1=1 " + sqlwhere;
-    }
-
-    public <TBean extends Entity> String createUpdateStatement(TBean bean) throws
-            IllegalAccessException {
-        String tableName = bean.getClass().getSimpleName().toLowerCase();
-        String dest = String.join(",", buildPresentFieldsTemplate(bean));
-        return "update " + tableName + " set " + dest + " where id=?";
-    }
-
-    public <TBean extends Entity> String createDeleteStatement(TBean bean) {
-        String tableName = bean.getClass().getSimpleName().toLowerCase();
-        return "delete from " + tableName + " where id= ?";
-    }
-
-
-    public <TBean extends Entity> String createInsertStatement(TBean bean) throws
-            IllegalAccessException {
-        HashMap<String, Object> m = getPresentFieldValuesMapWithoutId(bean);
-        List<String> vs = new ArrayList<>();
-        for (int i = 0; i < m.values().size(); i++) {
-            vs.add("?");
-        }
-
-        String dest = String.join(",", vs);
-        String tableName = bean.getClass().getSimpleName().toLowerCase();
-        return "insert into " + tableName + "(" + String.join(",", m.keySet()) + ") " + "values" + wrap(dest);
-    }
-
-    //endregion
 
 }

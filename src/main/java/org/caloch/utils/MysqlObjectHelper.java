@@ -3,20 +3,16 @@ package org.caloch.utils;
 import com.mysql.jdbc.ResultSet;
 import org.caloch.core.Entity;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 public class MysqlObjectHelper {
 
 
-    private ReflectionSqlBuilder sqlBuilder;
+    public MysqlObjectHelper() {
 
-    public MysqlObjectHelper(ReflectionSqlBuilder sqlBuilder) {
-        this.sqlBuilder = sqlBuilder;
     }
 
     private Connection conn;
@@ -34,7 +30,6 @@ public class MysqlObjectHelper {
         String username = "root";
         String password = "cst";
         try {
-
             Connection conne = DriverManager.getConnection(dbURL, username, password);
             conne.setAutoCommit(false);
             conn = conne;
@@ -47,53 +42,84 @@ public class MysqlObjectHelper {
     }
 
     public <T extends Entity> ArrayList<T> select(T bean) throws SQLException, IllegalAccessException {
-        String sql = sqlBuilder.createInsertSql(bean);
-        Statement statement = conn.createStatement();
+        BeanDbParser<T> sqlParser = new BeanDbParser<>(bean);
+        sqlParser.parse();
+        String sql = sqlParser.buildSelectSqlTemplate();
+        PreparedStatement statement = conn.prepareStatement(sql);
+        preparePreparedStatement(statement, sqlParser.beanInfo);
         ResultSet result = (ResultSet) statement.executeQuery(sql);
         return ResultSetToBeanConverter.getBeans(result, bean.getClass());
     }
 
-    public void insert() throws SQLException {//insert
-        String sql = "INSERT INTO Users (username, password, fullname, email) VALUES (?, ?, ?, ?)";
-
+    public <T extends Entity> T insert(T bean) throws SQLException {
+        BeanDbParser<T> sqlParser = new BeanDbParser<>(bean);
+        sqlParser.parse();
+        String sql = sqlParser.buildInsertSqlTemplate();
         PreparedStatement statement = conn.prepareStatement(sql);
-        //get the hashmap, create a counter, couter+1, set to bean.getid(), get the type of fields by name,
-        statement.setString(1, "bill");
-        statement.setString(2, "secretpass");
-        statement.setString(3, "Bill Gates");
-        statement.setString(4, "bill.gates@microsoft.com");
-
+        preparePreparedStatement(statement, sqlParser.beanInfo);
         int rowsInserted = statement.executeUpdate();
         if (rowsInserted > 0) {
-            System.out.println("A new user was inserted successfully!");
+            System.out.println("A new bean was inserted successfully!");
         }
+        return bean;
     }
 
-    public void update() throws SQLException {//update
+    public <T extends Entity> void update(T bean) throws SQLException {//update
 
-        String sql = "UPDATE Users SET password=?, fullname=?, email=? WHERE username=?";
-
+        BeanDbParser parser = new BeanDbParser(bean);
+        parser.parse();
+        String sql = parser.buildDeleteSqlTemplate();
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(1, "123456789");
-        statement.setString(2, "William Henry Bill Gates");
-        statement.setString(3, "bill.gates@microsoft.com");
-        statement.setString(4, "bill");
-
+        if (bean.getId() != 0)
+            statement.setInt(1, bean.getId());
+        else {
+            preparePreparedStatement(statement, parser.beanInfo);
+        }
         int rowsUpdated = statement.executeUpdate();
         if (rowsUpdated > 0) {
-            System.out.println("An existing user was updated successfully!");
+            System.out.println("An existing bean was updated successfully!");
         }
     }
 
-    public void delete() throws SQLException {//delete
-        String sql = "DELETE FROM Users WHERE username=?";
-
+    public <T extends Entity> int delete(T bean) throws SQLException {//delete
+        BeanDbParser parser = new BeanDbParser(bean);
+        parser.parse();
+        String sql = parser.buildDeleteSqlTemplate();
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(1, "bill");
-
+        if (bean.getId() != 0)
+            statement.setInt(1, bean.getId());
+        else {
+            preparePreparedStatement(statement, parser.beanInfo);
+        }
         int rowsDeleted = statement.executeUpdate();
         if (rowsDeleted > 0) {
-            System.out.println("A user was deleted successfully!");
+            System.out.println("A bean was deleted successfully!");
+        }
+        return rowsDeleted;
+    }
+
+    private void preparePreparedStatement(PreparedStatement statement, HashMap<String, Map.Entry<String, Object>> fieldInfoNoId) throws SQLException {
+        for (Map.Entry<String, Map.Entry<String, Object>> it : fieldInfoNoId.entrySet()) {
+            int index = 1;
+            Map.Entry<String, Object> valo = it.getValue();
+            String type = valo.getKey();
+            Object val = valo.getValue();
+            if (type.equals("int")) {
+                statement.setInt(index, (int) val);
+            } else if (type.equals("short")) {
+                statement.setShort(index, (short) val);
+            } else if (type.equals("String") || type.equals("char")) {
+                statement.setString(index, val.toString());
+            } else if (type.equals("long")) {
+                statement.setLong(index, (long) val);
+            } else if (type.equals("boolean")) {
+                statement.setBoolean(index, (boolean) val);
+            } else if (type.equals("double")) {
+                statement.setDouble(index, (double) val);
+            } else if (type.equals("float")) {
+                statement.setFloat(index, (float) val);
+            }
+            index++;
         }
     }
 
