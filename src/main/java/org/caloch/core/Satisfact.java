@@ -3,8 +3,6 @@ package org.caloch.core;
 import com.sun.net.httpserver.HttpExchange;
 import org.caloch.utils.*;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -19,19 +17,21 @@ public abstract class Satisfact {
             throw new Exception("Jwt verification failed with improper authHeaders.");
     }
 
+    protected MySqlDbContext dbContext;
     protected HttpExchange exchange;
     protected JwtUtil jwtUtil;
     protected CustomerContext customerContext;
     protected JsonHelper jsonHelper;
     protected PropertyUtil properties;
 
-    public Satisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
+    public Satisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil,MySqlDbContext dbContext) {
         super();
         this.customerContext = context;
         this.exchange = context.getHttpExchange();
         this.jwtUtil = jwtUtil;
         this.jsonHelper = new JsonHelper();
         this.properties = properties;
+        this.dbContext=dbContext;
     }
 
     protected Map<String, String> query() {

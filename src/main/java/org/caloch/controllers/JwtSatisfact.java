@@ -3,14 +3,11 @@ package org.caloch.controllers;
 import org.caloch.utils.*;
 import org.caloch.core.*;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
-
 
 public class JwtSatisfact extends Satisfact {
 
-    public JwtSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
-        super(context, properties, jwtUtil);
+    public JwtSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil, MySqlDbContext dbContext) {
+        super(context, properties, jwtUtil, dbContext);
     }
 
     public String create() {

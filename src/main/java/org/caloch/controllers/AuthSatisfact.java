@@ -12,8 +12,8 @@ import java.util.ArrayList;
 //@Permission(name= PermissionNames.GeneralRead)
 public class AuthSatisfact extends Satisfact {
 
-    public AuthSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
-        super(context, properties, jwtUtil);
+    public AuthSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil,MySqlDbContext dbContext) {
+        super(context, properties, jwtUtil, dbContext);
     }
 
 

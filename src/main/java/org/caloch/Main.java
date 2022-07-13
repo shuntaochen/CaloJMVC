@@ -1,6 +1,7 @@
 package org.caloch;
 
 import com.sun.net.httpserver.*;
+import org.caloch.beans.Roles;
 import org.caloch.core.*;
 import org.caloch.utils.*;
 
@@ -12,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.Executors;
 
@@ -45,6 +47,7 @@ public class Main {
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
+            MySqlDbContext dbContext = new MySqlDbContext();
             try {
                 URI requestUri = exchange.getRequestURI();
                 String path = requestUri.getPath();
@@ -75,8 +78,8 @@ public class Main {
                         }
                     }
                 }
-
                 CustomerContext helper = new CustomerContext(exchange);
+                dbContext.connect();
                 JsonHelper jsonHelper = new JsonHelper();
                 String rootPath = exchange.getHttpContext().getPath();
                 System.out.println(rootPath);
@@ -86,7 +89,7 @@ public class Main {
                 Constructor<?>[] constructors = Class
                         .forName("org.caloch.controllers." + ctlLeading + routeParts[0].toLowerCase().substring(1) + "Satisfact")
                         .getConstructors();
-                Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper, propertyUtil, jwtUtil);
+                Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper, propertyUtil, jwtUtil, dbContext);
                 checkPermission(ctrl.getClass(), realm);
                 String methodName = routeParts[1].toLowerCase();
                 List<Method> methods = Arrays.asList(ctrl.getClass().getDeclaredMethods());
@@ -103,6 +106,7 @@ public class Main {
                     result = ret.toString();
                 }
                 new ResultFilter(exchange);
+                dbContext.commit();
                 int code = exchange.getResponseCode();
                 if (code == -1) {
                     exchange.sendResponseHeaders(200, result.length());
@@ -119,6 +123,12 @@ public class Main {
                 e.printStackTrace(pw);
                 String message = e.getTargetException().getMessage() + sw;
                 TerminateResponseWith500(exchange, message);
+            } catch (SQLException se) {
+                try {
+                    dbContext.rollback();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 TerminateResponseWith500(exchange, e.toString());

@@ -18,7 +18,7 @@ public class MySqlDbContext {
 
     }
 
-    private Connection conn;
+    public Connection conn;
 
     public void commit() throws SQLException {
         conn.commit();
