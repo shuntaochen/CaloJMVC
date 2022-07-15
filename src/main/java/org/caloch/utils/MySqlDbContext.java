@@ -48,6 +48,13 @@ public class MySqlDbContext {
     }
 
 
+    public Object executeSql(String sql) throws SQLException {
+        Statement st = conn.createStatement();
+        Object ret = st.execute(sql);
+        conn.commit();
+        return ret;
+    }
+
     public <T extends Entity> T single(T bean, String... forceInclude) throws SQLException {
         return select(bean, forceInclude).get(0);
     }
@@ -57,8 +64,7 @@ public class MySqlDbContext {
         sqlParser.parse();
         String sql = sqlParser.buildSelectSqlTemplate();
         PreparedStatement statement = conn.prepareStatement(sql);
-        if (bean.getId() != 0)
-            statement.setInt(1, bean.getId());
+        if (bean.getId() != 0) statement.setInt(1, bean.getId());
         else {
             preparePreparedStatement(statement, sqlParser.beanInfo);
         }
@@ -103,8 +109,7 @@ public class MySqlDbContext {
         parser.parse();
         String sql = parser.buildDeleteSqlTemplate();
         PreparedStatement statement = conn.prepareStatement(sql);
-        if (bean.getId() != 0)
-            statement.setInt(1, bean.getId());
+        if (bean.getId() != 0) statement.setInt(1, bean.getId());
         else {
             preparePreparedStatement(statement, parser.beanInfo);
         }
