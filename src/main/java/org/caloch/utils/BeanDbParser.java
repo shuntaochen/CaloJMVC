@@ -12,9 +12,9 @@ public class BeanDbParser<T extends Entity> {
 
     T bean;
 
-    public BeanDbParser(T bean) {
+    public BeanDbParser(T bean, String... forceInclude) {
         this.bean = bean;
-        this.beanInfo = getPresentFieldsInfoWithoutId(bean);
+        this.beanInfo = getPresentFieldsInfoWithoutId(bean, forceInclude);
         this.tableName = mapTable();
         if (bean.getId() != 0)
             id = bean.getId();
@@ -37,11 +37,12 @@ public class BeanDbParser<T extends Entity> {
         return field.getName();
     }
 
-    public <TBean> HashMap<String, Map.Entry<String, Object>> getPresentFieldsInfoWithoutId(TBean bean) {
+    public <TBean> HashMap<String, Map.Entry<String, Object>> getPresentFieldsInfoWithoutId(TBean bean, String... forceInclude) {
         HashMap<String, Map.Entry<String, Object>> ret = new HashMap<>();
         Field[] fields = bean.getClass().getDeclaredFields();
         for (Field field : fields) {
-            String fieldName = mapColumn(field);
+            String fieldName = field.getName().toLowerCase();
+            String colName = mapColumn(field);
             boolean flag = field.canAccess(bean);
             field.setAccessible(true);
             Object val;
@@ -52,16 +53,25 @@ public class BeanDbParser<T extends Entity> {
             }
             field.setAccessible(flag);
             String type = field.getType().getSimpleName();
-            if (val != null) {//&& !TypeChecker.isBasicDefaultValue(val), do not skip default values, only skip id,
-                if (!fieldName.equalsIgnoreCase("id")) {
-                    AbstractMap.SimpleEntry<String, Object> entry = new AbstractMap.SimpleEntry(type, val);
-                    ret.put(fieldName, entry);
+            AbstractMap.SimpleEntry<String, Object> entry = new AbstractMap.SimpleEntry(type, val);
+            if (val != null && !TypeChecker.isBasicDefaultValue(val)) {
+                if (!colName.equalsIgnoreCase("id")) {
+                    ret.put(colName, entry);
                 }
+            } else if (Arrays.asList(lowerLize(forceInclude)).contains(fieldName) && TypeChecker.isBasicDefaultValue(val)) {
+                ret.put(colName, entry);
             }
+
         }
         return ret;
     }
 
+    private String[] lowerLize(String[] src) {
+        for (int i = 0; i < src.length; i++) {
+            src[i] = src[i].toLowerCase();
+        }
+        return src;
+    }
 
     public HashMap<String, Map.Entry<String, Object>> beanInfo;
     int id;
