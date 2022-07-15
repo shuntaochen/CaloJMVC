@@ -48,12 +48,12 @@ public class MySqlDbContext {
     }
 
 
-    public <T extends Entity> T single(T bean) throws SQLException {
-        return select(bean).get(0);
+    public <T extends Entity> T single(T bean, String... forceInclude) throws SQLException {
+        return select(bean, forceInclude).get(0);
     }
 
-    public <T extends Entity> ArrayList<T> select(T bean) throws SQLException {
-        BeanDbParser<T> sqlParser = new BeanDbParser<>(bean);
+    public <T extends Entity> ArrayList<T> select(T bean, String... forceInclude) throws SQLException {
+        BeanDbParser<T> sqlParser = new BeanDbParser<>(bean, forceInclude);
         sqlParser.parse();
         String sql = sqlParser.buildSelectSqlTemplate();
         PreparedStatement statement = conn.prepareStatement(sql);
@@ -66,8 +66,8 @@ public class MySqlDbContext {
         return ResultSetToBeanConverter.getBeans(result, bean.getClass());
     }
 
-    public <T extends Entity> T insert(T bean) throws SQLException {
-        BeanDbParser<T> sqlParser = new BeanDbParser<>(bean);
+    public <T extends Entity> T insert(T bean, String... forceInclude) throws SQLException {
+        BeanDbParser<T> sqlParser = new BeanDbParser<>(bean, forceInclude);
         sqlParser.parse();
         String sql = sqlParser.buildInsertSqlTemplate();
         PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -83,9 +83,9 @@ public class MySqlDbContext {
         return bean;
     }
 
-    public <T extends Entity> int update(T bean) throws SQLException {
+    public <T extends Entity> int update(T bean, String... forceInclude) throws SQLException {
         if (bean.getId() == 0) throw new IllegalArgumentException("id for update mandatory.");
-        BeanDbParser parser = new BeanDbParser(bean);
+        BeanDbParser parser = new BeanDbParser(bean, forceInclude);
         parser.parse();
         String sql = parser.buildUpdateSqlTemplate();
         PreparedStatement statement = conn.prepareStatement(sql);
@@ -98,8 +98,8 @@ public class MySqlDbContext {
         return rowsUpdated;
     }
 
-    public <T extends Entity> int delete(T bean) throws SQLException {
-        BeanDbParser parser = new BeanDbParser(bean);
+    public <T extends Entity> int delete(T bean, String... forceInclude) throws SQLException {
+        BeanDbParser parser = new BeanDbParser(bean, forceInclude);
         parser.parse();
         String sql = parser.buildDeleteSqlTemplate();
         PreparedStatement statement = conn.prepareStatement(sql);
