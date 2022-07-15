@@ -15,6 +15,10 @@ import java.util.Map;
 
 public class ReflectionSqlBuilderTest {
 
+    String dbURL = "jdbc:mysql://localhost:3306/mycms?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    String username = "root";
+    String password = "cst";
+
     @org.junit.Before
     public void setUp() throws Exception {
     }
@@ -39,11 +43,11 @@ public class ReflectionSqlBuilderTest {
     }
 
     @Test
-    public void UnitedTest() throws InvocationTargetException, IllegalAccessException {
+    public void UnitedTest() {
         BaseTypeBean2 b = new BaseTypeBean2();
         b.setId5(5.3f);
 
-        BeanDbParser beanDbParser = new BeanDbParser(b);
+        BeanDbParser beanDbParser = new BeanDbParser(b, "id7", "id3");
         beanDbParser.parse();
 
         String tps = "";
@@ -84,7 +88,7 @@ public class ReflectionSqlBuilderTest {
 
     @Test
     public void testDb() throws SQLException {
-        MySqlDbContext ctx = new MySqlDbContext();
+        MySqlDbContext ctx = new MySqlDbContext(dbURL, username, password);
         ctx.connect();
         Roles r = new Roles();
         r.setName("chen");
@@ -94,7 +98,8 @@ public class ReflectionSqlBuilderTest {
 
     @Test
     public void updateTest() throws SQLException {
-        MySqlDbContext ctx = new MySqlDbContext();
+
+        MySqlDbContext ctx = new MySqlDbContext(dbURL, username, password);
         ctx.connect();
         Roles r = new Roles();
         r.setId(1);

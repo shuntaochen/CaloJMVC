@@ -6,8 +6,8 @@ import org.caloch.core.*;
 
 public class JwtSatisfact extends Satisfact {
 
-    public JwtSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil, MySqlDbContext dbContext) {
-        super(context, properties, jwtUtil, dbContext);
+    public JwtSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
+        super(context, properties, jwtUtil);
     }
 
     public String create() {

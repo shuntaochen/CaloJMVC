@@ -129,7 +129,6 @@ public class BeanDbParser<T extends Entity> {
 
     public String buildUpdateSqlTemplate() {
         if (fieldNamesString.equals("")) throw new IllegalArgumentException("Bean has no fields to update");
-        String updateFields = wrapParethesis(fieldNamesString + ",Id");//a,b,c,id
         String setEqualStrings = equalsStringComma.equals("") ? "" : (" set " + equalsStringCommaTemplate);//""/set a=?, b=?
         return "update " + tableName + setEqualStrings + " where Id=?";//update tb(a,b,c) set (a=?,b=?) where id=?
     }

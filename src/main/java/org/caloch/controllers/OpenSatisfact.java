@@ -10,8 +10,8 @@ import org.caloch.core.*;
 public class OpenSatisfact extends Satisfact {
 
 
-    public OpenSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil, MySqlDbContext dbContext) {
-        super(context, properties, jwtUtil, dbContext);
+    public OpenSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
+        super(context, properties, jwtUtil);
         //todo: add db helper, maybe mysql,
     }
 

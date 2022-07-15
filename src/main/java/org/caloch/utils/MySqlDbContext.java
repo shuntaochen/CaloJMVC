@@ -14,8 +14,14 @@ import com.mysql.cj.jdbc.Driver;
 public class MySqlDbContext {
 
 
-    public MySqlDbContext() {
+    private String dbURL;
+    private String username;
+    private String password;
 
+    public MySqlDbContext(String dbURL, String username, String password) {
+        this.dbURL = dbURL;
+        this.username = username;
+        this.password = password;
     }
 
     public Connection conn;
@@ -29,9 +35,7 @@ public class MySqlDbContext {
     }
 
     public void connect() {
-        String dbURL = "jdbc:mysql://localhost:3306/mycms?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-        String username = "root";
-        String password = "cst";
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conne = DriverManager.getConnection(dbURL, username, password);

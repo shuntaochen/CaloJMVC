@@ -8,6 +8,13 @@ import java.util.Map;
 
 public abstract class Satisfact {
 
+
+    protected MySqlDbContext mySqlDbContext;
+
+    public void setDbContext(MySqlDbContext mySqlDbContext){
+
+        this.mySqlDbContext = mySqlDbContext;
+    }
     protected void jwtFilter() throws Exception {
         List<String> authHeaders = getRequestHeader("Authorization");
         if (authHeaders != null && authHeaders.size() == 1) {
@@ -17,21 +24,19 @@ public abstract class Satisfact {
             throw new Exception("Jwt verification failed with improper authHeaders.");
     }
 
-    protected MySqlDbContext dbContext;
     protected HttpExchange exchange;
     protected JwtUtil jwtUtil;
     protected CustomerContext customerContext;
     protected JsonHelper jsonHelper;
     protected PropertyUtil properties;
 
-    public Satisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil,MySqlDbContext dbContext) {
+    public Satisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
         super();
         this.customerContext = context;
         this.exchange = context.getHttpExchange();
         this.jwtUtil = jwtUtil;
         this.jsonHelper = new JsonHelper();
         this.properties = properties;
-        this.dbContext=dbContext;
     }
 
     protected Map<String, String> query() {

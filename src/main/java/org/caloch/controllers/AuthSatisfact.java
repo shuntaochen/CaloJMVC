@@ -12,8 +12,8 @@ import java.util.ArrayList;
 //@Permission(name= PermissionNames.GeneralRead)
 public class AuthSatisfact extends Satisfact {
 
-    public AuthSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil,MySqlDbContext dbContext) {
-        super(context, properties, jwtUtil, dbContext);
+    public AuthSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
+        super(context, properties, jwtUtil);
     }
 
 
@@ -24,7 +24,7 @@ public class AuthSatisfact extends Satisfact {
         ret = ReflectionSqlBuilder.inflate(new TestBean(), o -> request(o));
 //        ret = ReflectionSqlBuilder.inflateNew(TestBean.class, o -> request(o));
         String sql = rsb.createInsertSql(ret);
-        ArrayList<TestBean> r= new MySqlDbContext().select(ret);
+        ArrayList<TestBean> r= mySqlDbContext.select(ret);
         return ret;
     }
 
@@ -42,8 +42,7 @@ public class AuthSatisfact extends Satisfact {
     }
 
     public TestBean dd() throws SQLException {
-        MySqlDbContext ctx=new MySqlDbContext();
-        ctx.connect();
+        MySqlDbContext ctx=mySqlDbContext;
         Roles r=new Roles();
         r.setName("chen");
         ctx.insert(r);
