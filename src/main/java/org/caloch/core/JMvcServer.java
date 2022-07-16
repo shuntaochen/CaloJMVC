@@ -22,8 +22,9 @@ public class JMvcServer {
         PropertyUtil propertyUtil = new PropertyUtil();
         String portConfig = propertyUtil.getValue("port");
         int threadsCount = Integer.parseInt(propertyUtil.getValue("threadCount"));
+        int connectionCount = Integer.parseInt(propertyUtil.getValue("connectionCount"));
         int port = (args.length == 0 ? Integer.valueOf(portConfig) : Integer.valueOf(args[0]));
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), connectionCount);
 
         System.out.println("Customer system listening on:" + server.getAddress());
         server.setExecutor(Executors.newFixedThreadPool(threadsCount));
