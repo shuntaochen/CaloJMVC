@@ -32,7 +32,7 @@ public class JMvcServer {
         server.setExecutor(Executors.newFixedThreadPool(threadsCount));
         HttpHandler handler = new CustomersHandler(propertyUtil, doAddDb);
         server.createContext("/webapp", new ServerResourceHandler(
-                ServerConstant.SERVER_HOME + ServerConstant.FORWARD_SINGLE_SLASH + ServerConstant.WEBAPP_DIR, true, false));
+                ServerConstant.SERVER_HOME + ServerConstant.FORWARD_SINGLE_SLASH, true, false));
         HttpContext ctx = server.createContext("/", handler);
 
         ctx.getFilters().add(new CustomFilter());//filter runs before handler,
