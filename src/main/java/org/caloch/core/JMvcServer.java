@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 public class JMvcServer {
     private String[] args;
     private boolean doAddDb;
+    HttpServer server;
 
     public JMvcServer(String[] args) {
 
@@ -24,12 +25,16 @@ public class JMvcServer {
         int threadsCount = Integer.parseInt(propertyUtil.getValue("threadCount"));
         int connectionCount = Integer.parseInt(propertyUtil.getValue("connectionCount"));
         int port = (args.length == 0 ? Integer.valueOf(portConfig) : Integer.valueOf(args[0]));
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), connectionCount);
+        server = HttpServer.create(new InetSocketAddress(port), connectionCount);
+
 
         System.out.println("Customer system listening on:" + server.getAddress());
         server.setExecutor(Executors.newFixedThreadPool(threadsCount));
         HttpHandler handler = new CustomersHandler(propertyUtil, doAddDb);
+        server.createContext("/webapp", new ServerResourceHandler(
+                ServerConstant.SERVER_HOME + ServerConstant.FORWARD_SINGLE_SLASH + ServerConstant.WEBAPP_DIR, true, false));
         HttpContext ctx = server.createContext("/", handler);
+
         ctx.getFilters().add(new CustomFilter());//filter runs before handler,
         ctx.setAuthenticator(new CustomAuthenticator());
         server.start();
