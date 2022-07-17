@@ -3,7 +3,6 @@ package org.caloch.core;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpPrincipal;
 import org.caloch.utils.*;
 
 import java.io.IOException;
@@ -44,8 +43,6 @@ public class CustomersHandler implements HttpHandler {
             String realm = exchange.getPrincipal().getRealm();
             CustomerContext helper = new CustomerContext(exchange);
             JsonHelper jsonHelper = new JsonHelper();
-            String rootPath = exchange.getHttpContext().getPath();
-            System.out.println(rootPath);
             String[] routeParts = path.substring(1).split("/");
             if (routeParts.length != 2) return;
             char ctlLeading = Character.toUpperCase(routeParts[0].charAt(0));
@@ -99,7 +96,6 @@ public class CustomersHandler implements HttpHandler {
         } catch (Exception e) {
             e.printStackTrace();
             TerminateResponseWith500(exchange, e.toString());
-        } finally {
         }
     }
 
@@ -124,8 +120,6 @@ public class CustomersHandler implements HttpHandler {
             boolean found = name.equals(methodName);
             if (found) {
                 return m;
-            } else {
-                System.out.println(name);
             }
         }
         return null;

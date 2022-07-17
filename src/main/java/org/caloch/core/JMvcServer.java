@@ -1,18 +1,24 @@
 package org.caloch.core;
 
-import com.sun.net.httpserver.HttpContext;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.*;
 import org.caloch.utils.PropertyUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 public class JMvcServer {
     private String[] args;
     private boolean doAddDb;
     HttpServer server;
+
+    public JMvcServer setAuthenticator(Authenticator authenticator) {
+        this.authenticator = authenticator;
+        return this;
+    }
+
+    Authenticator authenticator;
 
     public JMvcServer(String[] args) {
 
@@ -36,9 +42,11 @@ public class JMvcServer {
         HttpContext ctx = server.createContext("/", handler);
 
         ctx.getFilters().add(new CustomFilter());//filter runs before handler,
-        ctx.setAuthenticator(new CustomAuthenticator());
+        if (authenticator != null)
+            ctx.setAuthenticator(authenticator);
         server.start();
     }
+
 
     public JMvcServer addDbContext(boolean doAddDb) {
         this.doAddDb = doAddDb;
