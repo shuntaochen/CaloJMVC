@@ -7,7 +7,6 @@ import org.caloch.utils.JwtUtil;
 import org.caloch.utils.PropertyUtil;
 
 import java.io.*;
-import java.util.logging.Level;
 
 
 public class UploadSatisfact extends Satisfact {
@@ -18,7 +17,8 @@ public class UploadSatisfact extends Satisfact {
     private final static Logger LOGGER = Logger.getLogger(UploadSatisfact.class.getCanonicalName());
 
     public String up() throws IOException {
-        String fileName = "";
+
+        String fileName = "aa.txt";
         String ret = "File uploaded successfully.";
         OutputStream otpStream = null;
         InputStream iptStream = null;

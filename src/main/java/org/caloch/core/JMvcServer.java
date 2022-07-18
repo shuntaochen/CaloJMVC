@@ -37,6 +37,9 @@ public class JMvcServer {
         System.out.println("Customer system listening on:" + server.getAddress());
         server.setExecutor(Executors.newFixedThreadPool(threadsCount));
         HttpHandler handler = new CustomersHandler(propertyUtil, doAddDb);
+
+        server.createContext("/upload",new FileUpload());
+
         server.createContext("/webapp", new ServerResourceHandler(
                 ServerConstant.SERVER_HOME + ServerConstant.FORWARD_SINGLE_SLASH, true, false));
         HttpContext ctx = server.createContext("/", handler);
