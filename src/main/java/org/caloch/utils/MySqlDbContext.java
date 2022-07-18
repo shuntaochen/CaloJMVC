@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mysql.cj.jdbc.Driver;
-
 public class MySqlDbContext {
 
 
@@ -75,6 +73,36 @@ public class MySqlDbContext {
         ResultSet result = statement.executeQuery();
         return ResultSetToBeanConverter.getBeans(result, bean.getClass());
     }
+
+
+    public <T extends Entity> ArrayList<T> selectPageAsc(T bean, String orderCol, int limit, int pageSize, String... forceInclude) throws SQLException {
+        BeanDbParser<T> sqlParser = new BeanDbParser<>(bean, forceInclude);
+        sqlParser.setAscByLimit(orderCol, limit, pageSize);
+        sqlParser.parse();
+        String sql = sqlParser.buildSelectPageAscSqlTemplate();
+        PreparedStatement statement = conn.prepareStatement(sql);
+        if (bean.getId() != 0) statement.setInt(1, bean.getId());
+        else {
+            preparePreparedStatement(statement, sqlParser.beanInfo);
+        }
+        ResultSet result = statement.executeQuery();
+        return ResultSetToBeanConverter.getBeans(result, bean.getClass());
+    }
+
+    public <T extends Entity> ArrayList<T> selectPageDesc(T bean, String orderCol, int limit, int pageSize, String... forceInclude) throws SQLException {
+        BeanDbParser<T> sqlParser = new BeanDbParser<>(bean, forceInclude);
+        sqlParser.setDescByLimit(orderCol, limit, pageSize);
+        sqlParser.parse();
+        String sql = sqlParser.buildSelectPageDescSqlTemplate();
+        PreparedStatement statement = conn.prepareStatement(sql);
+        if (bean.getId() != 0) statement.setInt(1, bean.getId());
+        else {
+            preparePreparedStatement(statement, sqlParser.beanInfo);
+        }
+        ResultSet result = statement.executeQuery();
+        return ResultSetToBeanConverter.getBeans(result, bean.getClass());
+    }
+
 
     public <T extends Entity> T insert(T bean, String... forceInclude) throws SQLException {
         BeanDbParser<T> sqlParser = new BeanDbParser<>(bean, forceInclude);

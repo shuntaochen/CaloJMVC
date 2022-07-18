@@ -10,6 +10,14 @@ import java.util.*;
 public class BeanDbParser<T extends Entity> {
 
 
+    public void setAscByLimit(String orderCol, int limitStart, int pageSize) {
+        this.ascByLimit = " order by " + orderCol + " asc limit " + limitStart + "," + (limitStart + pageSize);
+    }
+
+    public void setDescByLimit(String orderCol, int limitStart, int pageSize) {
+        this.descByLimit = " order by " + orderCol + " desc limit " + limitStart + "," + (limitStart + pageSize);
+    }
+
     T bean;
 
     public BeanDbParser(T bean, String... forceInclude) {
@@ -88,6 +96,9 @@ public class BeanDbParser<T extends Entity> {
     String whereString;
     String whereStringTemplate;
 
+    String ascByLimit = "";
+    String descByLimit = "";
+
     private String wrapSq(String src) {
         return "'" + src + "'";
     }
@@ -125,6 +136,16 @@ public class BeanDbParser<T extends Entity> {
     public String buildSelectSqlTemplate() {
         if (id != 0) return "select * from " + tableName + "  WHERE Id=?";//select * from tb where id=?
         return "select * from " + tableName + whereStringTemplate;//select * from tb where a=? and b=?
+    }
+
+    public String buildSelectPageAscSqlTemplate() {
+        if (id != 0) return "select * from " + tableName + "  WHERE Id=?" + ascByLimit;//select * from tb where id=?
+        return "select * from " + tableName + whereStringTemplate + ascByLimit; //select * from tb where a=? and b=?
+    }
+
+    public String buildSelectPageDescSqlTemplate() {
+        if (id != 0) return "select * from " + tableName + "  WHERE Id=?" + descByLimit;//select * from tb where id=?
+        return "select * from " + tableName + whereStringTemplate + descByLimit;//select * from tb where a=? and b=?
     }
 
     public String buildUpdateSqlTemplate() {
