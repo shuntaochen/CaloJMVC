@@ -56,7 +56,7 @@ public class CustomersHandler implements HttpHandler {
                 ctrl.setDbContext(mySqlDbContext);
             checkPermission(ctrl.getClass(), realm);
             String methodName = routeParts[1].toLowerCase();
-            List<Method> methods = Arrays.asList(ctrl.getClass().getDeclaredMethods());
+            List<Method> methods = Arrays.asList(ctrl.getClass().getMethods());
             Method m = getMethodName(methods, methodName);
             checkPermission(m, realm);
             if (m == null) {
