@@ -6,6 +6,6 @@ import java.util.List;
 
 public class FileUpload extends FormDataHandle {
     @Override
-    public void handle(HttpExchange httpExchange, List<MultiPart> parts) {
+    public void handle(HttpExchange httpExchange, List<MultiPart> parts) {//first file is always empty, less than actual amount,
     }
 }

@@ -25,6 +25,7 @@ public abstract class FormDataHandle implements HttpHandler {
             // as of rfc7578 - prepend "\r\n--"
             byte[] boundaryBytes = ("\r\n--" + boundary).getBytes(Charset.forName("UTF-8"));
             byte[] payload = getInputAsBinary(httpExchange.getRequestBody());
+            String b=new String(payload);
             ArrayList<MultiPart> list = new ArrayList<>();
 
             List<Integer> offsets = searchBytes(payload, boundaryBytes, 0, payload.length - 1);
