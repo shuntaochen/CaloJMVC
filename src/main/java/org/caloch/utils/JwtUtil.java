@@ -27,7 +27,7 @@ public class JwtUtil {
      */
     public String create() {
         try {
-
+            String jwtIssuer=propertyUtil.getValue("jwt");
             Algorithm algorithm = Algorithm.HMAC256("secret");
             String token = JWT.create()
                     .withJWTId("23")
@@ -35,7 +35,7 @@ public class JwtUtil {
                     .withClaim("age", 18)
                     .withExpiresAt(new Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000))
                     .withIssuedAt(new Date(System.currentTimeMillis()))
-                    .withIssuer("auth0")
+                    .withIssuer(jwtIssuer)
                     .sign(algorithm);
             return token;
         } catch (JWTCreationException exception) {
