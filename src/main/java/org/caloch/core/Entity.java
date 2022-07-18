@@ -10,4 +10,12 @@ public class Entity {
     }
 
     public int id;
+
+    public String createdBy;
+    public String createdOn;
+    public String updatedBy;
+    public String updatedOn;
+    public String deletedBy;
+    public String deletedOn;
+    public boolean isDeleted;
 }
