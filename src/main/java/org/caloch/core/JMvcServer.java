@@ -20,13 +20,16 @@ public class JMvcServer {
 
     Authenticator authenticator;
 
-    public JMvcServer(String[] args) {
 
+    PropertyUtil propertyUtil;
+
+    public JMvcServer(PropertyUtil propertyUtil,String[] args) {
         this.args = args;
+        this.propertyUtil=propertyUtil;
     }
 
     public void start() throws IOException {
-        PropertyUtil propertyUtil = new PropertyUtil();
+
         String portConfig = propertyUtil.getValue("port");
         int threadsCount = Integer.parseInt(propertyUtil.getValue("threadCount"));
         int connectionCount = Integer.parseInt(propertyUtil.getValue("connectionCount"));

@@ -2,12 +2,14 @@ package org.caloch;
 
 
 import org.caloch.core.*;
+import org.caloch.utils.PropertyUtil;
 
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        new JMvcServer(args)
-                .setAuthenticator(new CustomAuthenticator())
+        PropertyUtil propertyUtil = new PropertyUtil();
+        new JMvcServer(propertyUtil, args)
+                .setAuthenticator(new CustomAuthenticator(propertyUtil))
                 .addDbContext(false)
                 .start();
     }

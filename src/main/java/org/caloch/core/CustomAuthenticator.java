@@ -3,13 +3,27 @@ package org.caloch.core;
 
 import com.sun.net.httpserver.Authenticator;
 import com.sun.net.httpserver.HttpExchange;
+import org.caloch.utils.JwtUtil;
+import org.caloch.utils.PropertyUtil;
 
 import java.util.ArrayList;
 
 public class CustomAuthenticator extends Authenticator {
+
+    JwtUtil jwtUtil;
+
+    public CustomAuthenticator(PropertyUtil propertyUtil) {
+        jwtUtil = new JwtUtil(propertyUtil);
+    }
+
     @Override
-    public Result authenticate(HttpExchange exch) {
-        String[] perms = new String[]{PermissionNames.GeneralRead};
+    public Result authenticate(HttpExchange exchange) {//this should always succeed, just to set principle,then checkpermission,
+
+//        String authToken=exchange.getRequestHeaders().get("authorization").get(0);
+//        String issuer= jwtUtil.decode(authToken);
+
+
+        String[] perms = new String[]{PermissionNames.Guest};
         String realm = String.join("|", permlize(perms));
         JMvcPrinciple principal = new JMvcPrinciple("chen", realm);
         ArrayList<String> feMenu = new ArrayList<>();
