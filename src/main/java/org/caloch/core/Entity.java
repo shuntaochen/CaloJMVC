@@ -11,11 +11,11 @@ public class Entity {
 
     public int id;
 
-    public String insertedBy;
+    public int insertedBy;
     public String insertedOn;
-    public String updatedBy;
+    public int updatedBy;
     public String updatedOn;
-    public String deletedBy;
+    public int deletedBy;
     public String deletedOn;
     public boolean isDeleted;
 }
