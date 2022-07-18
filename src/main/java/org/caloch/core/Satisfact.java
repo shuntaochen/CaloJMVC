@@ -75,6 +75,7 @@ public abstract class Satisfact {
     }
 
 
+    @Permission(name=PermissionNames.BackofficeAdmin)
     public Object sel() throws SQLException {
         String user = request("user");
         if (user != null && user.equals("badccc")) {
