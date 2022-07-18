@@ -16,14 +16,14 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-public class CustomersHandler implements HttpHandler {
-    static Logger logger = Logger.getLogger(CustomersHandler.class);
+public class JMvcHandler implements HttpHandler {
+    static Logger logger = Logger.getLogger(JMvcHandler.class);
     private PropertyUtil propertyUtil;
     private JwtUtil jwtUtil;
 
     private MySqlDbContext mySqlDbContext;
 
-    public CustomersHandler(PropertyUtil propertyUtil, boolean doAddDb) {
+    public JMvcHandler(PropertyUtil propertyUtil, boolean doAddDb) {
         this.propertyUtil = propertyUtil;
         jwtUtil = new JwtUtil(propertyUtil);
         if (doAddDb) {

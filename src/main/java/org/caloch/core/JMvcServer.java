@@ -5,7 +5,6 @@ import org.caloch.utils.PropertyUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.List;
 import java.util.concurrent.Executors;
 
 public class JMvcServer {
@@ -39,7 +38,7 @@ public class JMvcServer {
 
         System.out.println("Customer system listening on:" + server.getAddress());
         server.setExecutor(Executors.newFixedThreadPool(threadsCount));
-        HttpHandler handler = new CustomersHandler(propertyUtil, doAddDb);
+        HttpHandler handler = new JMvcHandler(propertyUtil, doAddDb);
 
         server.createContext("/upload",new FileUpload());
 
