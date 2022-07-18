@@ -3,6 +3,7 @@ package org.caloch.core;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.apache.log4j.Logger;
 import org.caloch.utils.*;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CustomersHandler implements HttpHandler {
+    static Logger logger = Logger.getLogger(CustomersHandler.class);
     private PropertyUtil propertyUtil;
     private JwtUtil jwtUtil;
 
@@ -70,13 +72,7 @@ public class CustomersHandler implements HttpHandler {
             new ResultFilter(exchange);
             if (mySqlDbContext != null)
                 mySqlDbContext.commit();
-            int code = exchange.getResponseCode();
-            if (code == -1) {
-                exchange.sendResponseHeaders(200, result.length());
-            }
-            exchange.getResponseBody().write(result.getBytes());
-            exchange.getResponseBody().close();
-            exchange.close();
+            write200(exchange, result);
 
         } catch (ClassNotFoundException cnfe) {
             TerminateResponseWith500(exchange, cnfe.getMessage());
@@ -87,11 +83,11 @@ public class CustomersHandler implements HttpHandler {
             String message = e.getTargetException().getMessage() + sw;
             TerminateResponseWith500(exchange, message);
         } catch (SQLException se) {
+            TerminateResponseWith500(exchange, se.toString());
             try {
                 if (mySqlDbContext != null)
                     mySqlDbContext.rollback();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,7 +121,19 @@ public class CustomersHandler implements HttpHandler {
         return null;
     }
 
+
+    private void write200(HttpExchange exchange, String result) throws IOException {
+        int code = exchange.getResponseCode();
+        if (code == -1) {
+            exchange.sendResponseHeaders(200, result.length());
+        }
+        exchange.getResponseBody().write(result.getBytes());
+        exchange.getResponseBody().close();
+        exchange.close();
+    }
+
     public void TerminateResponseWith500(HttpExchange exchange, String message) throws IOException {
+        logger.error(message);
         exchange.sendResponseHeaders(500, message.length());
         exchange.getResponseBody().write(message.getBytes());
         exchange.getResponseBody().close();
