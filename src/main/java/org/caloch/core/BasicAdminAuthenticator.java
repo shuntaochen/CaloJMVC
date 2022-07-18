@@ -8,11 +8,11 @@ import org.caloch.utils.PropertyUtil;
 
 import java.util.ArrayList;
 
-public class CustomAuthenticator extends Authenticator {
+public class BasicAdminAuthenticator extends Authenticator {
 
     JwtUtil jwtUtil;
 
-    public CustomAuthenticator(PropertyUtil propertyUtil) {
+    public BasicAdminAuthenticator(PropertyUtil propertyUtil) {
         jwtUtil = new JwtUtil(propertyUtil);
     }
 
@@ -23,7 +23,7 @@ public class CustomAuthenticator extends Authenticator {
 //        String issuer= jwtUtil.decode(authToken);
 
 
-        String[] perms = new String[]{PermissionNames.Guest};
+        String[] perms = new String[]{PermissionNames.BackofficeAdmin};
         String realm = String.join("|", permlize(perms));
         JMvcPrinciple principal = new JMvcPrinciple("chen", realm);
         ArrayList<String> feMenu = new ArrayList<>();

@@ -4,7 +4,7 @@ import org.caloch.utils.*;
 import org.caloch.core.*;
 
 
-@Permission(name = PermissionNames.GeneralRead)
+@Permission(name = PermissionNames.BackofficeAdmin)
 public class JwtSatisfact extends Satisfact {
 
     public JwtSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {

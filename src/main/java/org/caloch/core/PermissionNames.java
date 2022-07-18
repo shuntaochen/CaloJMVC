@@ -5,4 +5,6 @@ public final class PermissionNames {
     public static final String GeneralWrite="GeneralWrite";
 
     public static final String Guest="Guest";
+
+    public static final String BackofficeAdmin="BackofficeAdmin";
 }

@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.caloch.core.PermissionNames;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -27,10 +28,11 @@ public class JwtUtil {
      */
     public String create() {
         try {
-            String jwtIssuer=propertyUtil.getValue("jwt");
+            String jwtIssuer = propertyUtil.getValue("jwt");
             Algorithm algorithm = Algorithm.HMAC256("secret");
             String token = JWT.create()
-                    .withJWTId("23")
+//                    .withJWTId("23")
+                    .withClaim("permission", PermissionNames.BackofficeAdmin)
                     .withClaim("username", "chen")
                     .withClaim("age", 18)
                     .withExpiresAt(new Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000))
