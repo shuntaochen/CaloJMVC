@@ -23,13 +23,15 @@ public class BasicAdminAuthenticator extends Authenticator {
     @Override
     public Result authenticate(HttpExchange exchange) {//this should always succeed, just to set principle,then checkpermission,
         String permissions = "";
+        String user="chen";
         if (exchange.getRequestHeaders().containsKey("authorization")) {
             String authToken = exchange.getRequestHeaders().get("authorization").get(0);
             String token = authToken.split("Bearer ")[1];
             DecodedJWT jwt = jwtUtil.decodeJwt(token);
             permissions = jwt.getClaims().get("permission").toString();
+            user = jwt.getClaims().get("username").toString();
         }
-        JMvcPrinciple principal = new JMvcPrinciple("chen", permissions);
+        JMvcPrinciple principal = new JMvcPrinciple(user, permissions);
         ArrayList<String> feMenu = new ArrayList<>();
         ArrayList<String> boMenu = new ArrayList<>();
         principal.setFeMenu(feMenu);
