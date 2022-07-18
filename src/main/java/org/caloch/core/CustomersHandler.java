@@ -1,6 +1,5 @@
 package org.caloch.core;
 
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.apache.log4j.Logger;
@@ -54,11 +53,10 @@ public class CustomersHandler implements HttpHandler {
             Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper, propertyUtil, jwtUtil);
             if (mySqlDbContext != null)
                 ctrl.setDbContext(mySqlDbContext);
-            checkPermission(ctrl.getClass(), realm);
             String methodName = routeParts[1].toLowerCase();
             List<Method> methods = Arrays.asList(ctrl.getClass().getMethods());
             Method m = getMethodName(methods, methodName);
-            checkPermission(m, realm);
+            checkPermission(ctrl.getClass(), m, realm);
             if (m == null) {
                 throw new Exception("method not found");
             }
@@ -95,13 +93,21 @@ public class CustomersHandler implements HttpHandler {
         }
     }
 
-    private void checkPermission(Object src, String realm) throws Exception {
+    private void checkPermission(Class ctrlClass, Method src, String realm) throws Exception {
         if (src != null) {
-            Anonymous am = src.getClass() == Method.class ? ((Method) src).getDeclaredAnnotation(Anonymous.class) : ((Class<?>) src).getDeclaredAnnotation(Anonymous.class);
+            Anonymous am = src.getClass() == Method.class ? ((Method) src).getDeclaredAnnotation(Anonymous.class) : ((Class<?>) ctrlClass).getDeclaredAnnotation(Anonymous.class);
             if (am != null) return;
-            Permission perm1 = src.getClass() == Method.class ? ((Method) src).getDeclaredAnnotation(Permission.class) : ((Class<?>) src).getDeclaredAnnotation(Permission.class);
-            if (perm1 != null) {
-                String pname1 = perm1.name();
+            Permission permMethod = src.getDeclaredAnnotation(Permission.class);
+            Permission permCtrl = (Permission) ctrlClass.getDeclaredAnnotation(Permission.class);
+            if (permCtrl != null) {
+                String pname1 = permCtrl.name();
+                if (realm.indexOf("[" + pname1 + "]") == -1) {
+                    throw new Exception("No Permission");
+                }
+            }
+
+            if (permMethod != null) {
+                String pname1 = permMethod.name();
                 if (realm.indexOf("[" + pname1 + "]") == -1) {
                     throw new Exception("No Permission");
                 }

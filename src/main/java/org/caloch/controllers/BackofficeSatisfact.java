@@ -9,9 +9,10 @@ import org.caloch.utils.CustomerContext;
 import org.caloch.utils.JwtUtil;
 import org.caloch.utils.PropertyUtil;
 
+
 @Permission(name = PermissionNames.BackofficeAdmin)
-public class BackOfficeSatisfact extends Satisfact {
-    public BackOfficeSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
+public class BackofficeSatisfact extends Satisfact {
+    public BackofficeSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
         super(context, properties, jwtUtil);
     }
 
