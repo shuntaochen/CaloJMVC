@@ -1,12 +1,16 @@
 package org.caloch.core;
 
 
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.Header;
 import com.sun.net.httpserver.Authenticator;
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import org.caloch.utils.JwtUtil;
 import org.caloch.utils.PropertyUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BasicAdminAuthenticator extends Authenticator {
 
@@ -18,14 +22,14 @@ public class BasicAdminAuthenticator extends Authenticator {
 
     @Override
     public Result authenticate(HttpExchange exchange) {//this should always succeed, just to set principle,then checkpermission,
-
-//        String authToken=exchange.getRequestHeaders().get("authorization").get(0);
-//        String issuer= jwtUtil.decode(authToken);
-
-
-        String[] perms = new String[]{PermissionNames.BackofficeAdmin};
-        String realm = String.join("|", permlize(perms));
-        JMvcPrinciple principal = new JMvcPrinciple("chen", realm);
+        String permissions = "";
+        if (exchange.getRequestHeaders().containsKey("authorization")) {
+            String authToken = exchange.getRequestHeaders().get("authorization").get(0);
+            String token = authToken.split("Bearer ")[1];
+            DecodedJWT jwt = jwtUtil.decodeJwt(token);
+            permissions = jwt.getClaims().get("permission").toString();
+        }
+        JMvcPrinciple principal = new JMvcPrinciple("chen", permissions);
         ArrayList<String> feMenu = new ArrayList<>();
         ArrayList<String> boMenu = new ArrayList<>();
         principal.setFeMenu(feMenu);
@@ -35,14 +39,5 @@ public class BasicAdminAuthenticator extends Authenticator {
 //        return new Retry(301);//503,429,
     }
 
-    private String wrap(String src) {
-        return "[" + src + "]";
-    }
 
-    private String[] permlize(String[] perms) {
-        for (int i = 0; i < perms.length; i++) {
-            perms[i] = wrap(perms[i]);
-        }
-        return perms;
-    }
 }

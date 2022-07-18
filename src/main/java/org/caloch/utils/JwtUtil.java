@@ -5,13 +5,10 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.caloch.core.PermissionNames;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class JwtUtil {
 
@@ -28,11 +25,14 @@ public class JwtUtil {
      */
     public String create() {
         try {
+            String[] perms = new String[]{PermissionNames.BackofficeAdmin};
+            String realm = String.join("|", permlize(perms));
             String jwtIssuer = propertyUtil.getValue("jwt");
-            Algorithm algorithm = Algorithm.HMAC256("secret");
+            String jwtSecret = propertyUtil.getValue("jwtSecret");
+            Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
             String token = JWT.create()
 //                    .withJWTId("23")
-                    .withClaim("permission", PermissionNames.BackofficeAdmin)
+                    .withClaim("permission", realm)
                     .withClaim("username", "chen")
                     .withClaim("age", 18)
                     .withExpiresAt(new Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000))
@@ -55,7 +55,11 @@ public class JwtUtil {
         verifier.verify(token);
     }
 
-    public String decode(String token) {
+    public DecodedJWT decodeJwt(String token) {
+        return JWT.decode(token);
+    }
+
+    public String decodeIssuer(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
             jwt.getClaims();
@@ -64,6 +68,17 @@ public class JwtUtil {
             //Invalid token
         }
         return null;
+    }
+
+    private String[] permlize(String[] perms) {
+        for (int i = 0; i < perms.length; i++) {
+            perms[i] = wrap(perms[i]);
+        }
+        return perms;
+    }
+
+    private String wrap(String src) {
+        return "[" + src + "]";
     }
 
 }

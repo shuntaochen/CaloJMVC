@@ -21,4 +21,5 @@ public class LoginSatisfact extends Satisfact {
         }
         return "failure";
     }
+
 }

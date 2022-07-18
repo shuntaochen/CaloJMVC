@@ -23,7 +23,7 @@ public class JwtSatisfact extends Satisfact {
 
     public String decode() {
         String token = request("token");
-        String audence = jwtUtil.decode(token);
+        String audence = jwtUtil.decodeIssuer(token);
         return audence;
     }
 }
