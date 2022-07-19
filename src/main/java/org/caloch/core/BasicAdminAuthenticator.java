@@ -22,11 +22,18 @@ public class BasicAdminAuthenticator extends Authenticator {
 
     @Override
     public Result authenticate(HttpExchange exchange) {//this should always succeed, just to set principle,then checkpermission,
+        String path = exchange.getRequestURI().getPath();
         String permissions = "";
-        String user="chen";
+        String user = "chen";
+        String token = null;
+
         if (exchange.getRequestHeaders().containsKey("authorization")) {
             String authToken = exchange.getRequestHeaders().get("authorization").get(0);
-            String token = authToken.split("Bearer ")[1];
+            token = authToken.split("Bearer ")[1];
+        }
+        if (path.equals("/upload")) {
+            jwtUtil.verify(token);
+        } else if (exchange.getRequestHeaders().containsKey("authorization")) {
             DecodedJWT jwt = jwtUtil.decodeJwt(token);
             permissions = jwt.getClaims().get("permission").toString();
             user = jwt.getClaims().get("username").toString();

@@ -22,9 +22,9 @@ public class JMvcServer {
 
     PropertyUtil propertyUtil;
 
-    public JMvcServer(PropertyUtil propertyUtil,String[] args) {
+    public JMvcServer(PropertyUtil propertyUtil, String[] args) {
         this.args = args;
-        this.propertyUtil=propertyUtil;
+        this.propertyUtil = propertyUtil;
     }
 
     public void start() throws IOException {
@@ -40,15 +40,17 @@ public class JMvcServer {
         server.setExecutor(Executors.newFixedThreadPool(threadsCount));
         HttpHandler handler = new JMvcHandler(propertyUtil, doAddDb);
 
-        server.createContext("/upload",new FileUpload());
+        HttpContext ctxupload = server.createContext("/upload", new FileUpload());
 
         server.createContext("/webapp", new ServerResourceHandler(
                 ServerConstant.SERVER_HOME + ServerConstant.FORWARD_SINGLE_SLASH, true, false));
         HttpContext ctx = server.createContext("/", handler);
 
         ctx.getFilters().add(new CustomFilter());//filter runs before handler,
-        if (authenticator != null)
+        if (authenticator != null) {
+            ctxupload.setAuthenticator(authenticator);
             ctx.setAuthenticator(authenticator);
+        }
         server.start();
     }
 
