@@ -89,7 +89,7 @@ public abstract class Satisfact {
 
     public void redirect(String url) throws IOException {
         exchange.getResponseHeaders().set("Location", url);
-        exchange.sendResponseHeaders(302, url.length());
+        exchange.sendResponseHeaders(302, 0);
         exchange.getResponseBody().flush();
         exchange.getResponseBody().close();
     }
