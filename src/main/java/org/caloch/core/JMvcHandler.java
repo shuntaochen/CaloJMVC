@@ -82,14 +82,27 @@ public class JMvcHandler implements HttpHandler {
             TerminateResponseWith500(exchange, message);
         } catch (SQLException se) {
             TerminateResponseWith500(exchange, se.toString());
-            try {
-                if (mySqlDbContext != null)
+            if (mySqlDbContext != null) {
+                try {
                     mySqlDbContext.rollback();
-            } catch (SQLException e) {
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
+
         } catch (Exception e) {
+            logger.error(e);
             e.printStackTrace();
             TerminateResponseWith500(exchange, e.toString());
+        } finally {
+            try {
+                if (mySqlDbContext != null && !mySqlDbContext.conn.isClosed()) {
+                    mySqlDbContext.conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e);
+                throw new RuntimeException(e);
+            }
         }
     }
 

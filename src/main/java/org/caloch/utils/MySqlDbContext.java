@@ -54,6 +54,8 @@ public class MySqlDbContext {
         Statement st = conn.createStatement();
         Object ret = st.execute(sql);
         conn.commit();
+        st.close();
+        if (ret.getClass().isAssignableFrom(ResultSet.class)) ((ResultSet) ret).close();
         return ret;
     }
 
@@ -71,6 +73,7 @@ public class MySqlDbContext {
             preparePreparedStatement(statement, sqlParser.beanInfo);
         }
         ResultSet result = statement.executeQuery();
+        closeAll(statement, result);
         return ResultSetToBeanConverter.getBeans(result, bean.getClass());
     }
 
@@ -86,6 +89,7 @@ public class MySqlDbContext {
             preparePreparedStatement(statement, sqlParser.beanInfo);
         }
         ResultSet result = statement.executeQuery();
+        closeAll(statement, result);
         return ResultSetToBeanConverter.getBeans(result, bean.getClass());
     }
 
@@ -100,6 +104,7 @@ public class MySqlDbContext {
             preparePreparedStatement(statement, sqlParser.beanInfo);
         }
         ResultSet result = statement.executeQuery();
+        closeAll(statement, result);
         return ResultSetToBeanConverter.getBeans(result, bean.getClass());
     }
 
@@ -118,6 +123,7 @@ public class MySqlDbContext {
         if (rowsInserted > 0) {
             System.out.println("A new bean was inserted successfully!");
         }
+        closeAll(statement, rs);
         return bean;
     }
 
@@ -133,6 +139,7 @@ public class MySqlDbContext {
         if (rowsUpdated > 0) {
             System.out.println("An existing bean was updated successfully!");
         }
+        closeAll(statement, null);
         return rowsUpdated;
     }
 
@@ -149,6 +156,7 @@ public class MySqlDbContext {
         if (rowsDeleted > 0) {
             System.out.println("A bean was deleted successfully!");
         }
+        closeAll(statement, null);
         return rowsDeleted;
     }
 
@@ -176,6 +184,11 @@ public class MySqlDbContext {
             index++;
         }
         return index;
+    }
+
+    private void closeAll(Statement st, ResultSet rs) throws SQLException {
+        if (st != null) st.close();
+        if (rs != null) rs.close();
     }
 
 }
