@@ -1,5 +1,6 @@
 //package io.trivium.glue.binding.http;
 package org.caloch.core;
+
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -19,26 +20,27 @@ public abstract class FormDataHandle implements HttpHandler {
     public void handle(HttpExchange httpExchange) throws IOException {
         Headers headers = httpExchange.getRequestHeaders();
         String contentType = headers.getFirst("Content-Type");
-        if(contentType.startsWith("multipart/form-data")){
+        if (contentType.startsWith("multipart/form-data")) {
             //found form data
-            String boundary = contentType.substring(contentType.indexOf("boundary=")+9);
+            String boundary = contentType.substring(contentType.indexOf("boundary=") + 9);
             // as of rfc7578 - prepend "\r\n--"
-            byte[] boundaryBytes = ("\r\n--" + boundary).getBytes(Charset.forName("UTF-8"));
+            byte[] boundaryBytes = (boundary).getBytes(Charset.forName("UTF-8"));
             byte[] payload = getInputAsBinary(httpExchange.getRequestBody());
-            String b=new String(payload);
+            String b = new String(payload);
             ArrayList<MultiPart> list = new ArrayList<>();
 
             List<Integer> offsets = searchBytes(payload, boundaryBytes, 0, payload.length - 1);
-            for(int idx=0;idx<offsets.size();idx++){
+            for (int idx = 0; idx < offsets.size(); idx++) {
                 int startPart = offsets.get(idx);
                 int endPart = payload.length;
-                if(idx<offsets.size()-1){
-                    endPart = offsets.get(idx+1);
+                if (idx < offsets.size() - 1) {
+                    endPart = offsets.get(idx + 1);
                 }
-                byte[] part = Arrays.copyOfRange(payload,startPart,endPart);
+                byte[] part = Arrays.copyOfRange(payload, startPart, endPart);
+                String b1 = new String(part);
                 //look for header
-                int headerEnd = indexOf(part,"\r\n\r\n".getBytes(Charset.forName("UTF-8")),0,part.length-1);
-                if(headerEnd>0) {
+                int headerEnd = indexOf(part, "\r\n\r\n".getBytes(Charset.forName("UTF-8")), 0, part.length - 1);
+                if (headerEnd > 0) {
                     MultiPart p = new MultiPart();
                     byte[] head = Arrays.copyOfRange(part, 0, headerEnd);
                     String header = new String(head);
@@ -87,21 +89,21 @@ public abstract class FormDataHandle implements HttpHandler {
                 }
             }
 
-            handle(httpExchange,list);
-        }else{
+            handle(httpExchange, list);
+        } else {
             //if no form data is present, still call handle method
-            handle(httpExchange,null);
+            handle(httpExchange, null);
         }
     }
 
-    public abstract void handle(HttpExchange httpExchange,List<MultiPart> parts) throws IOException;
+    public abstract void handle(HttpExchange httpExchange, List<MultiPart> parts) throws IOException;
 
     public static byte[] getInputAsBinary(InputStream requestStream) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             byte[] buf = new byte[100000];
-            int bytesRead=0;
-            while ((bytesRead = requestStream.read(buf)) != -1){
+            int bytesRead = 0;
+            while ((bytesRead = requestStream.read(buf)) != -1) {
                 //while (requestStream.available() > 0) {
                 //    int i = requestStream.read(buf);
                 bos.write(buf, 0, bytesRead);
@@ -168,7 +170,8 @@ public abstract class FormDataHandle implements HttpHandler {
             loopEndIdx = maxScanStartPosIdx;
         }
         int lastScanIdx = -1;
-        label: // goto label
+        label:
+        // goto label
         for (int i = startIndex; i <= loopEndIdx; i++) {
             for (int j = 0; j < searchBytes.length; j++) {
                 if (srcBytes[i + j] != searchBytes[j]) {
@@ -195,7 +198,7 @@ public abstract class FormDataHandle implements HttpHandler {
         public byte[] bytes;
     }
 
-    public enum PartType{
-        TEXT,FILE
+    public enum PartType {
+        TEXT, FILE
     }
 }
