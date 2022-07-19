@@ -3,6 +3,7 @@ package org.caloch.core;
 import com.sun.net.httpserver.HttpExchange;
 import org.caloch.utils.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,7 @@ public abstract class Satisfact {
     }
 
 
-    @Permission(name=PermissionNames.BackofficeAdmin)
+    @Permission(name = PermissionNames.BackofficeAdmin)
     public Object sel() throws SQLException {
         String user = request("user");
         if (user != null && user.equals("badccc")) {
@@ -84,5 +85,12 @@ public abstract class Satisfact {
             return r;
         }
         return null;
+    }
+
+    public void redirect(String url) throws IOException {
+        exchange.getResponseHeaders().set("Location", url);
+        exchange.sendResponseHeaders(302, url.length());
+        exchange.getResponseBody().flush();
+        exchange.getResponseBody().close();
     }
 }

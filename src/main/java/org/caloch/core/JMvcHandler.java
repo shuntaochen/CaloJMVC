@@ -61,6 +61,9 @@ public class JMvcHandler implements HttpHandler {
                 throw new Exception("method not found");
             }
             Object ret = m.invoke(ctrl);
+            if (ret == null)
+                return;
+
             String result = "";
             if (!TypeChecker.isValueOrString(ret)) {
                 result = jsonHelper.convertToJson(ret);

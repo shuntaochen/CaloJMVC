@@ -1,5 +1,7 @@
 package org.caloch.controllers;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.HashMap;
 
 import org.caloch.beans.TestBean;
@@ -58,6 +60,10 @@ public class OpenSatisfact extends Satisfact {
         boolean b = TypeChecker.isMap(ret);
         Class<?> t = ret.getClass();
         return ret;
+    }
+
+    public void gg() throws IOException {
+        redirect("https://baidu.com");
     }
 
 
