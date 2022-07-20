@@ -12,10 +12,11 @@ public class Entity {
     public int id;
 
     public int insertedBy;
-    public String insertedOn;
+    public long insertedOn;
     public int updatedBy;
-    public String updatedOn;
+    public long updatedOn;
     public int deletedBy;
-    public String deletedOn;
+    public long deletedOn;
     public boolean isDeleted;
+    public long expireOn;
 }
