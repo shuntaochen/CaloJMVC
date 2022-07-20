@@ -66,7 +66,7 @@ public class JMvcHandler implements HttpHandler {
             if (!TypeChecker.isValueOrString(ret)) {
                 result = jsonHelper.convertToJson(ret);
             } else {
-                result = ret.toString();
+                result = ret == null ? null : ret.toString();
             }
             new ResultFilter(exchange);
             if (mySqlDbContext != null)
