@@ -12,7 +12,7 @@ public class Main {
                 .setAuthenticator(new BasicAdminAuthenticator(propertyUtil))
                 .addDbContext(false)
                 .start();
-
+        new QuartzScheduler().run();
 
     }
 }
