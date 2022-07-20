@@ -12,6 +12,7 @@ public class JsonHelper {
     }
 
     public String convertToJson(Object src) throws InvocationTargetException, IllegalAccessException {
+        if (src == null) return null;
         if (TypeChecker.isCollection(src) || TypeChecker.isArray(src)) {
             String ret = "";
             String mid = "";
