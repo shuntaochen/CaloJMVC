@@ -18,5 +18,7 @@ public class QuartzSimpleJob implements Job {
 
         logger.info(jobSays+myFloatValue+":"+new Date().getTime());
         System.out.println("Job says: " + jobSays + ", and val is: " + myFloatValue);
+
+        new MailSender().doSend();
     }
 }
