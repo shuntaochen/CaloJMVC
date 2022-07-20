@@ -49,7 +49,7 @@ public class MailSender {
 
             // 设置消息体
             message.setText("This is actual message");
-            {
+            if(false){
 
                 // 创建多重消息
                 Multipart multipart = new MimeMultipart();
