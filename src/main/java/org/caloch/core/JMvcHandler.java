@@ -63,15 +63,17 @@ public class JMvcHandler implements HttpHandler {
             Object ret = m.invoke(ctrl);
 
             String result = "";
-            if (!TypeChecker.isValueOrString(ret)) {
+            if (ret == null) {
+                result = "null";
+            } else if (!TypeChecker.isValueOrString(ret)) {
                 result = jsonHelper.convertToJson(ret);
             } else {
-                result = ret == null ? null : ret.toString();
+                result = ret.toString();
             }
             new ResultFilter(exchange);
             if (mySqlDbContext != null)
                 mySqlDbContext.commit();
-            write200(exchange, result);
+            write200ForNonSet(exchange, result);
 
         } catch (ClassNotFoundException cnfe) {
             TerminateResponseWith500(exchange, cnfe.getMessage());
@@ -142,7 +144,7 @@ public class JMvcHandler implements HttpHandler {
     }
 
 
-    private void write200(HttpExchange exchange, String result) throws IOException {
+    private void write200ForNonSet(HttpExchange exchange, String result) throws IOException {
         int code = exchange.getResponseCode();
         if (code == -1) {
             exchange.sendResponseHeaders(200, result.length());

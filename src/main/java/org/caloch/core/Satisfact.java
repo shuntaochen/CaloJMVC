@@ -93,7 +93,6 @@ public abstract class Satisfact {
     public void redirect(String url,boolean permanent) throws IOException {
         exchange.getResponseHeaders().set("Location", url);
         exchange.sendResponseHeaders(permanent?301:302, 0);
-        exchange.getResponseBody().flush();
-        exchange.getResponseBody().close();
+
     }
 }
