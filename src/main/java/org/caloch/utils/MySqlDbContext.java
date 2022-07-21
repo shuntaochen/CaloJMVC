@@ -32,6 +32,7 @@ public class MySqlDbContext {
             e.printStackTrace();
             logger.error(e);
             rollback();
+            throw new RuntimeException(e);
         }
     }
 
@@ -44,6 +45,7 @@ public class MySqlDbContext {
             e.printStackTrace();
             logger.error(e);
             rollback();
+            throw new RuntimeException(e);
         }
     }
 
@@ -53,6 +55,7 @@ public class MySqlDbContext {
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e);
+            throw new RuntimeException(e);
         }
     }
 
