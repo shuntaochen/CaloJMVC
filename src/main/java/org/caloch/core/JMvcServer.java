@@ -16,10 +16,7 @@ public class JMvcServer {
         this.authenticator = authenticator;
         return this;
     }
-
     Authenticator authenticator;
-
-
     PropertyUtil propertyUtil;
 
     public JMvcServer(PropertyUtil propertyUtil, String[] args) {
@@ -34,18 +31,13 @@ public class JMvcServer {
         int connectionCount = Integer.parseInt(propertyUtil.getValue("connectionCount"));
         int port = (args.length == 0 ? Integer.valueOf(portConfig) : Integer.valueOf(args[0]));
         server = HttpServer.create(new InetSocketAddress(port), connectionCount);
-
-
         System.out.println("Customer system listening on:" + server.getAddress());
         server.setExecutor(Executors.newFixedThreadPool(threadsCount));
         HttpHandler handler = new JMvcHandler(propertyUtil, doAddDb);
-
         HttpContext ctxupload = server.createContext("/upload", new FileUpload());
-
         server.createContext("/webapp", new ServerResourceHandler(
                 ServerConstant.SERVER_HOME + ServerConstant.FORWARD_SINGLE_SLASH, true, false));
         HttpContext ctx = server.createContext("/", handler);
-
         ctx.getFilters().add(new CustomFilter());//filter runs before handler,
         if (authenticator != null) {
             ctxupload.setAuthenticator(authenticator);
