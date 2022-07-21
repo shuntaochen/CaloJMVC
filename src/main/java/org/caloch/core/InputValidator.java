@@ -72,7 +72,7 @@ public class InputValidator {
         if (content != null && !"".equals(content.trim())) {
             int count = 0;
 
-            for(Matcher m = REGEX_CHINESE_PATTERN.matcher(content); m.find(); ++count) {
+            for (Matcher m = REGEX_CHINESE_PATTERN.matcher(content); m.find(); ++count) {
             }
 
             return count;
@@ -89,7 +89,7 @@ public class InputValidator {
         Matcher m = REGEX_CHINESE_PATTERN.matcher(str);
         StringBuffer b = new StringBuffer();
 
-        while(m.find()) {
+        while (m.find()) {
             m.appendReplacement(b, URLEncoder.encode(m.group(0), charset));
         }
 
@@ -97,7 +97,9 @@ public class InputValidator {
         return b.toString();
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static void checkLength(Object checkObject, int maxLength, int minLength, String tipName) {
         if (maxLength > 9999) {
@@ -162,8 +164,8 @@ public class InputValidator {
     }
 
     public static void checkDateTime(Date start, Date end) {
-        checkEmpty((Object)start, "开始日期");
-        checkEmpty((Object)end, "结束日期");
+        checkEmpty((Object) start, "开始日期");
+        checkEmpty((Object) end, "结束日期");
         if (start.getTime() > end.getTime()) {
             throw new IllegalArgumentException("日期范围错误");
         }
@@ -171,7 +173,7 @@ public class InputValidator {
 
     public static void checkDate(Date min, Date max, Date check, String pattern, String tipName) {
         DateFormat dateFormat = new SimpleDateFormat(pattern);
-        checkEmpty((Object)check, tipName);
+        checkEmpty((Object) check, tipName);
         if (check.getTime() < min.getTime() || check.getTime() > max.getTime()) {
             throw new IllegalArgumentException(tipName + "有效范围是" + dateFormat.format(min) + "~" + dateFormat.format(max));
         }
@@ -190,14 +192,14 @@ public class InputValidator {
     }
 
     public static void checkNumber(Integer min, Integer max, Integer check, String tipName) {
-        checkEmpty((Object)check, tipName);
+        checkEmpty((Object) check, tipName);
         if (check < min || check > max) {
             throw new IllegalArgumentException(tipName + "有效范围是" + min + "~" + max);
         }
     }
 
     public static void checkNumber(BigDecimal min, BigDecimal max, BigDecimal check, String tipName) {
-        checkEmpty((Object)check, tipName);
+        checkEmpty((Object) check, tipName);
         if (check.compareTo(min) < 0 || check.compareTo(max) > 0) {
             throw new IllegalArgumentException(tipName + "有效范围是" + min + "~" + max);
         }
