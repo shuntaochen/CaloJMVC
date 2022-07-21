@@ -13,9 +13,9 @@ public abstract class Satisfact {
 
     protected MySqlDbContext mySqlDbContext;
 
-    public void setDbContext(MySqlDbContext mySqlDbContext) {
-
+    public void setDbContextAndOpen(MySqlDbContext mySqlDbContext) {
         this.mySqlDbContext = mySqlDbContext;
+        this.mySqlDbContext.connect();
     }
 
     protected void jwtFilter() throws Exception {

@@ -31,7 +31,6 @@ public class JMvcHandler implements HttpHandler {
             String dbUsername = propertyUtil.getDbUser();
             String dbPassword = propertyUtil.getDbPassword();
             this.mySqlDbContext = new MySqlDbContext(dbUrl, dbUsername, dbPassword);
-            mySqlDbContext.connect();
         }
     }
 
@@ -39,6 +38,7 @@ public class JMvcHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         try {
             processRouteRequest(exchange);
+
         } catch (ClassNotFoundException cnfe) {//for ctrl or connect
             TerminateResponseWith500(exchange, cnfe.getMessage());
         } catch (InvocationTargetException e) {//for ctrl
@@ -67,7 +67,7 @@ public class JMvcHandler implements HttpHandler {
                 .getConstructors();
         Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper, propertyUtil, jwtUtil);
         if (mySqlDbContext != null)
-            ctrl.setDbContext(mySqlDbContext);
+            ctrl.setDbContextAndOpen(mySqlDbContext);
         String methodName = routeParts[1].toLowerCase();
         List<Method> methods = Arrays.asList(ctrl.getClass().getMethods());
         Method m = getMethodName(methods, methodName);

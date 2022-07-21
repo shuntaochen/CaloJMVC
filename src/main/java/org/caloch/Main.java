@@ -10,7 +10,7 @@ public class Main {
         PropertyUtil propertyUtil = new PropertyUtil();
         new JMvcServer(propertyUtil, args)
                 .setAuthenticator(new BasicAdminAuthenticator(propertyUtil))
-                .addDbContext(false)
+                .addDbContext(true)
                 .start();
         new QuartzScheduler().run();
 

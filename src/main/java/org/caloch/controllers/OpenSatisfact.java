@@ -1,9 +1,11 @@
 package org.caloch.controllers;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import com.mchange.v2.beans.swing.TestBean;
+import org.caloch.beans.User;
 import org.caloch.utils.*;
 import org.caloch.core.*;
 
@@ -25,6 +27,14 @@ public class OpenSatisfact extends Satisfact {
 
     public void gg() throws IOException {
         redirect("https://baidu.com");
+    }
+
+    public User hh() throws SQLException {
+        User u=new User();
+        u.email="359000081@qq.com";
+        u.password="cst";
+        mySqlDbContext.insert(u);
+        return u;
     }
 
 
