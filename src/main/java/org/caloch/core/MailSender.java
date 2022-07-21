@@ -80,14 +80,14 @@ public class MailSender {
             for (int i = 0; i < total.get(); i++) {//获取待发邮件，发送后设置为已发送
                 service.execute(() -> {
                     int cur = couter.addAndGet(1);//不一定成功，进来就算+1，
-                    Roles r = new Roles();
-                    r.setId(2);
-                    send(mailAccount, mailKey, "from", "to", "Calo News Daily", "<h1>Hello</h1>", "Best regards");
-                    db.commit(false);//commit to change to sent for mail.
-                    System.out.println(String.format("thread name:%s", Thread.currentThread().getName()));
                     try {
+                        Roles r = new Roles();
+                        r.setId(2);
+                        send(mailAccount, mailKey, "from", "to", "Calo News Daily", "<h1>Hello</h1>", "Best regards");
+                        System.out.println(String.format("thread name:%s", Thread.currentThread().getName()));
                         Object ret = db.select(r);
                         Object a = ret;
+                        db.commit(false);//commit to change to sent for mail.
 
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
