@@ -87,7 +87,7 @@ public class JMvcHandler implements HttpHandler {
         }
         new ResultFilter(exchange);
         if (mySqlDbContext != null)
-            mySqlDbContext.commit(true);//提交事务,出错会回滚
+            mySqlDbContext.doCommit();//提交事务,出错会回滚
         write200ForNonSet(exchange, result);
     }
 
