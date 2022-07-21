@@ -1,6 +1,5 @@
 package org.caloch.utils;
 
-import org.caloch.beans.Roles;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -22,7 +21,7 @@ public class ReflectionSqlBuilderTest {
 
     @Test
     public void testtbcreate() throws SQLException {
-        new Migration(dbURL,username,password).run();
+        new Migratior(dbURL,username,password).run();
 
     }
 }
