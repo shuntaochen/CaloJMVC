@@ -39,13 +39,13 @@ public class JMvcHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         try {
             processRouteRequest(exchange);
-        } catch (ClassNotFoundException cnfe) {
+        } catch (ClassNotFoundException cnfe) {//for ctrl or connect
             TerminateResponseWith500(exchange, cnfe.getMessage());
-        } catch (InvocationTargetException e) {
+        } catch (InvocationTargetException e) {//for ctrl
             handleInvocationException(exchange, e);
-        } catch (SQLException se) {
+        } catch (SQLException se) {//for beandbparser
             TerminateResponseWith500(exchange, se.toString());
-        } catch (Exception e) {
+        } catch (Exception e) {//for runtime etc.
             logger.error(e);
             e.printStackTrace();
             TerminateResponseWith500(exchange, e.toString());

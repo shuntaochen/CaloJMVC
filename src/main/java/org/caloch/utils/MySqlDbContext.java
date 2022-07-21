@@ -71,9 +71,11 @@ public class MySqlDbContext {
         } catch (SQLException ex) {
             logger.error(ex);
             ex.printStackTrace();
+            throw new RuntimeException(ex);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             logger.error(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -117,8 +119,9 @@ public class MySqlDbContext {
             preparePreparedStatement(statement, sqlParser.beanInfo);
         }
         ResultSet result = statement.executeQuery();
+        ArrayList<T> ret = ResultSetToBeanConverter.getBeans(result, bean.getClass());
         closeStatementSet(statement, result);
-        return ResultSetToBeanConverter.getBeans(result, bean.getClass());
+        return ret;
     }
 
     public <T extends Entity> ArrayList<T> selectPageDesc(T bean, String orderCol, int limit, int pageSize, String... forceInclude) throws SQLException {
@@ -132,8 +135,9 @@ public class MySqlDbContext {
             preparePreparedStatement(statement, sqlParser.beanInfo);
         }
         ResultSet result = statement.executeQuery();
+        ArrayList<T> ret = ResultSetToBeanConverter.getBeans(result, bean.getClass());
         closeStatementSet(statement, result);
-        return ResultSetToBeanConverter.getBeans(result, bean.getClass());
+        return ret;
     }
 
 
