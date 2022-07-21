@@ -18,11 +18,19 @@ public class ResultSetToBeanConverter {
             while (resultSet.next()) {
                 T instance = (T) clazz.getDeclaredConstructor().newInstance();
                 for (Field field : fields) {
-                    Object result = resultSet.getObject(field.getName());
+                    String colName = field.getName();
+                    try {
+                        resultSet.findColumn(colName);
+                    } catch (SQLException e) {
+                        System.out.println("Resultset does not have column" + colName+" for type:"+clazz.getTypeName());
+                        continue;
+                    }
+                    Object result = resultSet.getObject(colName);
                     boolean flag = field.canAccess(instance);
                     field.setAccessible(true);
                     field.set(instance, result);
                     field.setAccessible(flag);
+
                 }
                 list.add(instance);
             }
