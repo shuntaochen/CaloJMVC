@@ -79,6 +79,7 @@ public class MailSender {
             total.set(50);
             for (int i = 0; i < total.get(); i++) {//获取待发邮件，发送后设置为已发送
                 service.execute(() -> {
+                    //Object i=getby counter
                     int cur = couter.addAndGet(1);//不一定成功，进来就算+1，
                     try {
                         Roles r = new Roles();
