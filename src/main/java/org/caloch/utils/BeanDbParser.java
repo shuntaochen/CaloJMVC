@@ -204,7 +204,7 @@ public class BeanDbParser<T extends Entity> {
         else if (type.equals("boolean")) ret = "bit";
         else if (type.equals("long")) ret = "bigint";
         else if (type.equals("double")) ret = "double";
-        if (ret.equals("")) ret = "varchar(200)";
+        if (ret.equals("")) ret = "varchar(100)";
         return ret;
     }
 

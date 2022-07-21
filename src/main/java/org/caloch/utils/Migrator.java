@@ -5,13 +5,13 @@ import org.caloch.beans.Roles;
 
 import java.sql.SQLException;
 
-public class Migratior {
+public class Migrator {
 
     private String dbUrl;
     private String user;
     private String password;
 
-    public Migratior(String db, String user, String password) {
+    public Migrator(String db, String user, String password) {
         this.dbUrl = db;
         this.user = user;
         this.password = password;
