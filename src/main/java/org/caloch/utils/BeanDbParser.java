@@ -46,8 +46,6 @@ public class BeanDbParser<T extends Entity> {
         return field.getName();
     }
 
-    private HashMap<String, Integer> fieldLenInfo = new HashMap<>();
-
 
     public <TBean> void fillFieldsInfoWithoutId(TBean bean, String... forceInclude) {
         Field[] fields = bean.getClass().getFields();
@@ -89,6 +87,8 @@ public class BeanDbParser<T extends Entity> {
 
     public HashMap<String, Map.Entry<String, Object>> beanInfo = new HashMap<>();
     public HashMap<String, Map.Entry<String, Object>> typeInfo = new HashMap<>();
+    private HashMap<String, Integer> fieldLenInfo = new HashMap<>();
+
     int id;
     String tableName;
     String fieldNamesString;
