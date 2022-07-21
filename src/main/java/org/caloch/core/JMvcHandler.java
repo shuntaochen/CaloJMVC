@@ -44,14 +44,11 @@ public class JMvcHandler implements HttpHandler {
         } catch (InvocationTargetException e) {
             handleInvocationException(exchange, e);
         } catch (SQLException se) {
-            rollbackDb();
             TerminateResponseWith500(exchange, se.toString());
         } catch (Exception e) {
             logger.error(e);
             e.printStackTrace();
             TerminateResponseWith500(exchange, e.toString());
-        } finally {
-            closeDb();
         }
     }
 
@@ -90,7 +87,7 @@ public class JMvcHandler implements HttpHandler {
         }
         new ResultFilter(exchange);
         if (mySqlDbContext != null)
-            mySqlDbContext.commit();
+            mySqlDbContext.commit(true);//提交事务,出错会回滚
         write200ForNonSet(exchange, result);
     }
 
@@ -102,27 +99,6 @@ public class JMvcHandler implements HttpHandler {
         TerminateResponseWith500(exchange, message);
     }
 
-    private void rollbackDb() {
-        if (mySqlDbContext != null) {
-            try {
-                mySqlDbContext.rollback();
-            } catch (SQLException e) {
-                logger.error(e);
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    private void closeDb() {
-        try {
-            if (mySqlDbContext != null && !mySqlDbContext.conn.isClosed()) {
-                mySqlDbContext.conn.close();
-            }
-        } catch (SQLException e) {
-            logger.error(e);
-            throw new RuntimeException(e);
-        }
-    }
 
     private void checkPermission(Class ctrlClass, Method src, String realm) throws Exception {
         if (src != null) {

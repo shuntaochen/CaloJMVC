@@ -2,6 +2,7 @@ package org.caloch.utils;
 
 import java.sql.ResultSet;
 
+import org.apache.log4j.Logger;
 import org.caloch.core.Entity;
 
 import java.sql.*;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 public class MySqlDbContext {
 
-
+    static Logger logger = Logger.getLogger(MySqlDbContext.class);
     private String dbURL;
     private String username;
     private String password;
@@ -24,16 +25,38 @@ public class MySqlDbContext {
 
     public Connection conn;
 
-    public void commit() throws SQLException {
-        conn.commit();
+    public void commit() {
+        try {
+            conn.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e);
+            rollback();
+        }
     }
 
-    public void rollback() throws SQLException {
-        conn.rollback();
+    public void commit(boolean closeConn) {
+        try {
+            conn.commit();
+            if (closeConn)
+                conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e);
+            rollback();
+        }
+    }
+
+    public void rollback() {
+        try {
+            conn.rollback();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e);
+        }
     }
 
     public void connect() {
-
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conne = DriverManager.getConnection(dbURL, username, password);
@@ -43,9 +66,11 @@ public class MySqlDbContext {
                 System.out.println("Connected");
             }
         } catch (SQLException ex) {
+            logger.error(ex);
             ex.printStackTrace();
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            logger.error(e);
         }
     }
 
@@ -73,7 +98,7 @@ public class MySqlDbContext {
             preparePreparedStatement(statement, sqlParser.beanInfo);
         }
         ResultSet result = statement.executeQuery();
-        closeAll(statement, result);
+        closeStatementSet(statement, result);
         return ResultSetToBeanConverter.getBeans(result, bean.getClass());
     }
 
@@ -89,7 +114,7 @@ public class MySqlDbContext {
             preparePreparedStatement(statement, sqlParser.beanInfo);
         }
         ResultSet result = statement.executeQuery();
-        closeAll(statement, result);
+        closeStatementSet(statement, result);
         return ResultSetToBeanConverter.getBeans(result, bean.getClass());
     }
 
@@ -104,7 +129,7 @@ public class MySqlDbContext {
             preparePreparedStatement(statement, sqlParser.beanInfo);
         }
         ResultSet result = statement.executeQuery();
-        closeAll(statement, result);
+        closeStatementSet(statement, result);
         return ResultSetToBeanConverter.getBeans(result, bean.getClass());
     }
 
@@ -123,7 +148,7 @@ public class MySqlDbContext {
         if (rowsInserted > 0) {
             System.out.println("A new bean was inserted successfully!");
         }
-        closeAll(statement, rs);
+        closeStatementSet(statement, rs);
         return bean;
     }
 
@@ -139,7 +164,7 @@ public class MySqlDbContext {
         if (rowsUpdated > 0) {
             System.out.println("An existing bean was updated successfully!");
         }
-        closeAll(statement, null);
+        closeStatementSet(statement, null);
         return rowsUpdated;
     }
 
@@ -156,7 +181,7 @@ public class MySqlDbContext {
         if (rowsDeleted > 0) {
             System.out.println("A bean was deleted successfully!");
         }
-        closeAll(statement, null);
+        closeStatementSet(statement, null);
         return rowsDeleted;
     }
 
@@ -186,15 +211,9 @@ public class MySqlDbContext {
         return index;
     }
 
-    private void closeAll(Statement st, ResultSet rs) throws SQLException {
+    private void closeStatementSet(Statement st, ResultSet rs) throws SQLException {
         if (st != null) st.close();
         if (rs != null) rs.close();
-    }
-
-    public void closeConn() throws SQLException {
-        if (conn != null && !conn.isClosed()) {
-            conn.close();
-        }
     }
 
 }

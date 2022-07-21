@@ -65,26 +65,14 @@ public class MailSender {
             for (int i = 0; i < 5; i++) {//获取待发邮件，发送后设置为已发送
                 service.execute(() -> {
                     send(propertyUtil.getMailAccount(), propertyUtil.getMailKey(), "from", "to", "Calo News Daily", "<h1>Hello</h1>", "Best regards");
-                    commitTransaction(db,false);//commit to change to sent for mail.
+                    db.commit(false);//commit to change to sent for mail.
                     System.out.println(String.format("thread name:%s", Thread.currentThread().getName()));
                 });
             }
             service.shutdown();
         }
-        commitTransaction(db,true);//commit and close conn /or rollback,
+        db.commit(true);//commit and close conn /or rollback,
     }
 
-    private void commitTransaction(MySqlDbContext db, boolean close) {
-        try {
-            db.commit();
-            if (close)
-                db.closeConn();
-        } catch (SQLException e) {
-            try {
-                db.rollback();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    }
+
 }
