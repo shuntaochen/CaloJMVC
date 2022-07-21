@@ -40,17 +40,21 @@ public class BeanDbParser<T extends Entity> {
     private String mapColumn(Field field) {
         Column col = field.getDeclaredAnnotation(Column.class);
         if (col != null) {
+            fieldLenInfo.put(field.getName(), col.length());
             return col.name();
         }
         return field.getName();
     }
+
+    private HashMap<String, Integer> fieldLenInfo = new HashMap<>();
 
 
     public <TBean> void fillFieldsInfoWithoutId(TBean bean, String... forceInclude) {
         Field[] fields = bean.getClass().getFields();
         for (Field field : fields) {
             String fieldName = field.getName().toLowerCase();
-            String colName = mapColumn(field);
+            String mappedColName = mapColumn(field);
+            String colName = (mappedColName.equals("") || mappedColName == null) ? fieldName : mappedColName;
             boolean flag = field.canAccess(bean);
             field.setAccessible(true);
             Object val;
@@ -191,17 +195,20 @@ public class BeanDbParser<T extends Entity> {
     public String createBuildCreateTableSql() {
         StringBuilder body = new StringBuilder();
         LoopTypeInfo((fieldName, fieldInfo) -> {
-            body.append(fieldName + " " + getDbType(fieldInfo.getKey()) + ",");
+            body.append(fieldName + " " + getDbType(fieldName, fieldInfo.getKey()) + ",");
         });
         body.append("Id int not null auto_increment,primary key (Id)");
         return "create table " + tableName + " (" + body + ")";
     }
 
-    private String getDbType(String type) {
+    private String getDbType(String fieldName, String type) {
         String ret = "";
         if (type.equals("int")) ret = "int";
-        else if (type.equals("String")) ret = "text";
-        else if (type.equals("boolean")) ret = "bit";
+        else if (type.equals("String")) {
+            if (fieldLenInfo.containsKey(fieldName))
+                ret = "varchar(" + fieldLenInfo.get(fieldName) + ")";
+            else ret = "text";
+        } else if (type.equals("boolean")) ret = "bit";
         else if (type.equals("long")) ret = "bigint";
         else if (type.equals("double")) ret = "double";
         if (ret.equals("")) ret = "varchar(100)";
