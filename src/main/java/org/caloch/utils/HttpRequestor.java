@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class HttpRequestor {
 
-    public static void main(String[] args) throws IOException {
+    public static void post() throws IOException {
         URL url = new URL("https://www.youtube.com");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
