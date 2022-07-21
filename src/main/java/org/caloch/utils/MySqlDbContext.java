@@ -92,18 +92,29 @@ public class MySqlDbContext {
         return executeSql(sql, null);
     }
 
-    public <T> Object executeSql(String sql, Class dtoClass) throws SQLException {
+    /*
+    Returns: has result set,then convert resultset to arraylist<T>; resultset not closed; updatecount;
+     */
+    public <T> Object executeSql(String sqlTemplate, Class dtoClass, Object... params) throws SQLException {
+        String sql = String.format(sqlTemplate, params);
         Statement st = conn.createStatement();
-        Object ret = st.execute(sql);
-        if (ret.getClass().isAssignableFrom(ResultSet.class)) {
-            if (dtoClass != null) {
-                ArrayList<T> r = ResultSetToBeanConverter.getBeans((ResultSet) ret, dtoClass);
-                closeStatementSet(st, (ResultSet) ret);
-                return r;
+        boolean success = st.execute(sql);
+        if (success) {
+            ResultSet r1 = st.getResultSet();
+            if (r1 != null) {
+                if (dtoClass != null) {
+                    ArrayList<T> r = ResultSetToBeanConverter.getBeans(r1, dtoClass);
+                    closeStatementSet(st, r1);
+                    return r;
+                } else {
+                    return r1;
+                }
             }
-            closeStatementSet(st, (ResultSet) ret);
-        } else closeStatementSet(st, null);
-        return ret;
+        } else {
+            int r2 = st.getUpdateCount();
+            return r2;
+        }
+        return null;
     }
 
     public <T extends Entity> T single(T bean, String... forceInclude) throws SQLException {

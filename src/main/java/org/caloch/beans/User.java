@@ -8,6 +8,7 @@ public class User extends Entity {
     @Column(length = 20)
     public String name;
 
+    @Column(length = 40)
     public String password;
 
     @Column(length = 60)
