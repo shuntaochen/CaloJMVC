@@ -28,6 +28,22 @@ public class PropertyUtil {
         return value;
     }
 
+    public String getMailAccount(){
+        return getValue("mailaccount");
+    }
+    public String getMailKey(){
+        return getValue("mailkey");
+    }
+
+    public String getDbUrl(){
+        return getValue("db");
+    }
+    public String getDbUser(){
+        return getValue("dbuser");
+    }
+    public String getDbPassword(){
+        return getValue("dbpassword");
+    }
     /**
      * 初始化propertiies
      *

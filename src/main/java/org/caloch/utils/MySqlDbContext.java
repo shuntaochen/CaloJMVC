@@ -191,4 +191,10 @@ public class MySqlDbContext {
         if (rs != null) rs.close();
     }
 
+    public void closeConn() throws SQLException {
+        if (conn != null && !conn.isClosed()) {
+            conn.close();
+        }
+    }
+
 }

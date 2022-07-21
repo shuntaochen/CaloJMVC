@@ -14,8 +14,8 @@ import org.quartz.impl.StdSchedulerFactory;
 public class QuartzScheduler {
 
 
-    private static final String NAME_OF_JOB = "Job1";
-    private static final String NAME_OF_GROUP = "group1";
+    private static final String NAME_OF_JOB = "SendEmailsToSubscribed";
+    private static final String NAME_OF_GROUP = "cronJobs";
     private static final String NAME_OF_TRIGGER = "triggerStart";
 
     //create variable scheduler of type Scheduler
@@ -50,7 +50,7 @@ public class QuartzScheduler {
 
         //create an instance of the JoDetails to connect Quartz job to the CreateQuartzJob
         JobDetail jobInstance = JobBuilder.newJob(QuartzSimpleJob.class).withIdentity(NAME_OF_JOB, NAME_OF_GROUP)
-                .usingJobData("jobSays", "what is ")
+                .usingJobData("jobSays", "sending emails to subscribed")
                 .usingJobData("myFloatValue", 0.03f)
                 .build();
 

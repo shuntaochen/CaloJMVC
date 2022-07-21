@@ -1,80 +1,90 @@
 package org.caloch.core;
 
+import org.caloch.utils.MySqlDbContext;
+import org.caloch.utils.PropertyUtil;
+
+import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
 
 public class MailSender {
-    public void doSend() {
-        // 收件人电子邮箱
-        String to = "xxx@qq.com";
 
-        // 发件人电子邮箱
-        String from = "xxx@qq.com";
-
-        // 指定发送邮件的主机为 smtp.qq.com
-        String host = "smtp.qq.com";  //QQ 邮件服务器
-
-        // 获取系统属性
+    private void send(String account, String key, String from, String to, String subject, String contentHtml, String text) {
+        String host = "smtp.qq.com";
         Properties properties = System.getProperties();
-
-        // 设置邮件服务器
         properties.setProperty("mail.smtp.host", host);
-
         properties.put("mail.smtp.auth", "true");
-        // 获取默认session对象
         Session session = Session.getDefaultInstance(properties, new Authenticator() {
             public PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("xxx@qq.com", "qq邮箱授权码"); //发件人邮件用户名、授权码
+                return new PasswordAuthentication(account, key);
             }
         });
 
         try {
-            // 创建默认的 MimeMessage 对象
             MimeMessage message = new MimeMessage(session);
-
-            // Set From: 头部头字段
             message.setFrom(new InternetAddress(from));
-
-            // Set To: 头部头字段
             message.addRecipient(Message.RecipientType.TO,
                     new InternetAddress(to));
-
-            // Set Subject: 头部头字段
-            message.setSubject("This is the Subject Line!");
-            // 发送 HTML 消息, 可以插入html标签
-            message.setContent("<h1>This is actual message</h1>",
+            message.setSubject(subject);
+            message.setContent(contentHtml,
                     "text/html");
-
-            // 设置消息体
-            message.setText("This is actual message");
-            if(false){
-
-                // 创建多重消息
+            message.setText(text);
+            if (false) {
                 Multipart multipart = new MimeMultipart();
-
-                // 创建消息部分
                 BodyPart messageBodyPart = new MimeBodyPart();
-                // 设置文本消息部分
                 multipart.addBodyPart(messageBodyPart);
-
-                // 附件部分
                 messageBodyPart = new MimeBodyPart();
                 String filename = "file.txt";
                 DataSource source = new FileDataSource(filename);
                 messageBodyPart.setDataHandler(new DataHandler(source));
                 messageBodyPart.setFileName(filename);
                 multipart.addBodyPart(messageBodyPart);
-
                 message.setContent(multipart);
             }
-
-            // 发送消息
             Transport.send(message);
             System.out.println("Sent message successfully....from ");
         } catch (MessagingException mex) {
             mex.printStackTrace();
+        }
+    }
+
+    public void doSend() {
+        PropertyUtil propertyUtil = new PropertyUtil();
+        MySqlDbContext db = new MySqlDbContext(propertyUtil.getDbUrl(), propertyUtil.getDbUser(), propertyUtil.getDbPassword());
+        db.connect();
+        {
+            ExecutorService service = new ThreadPoolExecutor(2, 20,
+                    60L, TimeUnit.SECONDS,
+                    new ArrayBlockingQueue(200));
+            for (int i = 0; i < 5; i++) {//获取待发邮件，发送后设置为已发送
+                service.execute(() -> {
+                    send(propertyUtil.getMailAccount(), propertyUtil.getMailKey(), "from", "to", "Calo News Daily", "<h1>Hello</h1>", "Best regards");
+                    commitTransaction(db,false);//commit to change to sent for mail.
+                    System.out.println(String.format("thread name:%s", Thread.currentThread().getName()));
+                });
+            }
+            service.shutdown();
+        }
+        commitTransaction(db,true);//commit and close conn /or rollback,
+    }
+
+    private void commitTransaction(MySqlDbContext db, boolean close) {
+        try {
+            db.commit();
+            if (close)
+                db.closeConn();
+        } catch (SQLException e) {
+            try {
+                db.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }
