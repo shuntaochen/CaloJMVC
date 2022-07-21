@@ -2,6 +2,7 @@ package org.caloch;
 
 
 import org.caloch.core.*;
+import org.caloch.utils.Migration;
 import org.caloch.utils.PropertyUtil;
 
 

@@ -23,6 +23,15 @@ public class MySqlDbContext {
         this.password = password;
     }
 
+    public <T extends Entity> void createTable(T bean) throws SQLException {
+        BeanDbParser b = new BeanDbParser(bean);
+        b.parse();
+        String dropSql = b.createBuildDropTableSql();
+        executeSql(dropSql);
+        String sql = b.createBuildCreateTableSql();
+        executeSql(sql);
+    }
+
     public Connection conn;
 
     public void commit() {
@@ -80,12 +89,11 @@ public class MySqlDbContext {
     }
 
 
-    public Object executeSql(String sql) throws SQLException {
+    public <T> Object executeSql(String sql) throws SQLException {
         Statement st = conn.createStatement();
         Object ret = st.execute(sql);
-        conn.commit();
         st.close();
-        if (ret.getClass().isAssignableFrom(ResultSet.class)) ((ResultSet) ret).close();
+//        if (ret.getClass().isAssignableFrom(ResultSet.class)) ((ResultSet) ret).close();
         return ret;
     }
 

@@ -1,7 +1,7 @@
 package org.caloch.controllers;
 
+import com.mchange.v2.beans.swing.TestBean;
 import org.caloch.beans.Roles;
-import org.caloch.beans.TestBean;
 import org.caloch.utils.*;
 import org.caloch.core.*;
 
@@ -16,38 +16,5 @@ public class AuthSatisfact extends Satisfact {
         super(context, properties, jwtUtil);
     }
 
-
-    public TestBean aa() throws Exception {
-//        jwtFilter();
-        ReflectionSqlBuilder rsb = new ReflectionSqlBuilder();
-        TestBean ret = new TestBean("a", 5);
-        ret = ReflectionSqlBuilder.inflate(new TestBean(), o -> request(o));
-//        ret = ReflectionSqlBuilder.inflateNew(TestBean.class, o -> request(o));
-        String sql = rsb.createInsertSql(ret);
-        ArrayList<TestBean> r= mySqlDbContext.select(ret);
-        return ret;
-    }
-
-    @Anonymous
-    @Permission(name = PermissionNames.GeneralWrite)
-    public String bb() {
-        String name = request("name");
-        String age = request("age");
-        return "Calo App Info:" + getAppInfo() + name + age;
-    }
-
-    @Permission(name = PermissionNames.GeneralWrite)
-    public TestBean cc() {
-        return new TestBean("calo", 20);
-    }
-
-    public TestBean dd() throws SQLException {
-        MySqlDbContext ctx=mySqlDbContext;
-        Roles r=new Roles();
-        r.setName("chen");
-        ctx.insert(r);
-        ctx.commit();
-        return new TestBean("dd", 20);
-    }
 
 }

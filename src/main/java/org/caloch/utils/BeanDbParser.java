@@ -22,7 +22,7 @@ public class BeanDbParser<T extends Entity> {
 
     public BeanDbParser(T bean, String... forceInclude) {
         this.bean = bean;
-        this.beanInfo = getPresentFieldsInfoWithoutId(bean, forceInclude);
+        this.fillFieldsInfoWithoutId(bean, forceInclude);
         this.tableName = mapTable();
         if (bean.getId() != 0)
             id = bean.getId();
@@ -45,9 +45,9 @@ public class BeanDbParser<T extends Entity> {
         return field.getName();
     }
 
-    public <TBean> HashMap<String, Map.Entry<String, Object>> getPresentFieldsInfoWithoutId(TBean bean, String... forceInclude) {
-        HashMap<String, Map.Entry<String, Object>> ret = new HashMap<>();
-        Field[] fields = bean.getClass().getDeclaredFields();
+
+    public <TBean> void fillFieldsInfoWithoutId(TBean bean, String... forceInclude) {
+        Field[] fields = bean.getClass().getFields();
         for (Field field : fields) {
             String fieldName = field.getName().toLowerCase();
             String colName = mapColumn(field);
@@ -62,16 +62,18 @@ public class BeanDbParser<T extends Entity> {
             field.setAccessible(flag);
             String type = field.getType().getSimpleName();
             AbstractMap.SimpleEntry<String, Object> entry = new AbstractMap.SimpleEntry(type, val);
+            if (!colName.equalsIgnoreCase("id")) {
+                typeInfo.put(colName, entry);
+            }
             if (val != null && !TypeChecker.isBasicDefaultValue(val)) {
                 if (!colName.equalsIgnoreCase("id")) {
-                    ret.put(colName, entry);
+                    beanInfo.put(colName, entry);
                 }
             } else if (Arrays.asList(lowerLize(forceInclude)).contains(fieldName) && TypeChecker.isBasicDefaultValue(val)) {
-                ret.put(colName, entry);
+                beanInfo.put(colName, entry);
             }
 
         }
-        return ret;
     }
 
     private String[] lowerLize(String[] src) {
@@ -81,7 +83,8 @@ public class BeanDbParser<T extends Entity> {
         return src;
     }
 
-    public HashMap<String, Map.Entry<String, Object>> beanInfo;
+    public HashMap<String, Map.Entry<String, Object>> beanInfo = new HashMap<>();
+    public HashMap<String, Map.Entry<String, Object>> typeInfo = new HashMap<>();
     int id;
     String tableName;
     String fieldNamesString;
@@ -173,6 +176,36 @@ public class BeanDbParser<T extends Entity> {
         for (Map.Entry<String, Map.Entry<String, Object>> line : beanInfo.entrySet()) {
             handler.handle(line.getKey(), line.getValue());
         }
+    }
+
+    private void LoopTypeInfo(ProcessMapEntry handler) {
+        for (Map.Entry<String, Map.Entry<String, Object>> line : typeInfo.entrySet()) {
+            handler.handle(line.getKey(), line.getValue());
+        }
+    }
+
+    public String createBuildDropTableSql() {
+        return "drop table if exists " + tableName;
+    }
+
+    public String createBuildCreateTableSql() {
+        StringBuilder body = new StringBuilder();
+        LoopTypeInfo((fieldName, fieldInfo) -> {
+            body.append(fieldName + " " + getDbType(fieldInfo.getKey()) + ",");
+        });
+        body.append("Id int not null auto_increment,primary key (Id)");
+        return "create table " + tableName + " (" + body + ")";
+    }
+
+    private String getDbType(String type) {
+        String ret = "";
+        if (type.equals("int")) ret = "int";
+        else if (type.equals("String")) ret = "text";
+        else if (type.equals("boolean")) ret = "bit";
+        else if (type.equals("long")) ret = "bigint";
+        else if (type.equals("double")) ret = "double";
+        if (ret.equals("")) ret = "varchar(200)";
+        return ret;
     }
 
 }

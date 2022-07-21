@@ -1,7 +1,5 @@
 package org.caloch.utils;
 
-import org.caloch.beans.TestBean1;
-
 import java.util.*;
 
 public class TypeChecker {
@@ -53,9 +51,6 @@ public class TypeChecker {
 
             String typeName = y.getClass().getComponentType().getSimpleName();//"int",
             //int,String,long,double,float,boolean,byte,char,short
-            String typeName1 = new TestBean1("a").getClass().getSimpleName();//"TestBean1",
-            String typeName2 = Object.class.getSimpleName();//"Object",
-            String typeName3 = String.class.getSimpleName();//"String",
             boolean canAssign = Object.class.isAssignableFrom(y.getClass().getComponentType().getClass());//int, false
             switch (typeName) {
                 case "int":
