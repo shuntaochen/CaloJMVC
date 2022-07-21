@@ -33,7 +33,6 @@ public class ResultSetToBeanConverter {
                     } catch (Exception ex) {
                     }
                     field.setAccessible(flag);
-
                 }
                 list.add(instance);
             }

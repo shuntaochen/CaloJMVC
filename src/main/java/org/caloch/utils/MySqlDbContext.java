@@ -88,12 +88,21 @@ public class MySqlDbContext {
         }
     }
 
-
     public <T> Object executeSql(String sql) throws SQLException {
+        return executeSql(sql, null);
+    }
+
+    public <T> Object executeSql(String sql, Class dtoClass) throws SQLException {
         Statement st = conn.createStatement();
         Object ret = st.execute(sql);
-        st.close();
-//        if (ret.getClass().isAssignableFrom(ResultSet.class)) ((ResultSet) ret).close();
+        if (ret.getClass().isAssignableFrom(ResultSet.class)) {
+            if (dtoClass != null) {
+                ArrayList<T> r = ResultSetToBeanConverter.getBeans((ResultSet) ret, dtoClass);
+                closeStatementSet(st, (ResultSet) ret);
+                return r;
+            }
+            closeStatementSet(st, (ResultSet) ret);
+        } else closeStatementSet(st, null);
         return ret;
     }
 

