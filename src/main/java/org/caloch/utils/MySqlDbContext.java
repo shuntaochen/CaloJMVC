@@ -98,7 +98,9 @@ public class MySqlDbContext {
     }
 
     public <T extends Entity> T single(T bean, String... forceInclude) throws SQLException {
-        return select(bean, forceInclude).get(0);
+        ArrayList<T> ret = select(bean, forceInclude);
+        if (!ret.isEmpty()) return ret.get(0);
+        return null;
     }
 
     public <T extends Entity> ArrayList<T> select(T bean, String... forceInclude) throws SQLException {

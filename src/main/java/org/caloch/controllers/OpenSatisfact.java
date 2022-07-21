@@ -37,5 +37,12 @@ public class OpenSatisfact extends Satisfact {
         return u;
     }
 
+    public User ii() throws SQLException {
+        User query=new User();
+        query.email="359000081@qq.com";
+        User u=mySqlDbContext.single(query);
+        return u;
+    }
+
 
 }

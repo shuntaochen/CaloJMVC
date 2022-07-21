@@ -9,7 +9,7 @@ public class JMvcPrinciple extends HttpPrincipal {
      * Creates a {@code HttpPrincipal} from the given {@code username} and
      * {@code realm}.
      *
-     * @param username the name of the user within the realm
+     * @param username the email of the user within the realm
      * @param realm    the realm for this user
      * @throws NullPointerException if either username or realm are {@code null}
      */

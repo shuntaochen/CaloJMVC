@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-//@Permission(name= PermissionNames.GeneralRead)
+//@Permission(email= PermissionNames.GeneralRead)
 public class AuthSatisfact extends Satisfact {
 
     public AuthSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {

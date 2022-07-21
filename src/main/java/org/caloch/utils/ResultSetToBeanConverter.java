@@ -22,13 +22,16 @@ public class ResultSetToBeanConverter {
                     try {
                         resultSet.findColumn(colName);
                     } catch (SQLException e) {
-                        System.out.println("Resultset does not have column" + colName+" for type:"+clazz.getTypeName());
+                        System.out.println("Resultset does not have column" + colName + " for type:" + clazz.getTypeName());
                         continue;
                     }
                     Object result = resultSet.getObject(colName);
                     boolean flag = field.canAccess(instance);
                     field.setAccessible(true);
-                    field.set(instance, result);
+                    try {
+                        field.set(instance, result);
+                    } catch (Exception ex) {
+                    }
                     field.setAccessible(flag);
 
                 }

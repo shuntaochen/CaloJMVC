@@ -44,8 +44,8 @@ public abstract class FormDataHandle implements HttpHandler {
                     MultiPart p = new MultiPart();
                     byte[] head = Arrays.copyOfRange(part, 0, headerEnd);
                     String header = new String(head);
-                    // extract name from header
-                    int nameIndex = header.indexOf("\r\nContent-Disposition: form-data; name=");
+                    // extract email from header
+                    int nameIndex = header.indexOf("\r\nContent-Disposition: form-data; email=");
                     if (nameIndex >= 0) {
                         int startMarker = nameIndex + 39;
                         //check for extra filename field
@@ -63,7 +63,7 @@ public abstract class FormDataHandle implements HttpHandler {
                             p.type = PartType.TEXT;
                         }
                     } else {
-                        // skip entry if no name is found
+                        // skip entry if no email is found
                         continue;
                     }
                     // extract content type from header

@@ -19,9 +19,9 @@ public class BackofficeSatisfact extends Satisfact {
     @Anonymous
     public String login() {
         Login dto = new Login();
-        dto.name = request("name");
+        dto.email = request("email");
         dto.password = request("password");
-        if (dto.name.equals("chen") && dto.password.equals("abcd")) {
+        if (dto.email.equals("chen") && dto.password.equals("abcd")) {
             String token = jwtUtil.create();
             return token;
         }

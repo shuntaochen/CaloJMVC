@@ -195,7 +195,7 @@ public class BeanDbParser<T extends Entity> {
     public String createBuildCreateTableSql() {
         StringBuilder body = new StringBuilder();
         LoopTypeInfo((fieldName, fieldInfo) -> {
-            body.append(fieldName + " " + getDbType(fieldName, fieldInfo.getKey()) + ",");
+            body.append(fieldName + " " + getDbType(fieldName, fieldInfo.getKey()) + " null,");
         });
         body.append("Id int not null auto_increment,primary key (Id)");
         return "create table " + tableName + " (" + body + ")";

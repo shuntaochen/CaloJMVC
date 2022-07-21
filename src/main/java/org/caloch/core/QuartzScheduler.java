@@ -15,7 +15,7 @@ public class QuartzScheduler {
     public void run() throws Exception {
 
         BasicConfigurator.configure();
-        System.out.println(" The name of the QuartzScheduler main thread is: " + Thread.currentThread().getName());
+        System.out.println(" The email of the QuartzScheduler main thread is: " + Thread.currentThread().getName());
         scheduler = new StdSchedulerFactory().getScheduler();
         scheduler.start();
         Trigger triggerCron = createCronTrigger();

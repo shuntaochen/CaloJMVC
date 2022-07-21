@@ -85,7 +85,7 @@ public class MailSender {
                         Roles r = new Roles();
                         r.setId(2);
                         send(mailAccount, mailKey, "from", "to", "Calo News Daily", "<h1>Hello</h1>", "Best regards");
-                        System.out.println(String.format("thread name:%s", Thread.currentThread().getName()));
+                        System.out.println(String.format("thread email:%s", Thread.currentThread().getName()));
                         Object ret = db.select(r);
                         Object a = ret;
                         db.commit(false);//commit to change to sent for mail.
