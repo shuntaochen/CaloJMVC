@@ -27,9 +27,9 @@ public class JMvcHandler implements HttpHandler {
         this.propertyUtil = propertyUtil;
         jwtUtil = new JwtUtil(propertyUtil);
         if (doAddDb) {
-            String dbUrl = propertyUtil.getValue("db");
-            String dbUsername = propertyUtil.getValue("dbuser");
-            String dbPassword = propertyUtil.getValue("dbpassword");
+            String dbUrl = propertyUtil.getDbUrl();
+            String dbUsername = propertyUtil.getDbUser();
+            String dbPassword = propertyUtil.getDbPassword();
             this.mySqlDbContext = new MySqlDbContext(dbUrl, dbUsername, dbPassword);
             mySqlDbContext.connect();
         }
@@ -38,74 +38,89 @@ public class JMvcHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         try {
-            URI requestUri = exchange.getRequestURI();
-            String path = requestUri.getPath();
-            if (path.equals("/favicon.ico")) return;
-            String realm = exchange.getPrincipal().getRealm();
-            CustomerContext helper = new CustomerContext(exchange);
-            JsonHelper jsonHelper = new JsonHelper();
-            String[] routeParts = path.substring(1).split("/");
-            if (routeParts.length != 2) return;
-            char ctlLeading = Character.toUpperCase(routeParts[0].charAt(0));
-            Constructor<?>[] constructors = Class
-                    .forName("org.caloch.controllers." + ctlLeading + routeParts[0].toLowerCase().substring(1) + "Satisfact")
-                    .getConstructors();
-            Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper, propertyUtil, jwtUtil);
-            if (mySqlDbContext != null)
-                ctrl.setDbContext(mySqlDbContext);
-            String methodName = routeParts[1].toLowerCase();
-            List<Method> methods = Arrays.asList(ctrl.getClass().getMethods());
-            Method m = getMethodName(methods, methodName);
-            checkPermission(ctrl.getClass(), m, realm);
-            if (m == null) {
-                throw new Exception("method not found");
-            }
-            Object ret = m.invoke(ctrl);
-
-            String result = "";
-            if (ret == null) {
-                result = "null";
-            } else if (!TypeChecker.isValueOrString(ret)) {
-                result = jsonHelper.convertToJson(ret);
-            } else {
-                result = ret.toString();
-            }
-            new ResultFilter(exchange);
-            if (mySqlDbContext != null)
-                mySqlDbContext.commit();
-            write200ForNonSet(exchange, result);
-
+            processRouteRequest(exchange);
         } catch (ClassNotFoundException cnfe) {
             TerminateResponseWith500(exchange, cnfe.getMessage());
         } catch (InvocationTargetException e) {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
-            String message = e.getTargetException().getMessage() + sw;
-            TerminateResponseWith500(exchange, message);
+            handleInvocationException(exchange, e);
         } catch (SQLException se) {
+            rollbackDb();
             TerminateResponseWith500(exchange, se.toString());
-            if (mySqlDbContext != null) {
-                try {
-                    mySqlDbContext.rollback();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
         } catch (Exception e) {
             logger.error(e);
             e.printStackTrace();
             TerminateResponseWith500(exchange, e.toString());
         } finally {
+            closeDb();
+        }
+    }
+
+    private void processRouteRequest(HttpExchange exchange) throws Exception {
+        URI requestUri = exchange.getRequestURI();
+        String path = requestUri.getPath();
+        if (path.equals("/favicon.ico")) return;
+        String realm = exchange.getPrincipal().getRealm();
+        CustomerContext helper = new CustomerContext(exchange);
+        JsonHelper jsonHelper = new JsonHelper();
+        String[] routeParts = path.substring(1).split("/");
+        if (routeParts.length != 2) return;
+        char ctlLeading = Character.toUpperCase(routeParts[0].charAt(0));
+        Constructor<?>[] constructors = Class
+                .forName("org.caloch.controllers." + ctlLeading + routeParts[0].toLowerCase().substring(1) + "Satisfact")
+                .getConstructors();
+        Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper, propertyUtil, jwtUtil);
+        if (mySqlDbContext != null)
+            ctrl.setDbContext(mySqlDbContext);
+        String methodName = routeParts[1].toLowerCase();
+        List<Method> methods = Arrays.asList(ctrl.getClass().getMethods());
+        Method m = getMethodName(methods, methodName);
+        checkPermission(ctrl.getClass(), m, realm);
+        if (m == null) {
+            throw new Exception("method not found");
+        }
+        Object ret = m.invoke(ctrl);
+
+        String result = "";
+        if (ret == null) {
+            result = "null";
+        } else if (!TypeChecker.isValueOrString(ret)) {
+            result = jsonHelper.convertToJson(ret);
+        } else {
+            result = ret.toString();
+        }
+        new ResultFilter(exchange);
+        if (mySqlDbContext != null)
+            mySqlDbContext.commit();
+        write200ForNonSet(exchange, result);
+    }
+
+    private void handleInvocationException(HttpExchange exchange, InvocationTargetException e) throws IOException {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        String message = e.getTargetException().getMessage() + sw;
+        TerminateResponseWith500(exchange, message);
+    }
+
+    private void rollbackDb() {
+        if (mySqlDbContext != null) {
             try {
-                if (mySqlDbContext != null && !mySqlDbContext.conn.isClosed()) {
-                    mySqlDbContext.conn.close();
-                }
+                mySqlDbContext.rollback();
             } catch (SQLException e) {
                 logger.error(e);
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    private void closeDb() {
+        try {
+            if (mySqlDbContext != null && !mySqlDbContext.conn.isClosed()) {
+                mySqlDbContext.conn.close();
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+            throw new RuntimeException(e);
         }
     }
 
