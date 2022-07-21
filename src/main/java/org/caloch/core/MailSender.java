@@ -1,5 +1,6 @@
 package org.caloch.core;
 
+import org.caloch.beans.Roles;
 import org.caloch.utils.MySqlDbContext;
 import org.caloch.utils.PropertyUtil;
 
@@ -9,11 +10,23 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
 
 public class MailSender {
+    MySqlDbContext db;
+    String mailAccount;
+    String mailKey;
+
+    public MailSender() {
+        PropertyUtil propertyUtil = new PropertyUtil();
+        this.mailAccount = propertyUtil.getMailAccount();
+        this.mailKey = propertyUtil.getMailKey();
+        this.db = new MySqlDbContext(propertyUtil.getDbUrl(), propertyUtil.getDbUser(), propertyUtil.getDbPassword());
+    }
+
 
     private void send(String account, String key, String from, String to, String subject, String contentHtml, String text) {
         String host = "smtp.qq.com";
@@ -54,24 +67,41 @@ public class MailSender {
         }
     }
 
+    private AtomicInteger couter = new AtomicInteger(0);
+    private AtomicInteger total = new AtomicInteger();
+
     public void doSend() {
-        PropertyUtil propertyUtil = new PropertyUtil();
-        MySqlDbContext db = new MySqlDbContext(propertyUtil.getDbUrl(), propertyUtil.getDbUser(), propertyUtil.getDbPassword());
         db.connect();
         {
             ExecutorService service = new ThreadPoolExecutor(2, 20,
                     60L, TimeUnit.SECONDS,
                     new ArrayBlockingQueue(200));
-            for (int i = 0; i < 5; i++) {//获取待发邮件，发送后设置为已发送
+            total.set(50);
+            for (int i = 0; i < total.get(); i++) {//获取待发邮件，发送后设置为已发送
                 service.execute(() -> {
-                    send(propertyUtil.getMailAccount(), propertyUtil.getMailKey(), "from", "to", "Calo News Daily", "<h1>Hello</h1>", "Best regards");
+                    int cur = couter.addAndGet(1);//不一定成功，进来就算+1，
+                    Roles r = new Roles();
+                    r.setId(2);
+                    send(mailAccount, mailKey, "from", "to", "Calo News Daily", "<h1>Hello</h1>", "Best regards");
                     db.commit(false);//commit to change to sent for mail.
                     System.out.println(String.format("thread name:%s", Thread.currentThread().getName()));
+                    try {
+                        Object ret = db.select(r);
+                        Object a = ret;
+
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }finally {
+                        synchronized (this) {
+                            if (total.get() == cur)//肯定会执行
+                                db.commit(true);
+                        }
+                    }
+
                 });
             }
             service.shutdown();
         }
-        db.commit(true);//commit and close conn /or rollback,
     }
 
 

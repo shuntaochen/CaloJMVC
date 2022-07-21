@@ -103,8 +103,9 @@ public class MySqlDbContext {
             preparePreparedStatement(statement, sqlParser.beanInfo);
         }
         ResultSet result = statement.executeQuery();
+        ArrayList<T> ret = ResultSetToBeanConverter.getBeans(result, bean.getClass());
         closeStatementSet(statement, result);
-        return ResultSetToBeanConverter.getBeans(result, bean.getClass());
+        return ret;
     }
 
 
