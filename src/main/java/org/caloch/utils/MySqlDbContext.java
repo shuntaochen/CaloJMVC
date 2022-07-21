@@ -34,15 +34,8 @@ public class MySqlDbContext {
 
     public Connection conn;
 
-    public void commit() {
-        try {
-            conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e);
-            rollback();
-            throw new RuntimeException(e);
-        }
+    public void doCommit() {
+        commit(true);
     }
 
     public void commit(boolean closeConn) {
