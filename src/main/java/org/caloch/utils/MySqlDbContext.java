@@ -113,6 +113,30 @@ public class MySqlDbContext {
         return ret;
     }
 
+    public <T extends Entity> Object sum(String colName, T bean) throws SQLException {
+        BeanDbParser b = new BeanDbParser(bean);
+        b.parse();
+        String sql = b.buildSumSql(colName);
+        Object ret = executeScalar(sql);
+        return ret;
+    }
+
+    public <T extends Entity> Object min(String colName, T bean) throws SQLException {
+        BeanDbParser b = new BeanDbParser(bean);
+        b.parse();
+        String sql = b.buildMinSql(colName);
+        Object ret = executeScalar(sql);
+        return ret;
+    }
+
+    public <T extends Entity> Object avg(String colName, T bean) throws SQLException {
+        BeanDbParser b = new BeanDbParser(bean);
+        b.parse();
+        String sql = b.buildAvgSql(colName);
+        Object ret = executeScalar(sql);
+        return ret;
+    }
+
 
     public Object executeScalar(String sqlTemplate, Object... params) throws SQLException {
         ResultSet rs = (ResultSet) executeQuery(sqlTemplate, null, params);

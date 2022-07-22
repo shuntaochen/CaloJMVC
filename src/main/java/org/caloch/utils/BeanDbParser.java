@@ -181,6 +181,20 @@ public class BeanDbParser<T extends Entity> {
         return sql;
     }
 
+    public String buildSumSql(String colName) {
+        String sql = "select Sum(" + colName + ") from " + tableName + whereString;
+        return sql;
+    }
+
+    public String buildMinSql(String colName) {
+        String sql = "select MIN(" + colName + ") from " + tableName + whereString;
+        return sql;
+    }
+    public String buildAvgSql(String colName) {
+        String sql = "select AVG(" + colName + ") from " + tableName + whereString;
+        return sql;
+    }
+
 
     interface ProcessMapEntry {
         void handle(String fieldName, Map.Entry<String, Object> fieldInfo);
