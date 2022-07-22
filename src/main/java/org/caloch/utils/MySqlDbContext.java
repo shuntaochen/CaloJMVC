@@ -7,6 +7,7 @@ import org.caloch.core.Entity;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -205,6 +206,7 @@ public class MySqlDbContext {
 
 
     public <T extends Entity> T insert(T bean, String... forceInclude) throws SQLException {
+        bean.insertedOn=new java.util.Date().getTime();
         BeanDbParser<T> sqlParser = new BeanDbParser<>(bean, forceInclude);
         sqlParser.parse();
         String sql = sqlParser.buildInsertSqlTemplate();
@@ -223,6 +225,7 @@ public class MySqlDbContext {
     }
 
     public <T extends Entity> int update(T bean, String... forceInclude) throws SQLException {
+        bean.updatedOn=new Date().getTime();
         if (bean.getId() == 0) throw new IllegalArgumentException("id for update mandatory.");
         BeanDbParser parser = new BeanDbParser(bean, forceInclude);
         parser.parse();

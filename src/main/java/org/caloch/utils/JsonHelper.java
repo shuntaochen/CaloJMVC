@@ -1,5 +1,7 @@
 package org.caloch.utils;
 
+import org.caloch.core.JsonIgnore;
+
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -43,6 +45,7 @@ public class JsonHelper {
 
         Field[] fileds = src.getClass().getFields();
         for (Field field : fileds) {//for object type
+            if (field.getDeclaredAnnotation(JsonIgnore.class) != null) continue;
             String key = field.getName();
             boolean flag = field.canAccess(src);
             field.setAccessible(true);
