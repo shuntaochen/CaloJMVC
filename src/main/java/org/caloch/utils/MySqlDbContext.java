@@ -24,12 +24,22 @@ public class MySqlDbContext {
     }
 
     public <T extends Entity> void createTable(T bean) throws SQLException {
-        BeanDbParser b = new BeanDbParser(bean);
-        b.parse();
-        String dropSql = b.createBuildDropTableSql();
-        executeSql(dropSql);
-        String sql = b.createBuildCreateTableSql();
-        executeSql(sql);
+        createTable(bean, true);
+    }
+
+    public <T extends Entity> void createTable(T bean, boolean dropOld) {
+        try {
+            BeanDbParser b = new BeanDbParser(bean);
+            b.parse();
+            if (dropOld) {
+                String dropSql = b.createBuildDropTableSql();
+                executeSql(dropSql);
+            }
+            String sql = b.createBuildCreateTableSql();
+            executeSql(sql);
+        } catch (SQLException e) {
+            System.out.println("Table for "+bean.getClass().getTypeName()+" might exist;");
+        }
     }
 
     public Connection conn;

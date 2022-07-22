@@ -25,7 +25,7 @@ public class ReflectionSqlBuilderTest {
 
     @Test
     public void testtbcreate() throws SQLException {
-//        new Migrator(dbURL, username, password).run();
+        new Migrator(dbURL, username, password).run();
 
     }
 
