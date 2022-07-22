@@ -171,6 +171,16 @@ public class BeanDbParser<T extends Entity> {
         return "delete from " + tableName + whereStringTemplate;//delete from tb where a=? and b=?
     }
 
+    public String buildMaxSql(String colName) {
+        String sql = "select max(" + colName + ") from " + tableName + whereString;
+        return sql;
+    }
+
+    public String buildCountSql(String colName) {
+        String sql = "select count(" + colName + ") from " + tableName + whereString;
+        return sql;
+    }
+
 
     interface ProcessMapEntry {
         void handle(String fieldName, Map.Entry<String, Object> fieldInfo);

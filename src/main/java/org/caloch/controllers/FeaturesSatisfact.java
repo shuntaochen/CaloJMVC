@@ -23,7 +23,7 @@ public class FeaturesSatisfact extends Satisfact {
     }
 
     public int getMaxCode() throws SQLException {
-        int code=(int)mysqlDbContext.executeScalar("select max(code) from feature");
+        int code = (int) mysqlDbContext.max("code", new Feature());
         return code;
     }
 }

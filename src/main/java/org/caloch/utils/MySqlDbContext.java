@@ -39,7 +39,7 @@ public class MySqlDbContext {
             String sql = b.createBuildCreateTableSql();
             executeSql(sql);
         } catch (SQLException e) {
-            System.out.println("Table for "+bean.getClass().getTypeName()+" might exist;");
+            System.out.println("Table for " + bean.getClass().getTypeName() + " might exist;");
         }
     }
 
@@ -94,6 +94,23 @@ public class MySqlDbContext {
 
     public <T> Object executeSql(String sql) throws SQLException {
         return executeSql(sql, null);
+    }
+
+
+    public <T extends Entity> Object max(String colName, T bean) throws SQLException {
+        BeanDbParser b = new BeanDbParser(bean);
+        b.parse();
+        String sql = b.buildMaxSql(colName);
+        Object ret = executeScalar(sql);
+        return ret;
+    }
+
+    public <T extends Entity> Object count(String colName, T bean) throws SQLException {
+        BeanDbParser b = new BeanDbParser(bean);
+        b.parse();
+        String sql = b.buildCountSql(colName);
+        Object ret = executeScalar(sql);
+        return ret;
     }
 
 
@@ -206,7 +223,7 @@ public class MySqlDbContext {
 
 
     public <T extends Entity> T insert(T bean, String... forceInclude) throws SQLException {
-        bean.insertedOn=new java.util.Date().getTime();
+        bean.insertedOn = new java.util.Date().getTime();
         BeanDbParser<T> sqlParser = new BeanDbParser<>(bean, forceInclude);
         sqlParser.parse();
         String sql = sqlParser.buildInsertSqlTemplate();
@@ -225,7 +242,7 @@ public class MySqlDbContext {
     }
 
     public <T extends Entity> int update(T bean, String... forceInclude) throws SQLException {
-        bean.updatedOn=new Date().getTime();
+        bean.updatedOn = new Date().getTime();
         if (bean.getId() == 0) throw new IllegalArgumentException("id for update mandatory.");
         BeanDbParser parser = new BeanDbParser(bean, forceInclude);
         parser.parse();
