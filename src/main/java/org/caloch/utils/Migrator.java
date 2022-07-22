@@ -28,24 +28,30 @@ public class Migrator {
             db.createTable(new User(), false);
 
             db.createTable(new Feature(), true);
-            {
-                Feature f1 = new Feature();
-                f1.name = "SiteComposer";
-                f1.code = 1;
-                f1.isEnabled = true;
-                db.insert(f1);
-            }
-            {
-                int maxCode = (int) db.executeScalar("select max(code) from Feature;");
-                Feature f1 = new Feature();
-                f1.name = "HomePage";
-                f1.code = (maxCode + 1);
-                f1.isEnabled = true;
-                db.insert(f1);
-            }
+            seedFeatures(db);
+
             db.commit(true);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+
+    }
+
+    private void seedFeatures(MySqlDbContext db) throws SQLException {
+        {
+            Feature f1 = new Feature();
+            f1.name = "SiteComposer";
+            f1.code = 1;
+            f1.isEnabled = true;
+            db.insert(f1);
+        }
+        {
+            int maxCode = (int) db.executeScalar("select max(code) from Feature;");
+            Feature f1 = new Feature();
+            f1.name = "HomePage";
+            f1.code = (maxCode + 1);
+            f1.isEnabled = true;
+            db.insert(f1);
         }
 
     }
