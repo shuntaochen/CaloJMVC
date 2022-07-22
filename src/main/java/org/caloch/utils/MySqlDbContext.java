@@ -85,6 +85,35 @@ public class MySqlDbContext {
         return executeSql(sql, null);
     }
 
+
+    public Object executeScalar(String sqlTemplate, Object... params) throws SQLException {
+        ResultSet rs = (ResultSet) executeQuery(sqlTemplate, null, params);
+        rs.next();
+        Object ret;
+        try {
+            ret = rs.getInt(1);
+
+        } catch (Exception e) {
+            ret = rs.getString(1);
+        }
+        closeStatementSet(rs.getStatement(), rs);
+        return ret;
+    }
+
+
+    public <T> Object executeQuery(String sqlTemplate, Class dtoClass, Object... params) throws SQLException {
+        String sql = String.format(sqlTemplate, params);
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(sql);
+
+        if (dtoClass != null) {
+            ArrayList<T> r = ResultSetToBeanConverter.getBeans(rs, dtoClass);
+            closeStatementSet(st, rs);
+            return r;
+        }
+        return rs;
+    }
+
     /*
     Returns: has result set,then convert resultset to arraylist<T>; resultset not closed; updatecount;
      */
