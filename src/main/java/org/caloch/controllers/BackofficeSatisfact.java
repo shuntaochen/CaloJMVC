@@ -31,9 +31,13 @@ public class BackofficeSatisfact extends Satisfact {
 
     @Anonymous
     public JsonResult register() throws SQLException {
+        String err = "";
         Registration r = inflateNew(Registration.class);
         Registration r1 = new Registration();
         r1.email = r.email;
+        if (!InputValidator.isEmail(r.email)) err += "email address not correct;";
+        if (r.password == null || r.password.equals("")) err += "password is required;";
+        if (!err.equals("")) return JsonResult.fail(err);
         Registration r2 = mysqlDbContext.single(r1);
         if (r2 != null) return JsonResult.fail("email already exists");
         mysqlDbContext.insert(r);
@@ -41,11 +45,8 @@ public class BackofficeSatisfact extends Satisfact {
     }
 
     public JsonResult getUserInfo() throws SQLException {
-        String err = "";
         Registration r = new Registration();
         r.email = request("email");
-        if (!InputValidator.isEmail(r.email)) err += "email address no correct;";
-        if (!err.equals("")) return JsonResult.fail(err);
         Registration r1 = mysqlDbContext.single(r);
         return JsonResult.ok(r1);
     }
