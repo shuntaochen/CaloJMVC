@@ -17,7 +17,7 @@ public class ReflectionSqlBuilder {
         Field[] fields = bean.getClass().getDeclaredFields();
         for (Field m : fields) {
             for (Field field : fields) {
-                String result = op.get(field.getName());
+                String result = op.get(field.getName().toLowerCase());
                 if (result != null) {
                     boolean flag = field.canAccess(bean);
                     field.setAccessible(true);
