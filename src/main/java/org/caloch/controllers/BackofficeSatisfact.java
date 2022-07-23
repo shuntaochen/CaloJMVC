@@ -32,8 +32,12 @@ public class BackofficeSatisfact extends Satisfact {
     @Anonymous
     public JsonResult register() throws SQLException {
         Registration r = inflateNew(Registration.class);
+        Registration r1 = new Registration();
+        r1.email = r.email;
+        Registration r2 = mysqlDbContext.single(r1);
+        if (r2 != null) return JsonResult.fail("email already exists");
         mysqlDbContext.insert(r);
-        return JsonResult.ok();
+        return JsonResult.ok(jwtUtil.create());
     }
 
     public JsonResult getUserInfo() throws SQLException {
