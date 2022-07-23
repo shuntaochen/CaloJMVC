@@ -73,9 +73,12 @@ public class MySqlDbContext {
     }
 
     public void connect() {
+        MysqlConnectionPool pool = new MysqlConnectionPool(
+                dbURL,
+                username, password, 5);
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conne = DriverManager.getConnection(dbURL, username, password);
+            Connection conne = pool.getConnection();
             conne.setAutoCommit(false);
             conn = conne;
             if (conn != null) {
