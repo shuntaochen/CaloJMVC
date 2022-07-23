@@ -1,10 +1,7 @@
 package org.caloch.controllers;
 
 import org.caloch.beans.Registration;
-import org.caloch.core.Anonymous;
-import org.caloch.core.Permission;
-import org.caloch.core.PermissionNames;
-import org.caloch.core.Satisfact;
+import org.caloch.core.*;
 import org.caloch.dtos.Login;
 import org.caloch.dtos.RegistrationDto;
 import org.caloch.utils.CustomerContext;
@@ -22,28 +19,28 @@ public class BackofficeSatisfact extends Satisfact {
     }
 
     @Anonymous
-    public String login() throws SQLException {
+    public JsonResult login() throws SQLException {
         Registration r = inflateNew(Registration.class);
         Registration r1 = mysqlDbContext.single(r);
         if (r1 != null) {
             String token = jwtUtil.create();
-            return token;
+            return JsonResult.ok(token);
         }
-        return "{success:false}";
+        return JsonResult.fail();
     }
 
     @Anonymous
-    public String register() throws SQLException {
+    public JsonResult register() throws SQLException {
         Registration r = inflateNew(Registration.class);
         mysqlDbContext.insert(r);
-        return "{success:true}";
+        return JsonResult.ok();
     }
 
-    public Registration getUserInfo() throws SQLException {
-        Registration r=new Registration();
-        r.email=request("email");
-        Registration r1=mysqlDbContext.single(r);
-        return r1;
+    public JsonResult getUserInfo() throws SQLException {
+        Registration r = new Registration();
+        r.email = request("email");
+        Registration r1 = mysqlDbContext.single(r);
+        return JsonResult.ok(r1);
     }
 
 }
