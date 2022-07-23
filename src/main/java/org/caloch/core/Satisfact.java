@@ -4,7 +4,6 @@ import com.sun.net.httpserver.HttpExchange;
 import org.caloch.utils.*;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -44,12 +43,18 @@ public abstract class Satisfact {
     }
 
     protected <T> void inflate(T dto) throws IllegalAccessException {
-        ReflectionSqlBuilder.inflate(dto, o -> request(o));
+        ReflectionHelper.inflate(dto, o -> request(o));
+    }
+
+    protected <TDto, TBean> TBean getMappedBean(Class dtoClass, Class beanClass) {
+        TDto dto = (TDto) inflateNew(dtoClass);
+        TBean bean = ReflectionHelper.map(dto, beanClass);
+        return bean;
     }
 
 
     protected <T> T inflateNew(Class dtoClass) {
-        return ReflectionSqlBuilder.inflateNew(dtoClass, o -> request(o));
+        return ReflectionHelper.inflateNew(dtoClass, o -> request(o));
     }
 
     protected Map<String, String> query() {

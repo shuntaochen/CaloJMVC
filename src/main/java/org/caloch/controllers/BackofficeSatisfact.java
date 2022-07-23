@@ -1,16 +1,18 @@
 package org.caloch.controllers;
 
+import org.caloch.beans.Registration;
 import org.caloch.core.Anonymous;
 import org.caloch.core.Permission;
 import org.caloch.core.PermissionNames;
 import org.caloch.core.Satisfact;
 import org.caloch.dtos.Login;
+import org.caloch.dtos.RegistrationDto;
 import org.caloch.utils.CustomerContext;
 import org.caloch.utils.JwtUtil;
 import org.caloch.utils.PropertyUtil;
-import org.caloch.utils.ReflectionSqlBuilder;
+import org.caloch.utils.ReflectionHelper;
 
-import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 
 
 @Permission(name = PermissionNames.BackofficeAdmin)
@@ -20,17 +22,21 @@ public class BackofficeSatisfact extends Satisfact {
     }
 
     @Anonymous
-    public String login() {
-//        Login dto = new Login();
-//        dto.email = request("email");
-//        dto.password = request("password");
-
-        Login dto = inflateNew(Login.class);
-        if (dto.email.equals("chen") && dto.password.equals("abcd")) {
+    public String login() throws SQLException {
+        Registration r = inflateNew(Registration.class);
+        Registration r1 = mysqlDbContext.single(r);
+        if (r1 != null) {
             String token = jwtUtil.create();
             return token;
         }
-        return "failure";
+        return "{success:false}";
+    }
+
+    @Anonymous
+    public String register() throws SQLException {
+        Registration r = inflateNew(Registration.class);
+        mysqlDbContext.insert(r);
+        return "{success:true}";
     }
 
 }

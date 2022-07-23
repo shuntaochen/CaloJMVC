@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
-public class ReflectionSqlBuilderTest {
+public class ReflectionHelperTest {
 
     String dbURL = "jdbc:mysql://localhost:3306/mycms?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
     String username = "root";
