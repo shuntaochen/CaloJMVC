@@ -92,7 +92,7 @@ public class MailSender {
 
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
-                    }finally {
+                    } finally {
                         synchronized (this) {
                             if (total.get() == cur)//肯定会执行
                                 db.commit(true);

@@ -49,16 +49,22 @@ public class MySqlDbContext {
         commit(true);
     }
 
-    public void commit(boolean closeConn) {
+    public void commit(boolean returnConnection) {
         try {
             conn.commit();
-            if (closeConn)
-                conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e);
             rollback();
             throw new RuntimeException(e);
+        } finally {
+            if (returnConnection) {
+                try {
+                    pool.returnConnection(conn);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
@@ -69,11 +75,19 @@ public class MySqlDbContext {
             e.printStackTrace();
             logger.error(e);
             throw new RuntimeException(e);
+        } finally {
+            try {
+                pool.returnConnection(conn);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
+    MysqlConnectionPool pool;
+
     public void connect() {
-        MysqlConnectionPool pool = new MysqlConnectionPool(
+        pool = new MysqlConnectionPool(
                 dbURL,
                 username, password, 5);
         try {

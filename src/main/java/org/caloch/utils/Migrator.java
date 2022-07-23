@@ -30,7 +30,7 @@ public class Migrator {
             db.createTable(new Feature(), true);
             seedFeatures(db);
 
-            db.commit(true);
+            db.doCommit();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
