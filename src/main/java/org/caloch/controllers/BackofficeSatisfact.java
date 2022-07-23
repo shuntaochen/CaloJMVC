@@ -41,8 +41,11 @@ public class BackofficeSatisfact extends Satisfact {
     }
 
     public JsonResult getUserInfo() throws SQLException {
+        String err = "";
         Registration r = new Registration();
         r.email = request("email");
+        if (!InputValidator.isEmail(r.email)) err += "email address no correct;";
+        if (!err.equals("")) return JsonResult.fail(err);
         Registration r1 = mysqlDbContext.single(r);
         return JsonResult.ok(r1);
     }
