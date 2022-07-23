@@ -39,4 +39,11 @@ public class BackofficeSatisfact extends Satisfact {
         return "{success:true}";
     }
 
+    public Registration getUserInfo() throws SQLException {
+        Registration r=new Registration();
+        r.email=request("email");
+        Registration r1=mysqlDbContext.single(r);
+        return r1;
+    }
+
 }
