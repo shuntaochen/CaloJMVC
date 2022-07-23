@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import org.caloch.utils.*;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,15 @@ public abstract class Satisfact {
         this.jwtUtil = jwtUtil;
         this.jsonHelper = new JsonHelper();
         this.properties = properties;
+    }
+
+    protected <T> void inflate(T dto) throws IllegalAccessException {
+        ReflectionSqlBuilder.inflate(dto, o -> request(o));
+    }
+
+
+    protected <T> T inflateNew(Class dtoClass) {
+        return ReflectionSqlBuilder.inflateNew(dtoClass, o -> request(o));
     }
 
     protected Map<String, String> query() {

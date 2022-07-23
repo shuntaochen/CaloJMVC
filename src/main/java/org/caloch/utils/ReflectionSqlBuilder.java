@@ -13,7 +13,7 @@ public class ReflectionSqlBuilder {
         public String get(String name);
     }
 
-    public static <TBean> TBean inflate(TBean bean, getReqParam op) throws InvocationTargetException, IllegalAccessException {
+    public static <TBean> TBean inflate(TBean bean, getReqParam op) throws IllegalAccessException {
         Field[] fields = bean.getClass().getDeclaredFields();
         for (Field m : fields) {
             for (Field field : fields) {
@@ -35,12 +35,13 @@ public class ReflectionSqlBuilder {
         return bean;
     }
 
-    public static <TBean> TBean inflateNew(Class tp, getReqParam op) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
+    public static <TBean> TBean inflateNew(Class tp, getReqParam op) {
         Field[] fields = tp.getDeclaredFields();
-        TBean instance = (TBean) tp.getDeclaredConstructor().newInstance();
-        for (Field m : fields) {
+        TBean instance = null;
+        try {
+            instance = (TBean) tp.getDeclaredConstructor().newInstance();
             for (Field field : fields) {
-                String result = op.get(field.getName());
+                String result = op.get(field.getName().toLowerCase());
                 if (result != null) {
                     boolean flag = field.canAccess(instance);
                     field.setAccessible(true);
@@ -53,8 +54,16 @@ public class ReflectionSqlBuilder {
                     field.setAccessible(flag);
                 }
             }
+            return instance;
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
-        return instance;
     }
 
 

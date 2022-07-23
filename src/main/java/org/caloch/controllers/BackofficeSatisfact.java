@@ -8,6 +8,9 @@ import org.caloch.dtos.Login;
 import org.caloch.utils.CustomerContext;
 import org.caloch.utils.JwtUtil;
 import org.caloch.utils.PropertyUtil;
+import org.caloch.utils.ReflectionSqlBuilder;
+
+import java.lang.reflect.InvocationTargetException;
 
 
 @Permission(name = PermissionNames.BackofficeAdmin)
@@ -18,9 +21,11 @@ public class BackofficeSatisfact extends Satisfact {
 
     @Anonymous
     public String login() {
-        Login dto = new Login();
-        dto.email = request("email");
-        dto.password = request("password");
+//        Login dto = new Login();
+//        dto.email = request("email");
+//        dto.password = request("password");
+
+        Login dto = inflateNew(Login.class);
         if (dto.email.equals("chen") && dto.password.equals("abcd")) {
             String token = jwtUtil.create();
             return token;

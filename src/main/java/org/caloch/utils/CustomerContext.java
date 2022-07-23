@@ -15,9 +15,10 @@ import java.util.Map;
 
 public class CustomerContext {
 
-    public HttpExchange getHttpExchange(){
+    public HttpExchange getHttpExchange() {
         return _exchange;
     }
+
     private HttpExchange _exchange;
     public Map<String, String> queryMap;
     public Map<String, String> requestBodyMap;
@@ -59,7 +60,7 @@ public class CustomerContext {
                 try {
                     final String key = URLDecoder.decode(keyAndVal[0], "utf8");
                     final String val = URLDecoder.decode(keyAndVal[1], "utf8");
-                    result.put(key, val);
+                    result.put(key.toLowerCase(), val);
                 } catch (UnsupportedEncodingException e) {
                 }
             }
