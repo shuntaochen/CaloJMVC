@@ -2,6 +2,8 @@ package org.caloch.utils;
 
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.sql.SQLException;
 
 public class ReflectionHelperTest {
@@ -33,4 +35,7 @@ public class ReflectionHelperTest {
     public void testGetMax() throws SQLException {
         int b = (int) db.executeScalar("select max(id) from User");
     }
+
+
+
 }
