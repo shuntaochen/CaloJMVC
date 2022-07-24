@@ -23,6 +23,11 @@ public class StrJsonReaderTest {
 
     }
 
+
+    private void readJObject(){
+        //new JObject; new JToken, val is "[{ "/new JArray, readObject/addJObject,, read=], read , readToken,,
+    }
+
 //readJarry, if val type, read final, if object type, readObject, readtoken, read while !stream.end, return jarray, readsplitter,
 // readObject, 还是要递归， 然后readval,readstring,readarray,readjarray, 这里要read jobject ,直到jarray 结束 ，主要就是readObject,应该就会结束了，先不写了，
 
