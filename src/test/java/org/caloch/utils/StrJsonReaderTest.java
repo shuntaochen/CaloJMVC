@@ -7,20 +7,22 @@ import java.io.StringReader;
 
 public class StrJsonReaderTest {
 
-    private String dest = "{\"ab\":\"ab\\\\\\\"bsdf\"}";
+    private String dest = "{\"bb\":5,\"ab\":\"a34b\\\\\\\"bsdf\"}";
     StringReader stringReader = new StringReader(dest);
     int counter = 0;
+    //position: type:key, content: val,
 
     @Test
     public void readerJonsTest() throws IOException {
-        int position = -1;
+        Object a=readBoundaryChar();
+        Object a1=readKey();
+        Object a2=readBoundaryChar();
+        Object a3=readVal();
         readBoundaryChar();
-        String s = readKey();
-        char b = readBoundaryChar();
-        String s1 = readStringFromString();
-        char b1 = readBoundaryChar();
 
     }
+
+//readJarry, if val type, read final, if object type, readObject, readtoken, read while !stream.end, return jarray,
 
 
     private char readBoundaryChar() throws IOException {
@@ -55,29 +57,42 @@ public class StrJsonReaderTest {
         }
     }
 
-    private String readStringFromString() throws IOException {
+    private Object readVal() throws IOException {
 
         String ret = "";
-        boolean shouldReadStr = false;
-        int pair = -1;
+        while (true) {
+            char cur = (char) stringReader.read();
+            boolean hit=cur==',';
+            if (cur != '}' && cur != ':' && cur != ',' && cur != ']') {
+                ret += cur;
+            } else {
+                return ret;
+            }
+        }
+    }
+
+    private String readStringFromString() throws IOException {
+        String ret = "";
+        int count = 0;
         while (true) {
             counter++;
             char cur = (char) stringReader.read();
-            if (shouldReadStr) ret = ret + cur;
-            if (cur == '\\') {
-                cur = (char) stringReader.read();
-                ret = ret + cur;
-                continue;
-            }
             if (cur == '\"') {
-                pair++;
-                shouldReadStr = true;
-                System.out.println(cur);
-                if (pair == 2) {
-                    shouldReadStr = false;
+                count++;
+                if (count == 2) {//结束条件才应该返回，判断好结束条件
                     return ret;
                 }
+                continue;
             }
+            if (cur == '\\') {//needs escape, next char should append as plain char, 转义的要点就在于下一个字符要不要加入结果，这个其实是一个\
+                char next = (char) stringReader.read();
+                counter++;
+                if (next == '\\') {
+                    ret += next; //ret+=\
+                } else
+                    ret = ret + cur + next;//不是特殊的，直接合并
+            }
+            ret += cur;
         }
 
     }
