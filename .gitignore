@@ -4,7 +4,7 @@ out
 .vscode
 .idea
 *.iml
-
+generated
 # Compiled class file
 *.class
 
