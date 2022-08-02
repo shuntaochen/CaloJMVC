@@ -8,8 +8,8 @@ import org.caloch.utils.PropertyUtil;
 
 import java.sql.SQLException;
 
-public class FeaturesSatisfact extends BaseSatisfact<Feature> {
-    public FeaturesSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
+public class FeatureSatisfact extends BaseSatisfact<Feature> {
+    public FeatureSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
         super(context, properties, jwtUtil);
         setBeanName(Feature.class.getSimpleName());
     }
