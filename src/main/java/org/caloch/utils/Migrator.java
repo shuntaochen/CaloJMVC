@@ -20,7 +20,7 @@ public class Migrator {
     public void run() throws SQLException, IOException {
         MySqlDbContext db = new MySqlDbContext(dbUrl, user, password);
         db.connect();
-        db.createBeansForDb("cs_nopcommerce");
+//        db.createBeansForDb("mycms");
         try {
             db.createTable(new Roles(),false);
             db.createTable(new News(),false);
