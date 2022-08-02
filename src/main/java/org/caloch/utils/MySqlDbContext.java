@@ -1,5 +1,8 @@
 package org.caloch.utils;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.ResultSet;
 
 import org.apache.log4j.Logger;
@@ -41,6 +44,66 @@ public class MySqlDbContext {
         } catch (SQLException e) {
             System.out.println("Table for " + bean.getClass().getTypeName() + " might exist;");
         }
+    }
+
+    private ArrayList<String[]> getTableInfo(String tableName, ArrayList<String[]> rows) {
+        ArrayList<String[]> ret = new ArrayList<>();
+        for (String[] row : rows) {
+            if (row[0].equals(tableName)) {
+                ret.add(row);
+            }
+        }
+        return ret;
+    }
+
+    public void createBeansForDb(String dbName) throws SQLException, IOException {
+        String dbInfoSql = "select TABLE_NAME,column_name,DATA_TYPE,column_comment from information_schema.COLUMNS where TABLE_SCHEMA='" + dbName + "'";
+        ResultSet rs = (ResultSet) this.executeSql(dbInfoSql);
+        HashMap<String, ArrayList<String[]>> tableInfo = new HashMap<>();
+        ArrayList<String[]> rows = new ArrayList<>();
+        ArrayList<String> tableNames = new ArrayList<>();
+        while (rs.next()) {
+            String[] row = new String[4];
+            row[0] = rs.getString(1);
+            if (!tableNames.contains(row[0])) {
+                tableNames.add(row[0]);
+            }
+            row[1] = rs.getString(2);
+            row[2] = rs.getString(3);
+            row[3] = rs.getString(4);
+            rows.add(row);
+        }
+        for (String tableName : tableNames){
+            tableInfo.put(tableName,getTableInfo(tableName,rows));
+        }
+
+        DbBeanTemplateBuilder beanTemplateBuilder =new DbBeanTemplateBuilder();
+        for(Map.Entry<String,ArrayList<String[]>> tbl:tableInfo.entrySet()){
+            StringBuilder sb=new StringBuilder();
+            sb.append(beanTemplateBuilder.header);
+            sb.append(beanTemplateBuilder.getClassOpener(tbl.getKey()));
+            for(String[] row:tbl.getValue()){
+                sb.append(beanTemplateBuilder.getFieldString(row[1],row[2]));
+            }
+            sb.append(beanTemplateBuilder.classCloser);
+            String outputDir=System.getProperty("user.dir")+ File.separator+"generated"+File.separator+"beans";
+            File dir=new File(outputDir);
+            if(!dir.exists()){
+                dir.mkdirs();
+            }
+            String fileName=outputDir+File.separator+tbl.getKey()+".java";
+            File src=new File(fileName);
+            if(src.exists()){
+                src.delete();
+            }
+            src.createNewFile();
+            FileWriter fileWriter=new FileWriter(src);
+            fileWriter.write(sb.toString());
+            System.out.println(fileName);
+            fileWriter.flush();
+            fileWriter.close();
+        }
+
     }
 
     public Connection conn;

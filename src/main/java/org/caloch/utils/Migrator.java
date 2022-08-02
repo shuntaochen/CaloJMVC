@@ -2,6 +2,7 @@ package org.caloch.utils;
 
 import org.caloch.beans.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Migrator {
@@ -16,9 +17,10 @@ public class Migrator {
         this.password = propertyUtil.getDbPassword();
     }
 
-    public void run() {
+    public void run() throws SQLException, IOException {
         MySqlDbContext db = new MySqlDbContext(dbUrl, user, password);
         db.connect();
+        db.createBeansForDb("cs_nopcommerce");
         try {
             db.createTable(new Roles(),false);
             db.createTable(new News(),false);

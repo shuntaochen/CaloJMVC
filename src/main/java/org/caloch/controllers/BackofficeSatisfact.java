@@ -21,8 +21,11 @@ public class BackofficeSatisfact extends Satisfact {
     @Anonymous
     public JsonResult login() throws SQLException {
         Registration r = inflateNew(Registration.class);
-        Registration r1 = mysqlDbContext.single(r);
-        if (r1 != null) {
+        Registration r1 = new Registration();
+        r1.email = r.email;
+        r1.password = r.password;
+        Registration r2 = mysqlDbContext.single(r1);
+        if (r2 != null) {
             String token = jwtUtil.create();
             return JsonResult.ok(token);
         }
