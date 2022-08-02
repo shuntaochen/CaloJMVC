@@ -1,9 +1,6 @@
 package org.caloch.utils;
 
-import org.caloch.beans.Feature;
-import org.caloch.beans.News;
-import org.caloch.beans.Roles;
-import org.caloch.beans.User;
+import org.caloch.beans.*;
 
 import java.sql.SQLException;
 
@@ -13,19 +10,20 @@ public class Migrator {
     private String user;
     private String password;
 
-    public Migrator(String db, String user, String password) {
-        this.dbUrl = db;
-        this.user = user;
-        this.password = password;
+    public Migrator(PropertyUtil propertyUtil) {
+        this.dbUrl = propertyUtil.getDbUrl();
+        this.user = propertyUtil.getDbUser();
+        this.password = propertyUtil.getDbPassword();
     }
 
     public void run() {
         MySqlDbContext db = new MySqlDbContext(dbUrl, user, password);
         db.connect();
         try {
-//            db.createTable(new Roles());
-//            db.createTable(new News());
+            db.createTable(new Roles(),false);
+            db.createTable(new News(),false);
             db.createTable(new User(), false);
+            db.createTable(new Registration(), false);
 
             db.createTable(new Feature(), true);
             seedFeatures(db);

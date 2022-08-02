@@ -3,6 +3,7 @@ package org.caloch.core;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.caloch.utils.*;
 
 import java.io.IOException;
@@ -12,18 +13,24 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
 public class JMvcHandler implements HttpHandler {
-    static Logger logger = Logger.getLogger(JMvcHandler.class);
+    static Logger logger;
     private PropertyUtil propertyUtil;
     private JwtUtil jwtUtil;
 
     private MySqlDbContext mySqlDbContext;
 
     public JMvcHandler(PropertyUtil propertyUtil, boolean doAddDb) {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        URL url = classLoader.getResource("Log4j.properties");
+        PropertyConfigurator.configure(url);
+        logger=Logger.getLogger(JMvcHandler.class);
+
         this.propertyUtil = propertyUtil;
         jwtUtil = new JwtUtil(propertyUtil);
         if (doAddDb) {

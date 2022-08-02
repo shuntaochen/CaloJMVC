@@ -20,7 +20,7 @@ public class FileUpload extends FormDataHandle {
             Date d = new Date();
             String filename = "[" + d.getTime() + "]" + part.filename;
             String projPath = System.getProperty("user.dir");
-            String path = projPath + File.separator + "webapp" + File.separator + "upload" + File.separator + filename;
+            String path = projPath + File.separator + "upload" + File.separator + filename;
             File f = new File(path);
             if (!f.exists())
                 f.createNewFile();

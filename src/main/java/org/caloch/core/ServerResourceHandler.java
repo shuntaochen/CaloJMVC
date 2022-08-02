@@ -37,7 +37,9 @@ public class ServerResourceHandler implements HttpHandler {
             throw new IllegalStateException("Couldn't find webroot: " + pathToRoot);
         }
         for (File f : files) {
-            processFile("", f, gzippable);
+            if (f.exists()) {
+                processFile("", f, gzippable);
+            }
         }
     }
 

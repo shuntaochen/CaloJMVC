@@ -1,21 +1,35 @@
 package org.caloch.controllers;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.spi.ToolProvider;
 
 import org.caloch.beans.User;
 import org.caloch.utils.*;
 import org.caloch.core.*;
 
+import javax.tools.JavaCompiler;
+
 public class OpenSatisfact extends Satisfact {
+
 
 
     public OpenSatisfact(CustomerContext context, PropertyUtil properties, JwtUtil jwtUtil) {
         super(context, properties, jwtUtil);
         //todo: add db helper, maybe mysql,
     }
+    public User aa() throws SQLException {
+        User u = new User();
+        u.setId(1);
+        u.isDeleted = false;
+
+        return u;
+    }
+
+
 
     public User ff() throws SQLException {
         User u = new User();

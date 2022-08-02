@@ -35,8 +35,8 @@ public class JMvcServer {
         server.setExecutor(Executors.newFixedThreadPool(threadsCount));
         HttpHandler handler = new JMvcHandler(propertyUtil, doAddDb);
         HttpContext ctxupload = server.createContext("/upload", new FileUpload());
-        server.createContext("/webapp", new ServerResourceHandler(
-                ServerConstant.SERVER_HOME + ServerConstant.FORWARD_SINGLE_SLASH, true, false));
+//        server.createContext("/webapp", new ServerResourceHandler(
+//                ServerConstant.SERVER_HOME + ServerConstant.FORWARD_SINGLE_SLASH, true, false));
         HttpContext ctx = server.createContext("/", handler);
         ctx.getFilters().add(new CustomFilter());//filter runs before handler,
         if (authenticator != null) {
