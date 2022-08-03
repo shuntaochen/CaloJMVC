@@ -95,7 +95,7 @@ public class JMvcHandler implements HttpHandler {
         new ResultFilter(exchange);
         if (mySqlDbContext != null)
             mySqlDbContext.doCommit();//提交事务,出错会回滚
-        write200ForNonSet(exchange, result);
+        write200(exchange, result);
     }
 
     private void handleInvocationException(HttpExchange exchange, InvocationTargetException e) throws IOException {
@@ -142,11 +142,12 @@ public class JMvcHandler implements HttpHandler {
     }
 
 
-    private void write200ForNonSet(HttpExchange exchange, String result) throws IOException {
+    private void write200(HttpExchange exchange, String result) throws IOException {
         int code = exchange.getResponseCode();
         if (code == -1) {
             exchange.sendResponseHeaders(200, result.length());
         }
+        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
         exchange.getResponseBody().write(result.getBytes());
         exchange.getResponseBody().close();
         exchange.close();
@@ -154,6 +155,7 @@ public class JMvcHandler implements HttpHandler {
 
     public void TerminateResponseWith500(HttpExchange exchange, String message) throws IOException {
         logger.error(message);
+        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
         exchange.sendResponseHeaders(500, message.length());
         exchange.getResponseBody().write(message.getBytes());
         exchange.getResponseBody().close();
