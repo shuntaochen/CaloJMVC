@@ -24,6 +24,8 @@ public class CustomerContext {
     public Map<String, String> requestBodyMap;
     protected OutputStream response;
 
+    public String requestBodyString;
+
     protected void StatusCode(int code) throws IOException {
         _exchange.sendResponseHeaders(code, 0);
     }
@@ -34,6 +36,7 @@ public class CustomerContext {
         String query = exchange.getRequestURI().getQuery();
         queryMap = formDataToMap(query);
         String postString = readStreamToString(exchange.getRequestBody());
+        requestBodyString=postString;
         requestBodyMap = formDataToMap(postString);
         response = exchange.getResponseBody();
     }

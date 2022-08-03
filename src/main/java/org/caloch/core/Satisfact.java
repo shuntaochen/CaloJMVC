@@ -1,5 +1,7 @@
 package org.caloch.core;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import org.caloch.utils.*;
 
@@ -7,6 +9,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+
 
 public abstract class Satisfact {
 
@@ -42,8 +45,13 @@ public abstract class Satisfact {
         this.properties = properties;
     }
 
-    protected <T> void inflate(T dto) throws IllegalAccessException {
-        ReflectionHelper.inflate(dto, o -> request(o));
+    protected <T> T inflate(T dto) throws IllegalAccessException, JsonProcessingException {
+        if (exchange.getRequestHeaders().get("Content-type").equals("application/json")) {
+            String body = customerContext.requestBodyString;
+            ObjectMapper mapper = new ObjectMapper();
+            return dto = (T) mapper.readValue(body, dto.getClass());
+        } else
+            return dto = ReflectionHelper.inflate(dto, o -> request(o));
     }
 
     protected <TDto, TBean> TBean getMappedBean(Class dtoClass, Class beanClass) {
