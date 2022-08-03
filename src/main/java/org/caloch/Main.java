@@ -1,6 +1,7 @@
 package org.caloch;
 
 
+import org.caloch.beans.Feature;
 import org.caloch.core.*;
 import org.caloch.utils.Migrator;
 import org.caloch.utils.PropertyUtil;
@@ -18,4 +19,5 @@ public class Main {
 
 
     }
+
 }

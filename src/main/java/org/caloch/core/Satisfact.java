@@ -49,9 +49,9 @@ public abstract class Satisfact {
         if (exchange.getRequestHeaders().get("Content-type").equals("application/json")) {
             String body = customerContext.requestBodyString;
             ObjectMapper mapper = new ObjectMapper();
-            return dto = (T) mapper.readValue(body, dto.getClass());
+            return (T) mapper.readValue(body, dto.getClass());
         } else
-            return dto = ReflectionHelper.inflate(dto, o -> request(o));
+            return ReflectionHelper.inflate(dto, o -> request(o));
     }
 
     protected <TDto, TBean> TBean getMappedBean(Class dtoClass, Class beanClass) {
