@@ -17,38 +17,38 @@ public class BaseSatisfact<T extends Entity> extends Satisfact {
     }
 
     protected void setBeanName(String beanName) {
-        this.beanName = "org.caloch.beans."+beanName;
+        this.beanName = "org.caloch.beans." + beanName;
     }
 
     protected String beanName;
 
     public T single() throws SQLException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, JsonProcessingException {
-        T bean=(T)Class.forName(beanName).getDeclaredConstructor().newInstance();
-        inflate(bean);
+        T bean = (T) Class.forName(beanName).getDeclaredConstructor().newInstance();
+        bean = inflate(bean);
         return mysqlDbContext.single(bean);
     }
 
     public ArrayList<T> getAll() throws SQLException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, JsonProcessingException {
-        T bean=(T)Class.forName(beanName).getDeclaredConstructor().newInstance();
-        inflate(bean);
+        T bean = (T) Class.forName(beanName).getDeclaredConstructor().newInstance();
+        bean = inflate(bean);
         return mysqlDbContext.select(bean);
     }
 
     public int delete() throws SQLException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, JsonProcessingException {
-        T bean=(T)Class.forName(beanName).getDeclaredConstructor().newInstance();
-        inflate(bean);
+        T bean = (T) Class.forName(beanName).getDeclaredConstructor().newInstance();
+        bean = inflate(bean);
         return mysqlDbContext.delete(bean);
     }
 
     public T insert() throws SQLException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, JsonProcessingException {
-        T bean=(T)Class.forName(beanName).getDeclaredConstructor().newInstance();
-        inflate(bean);
+        T bean = (T) Class.forName(beanName).getDeclaredConstructor().newInstance();
+        bean = inflate(bean);
         return mysqlDbContext.insert(bean);
     }
 
     public int update() throws SQLException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, JsonProcessingException {
-        T bean=(T)Class.forName(beanName).getDeclaredConstructor().newInstance();
-        inflate(bean);
+        T bean = (T) Class.forName(beanName).getDeclaredConstructor().newInstance();
+        bean = inflate(bean);
         return mysqlDbContext.update(bean);
     }
 
