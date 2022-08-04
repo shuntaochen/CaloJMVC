@@ -38,27 +38,32 @@ public class SimpleJsonTest {
 
     @Test
     public void test1() throws IOException {
-        String json = "{ \"deleteFlag\":23,\"codeId\":\"1\",\"codeName\":\"IT\",\"sort\":\"1\",\"id\":\"60\"}";
+        String json = "{ \"deleteFlag\":23,\"codeId\":[\"1\",2,4],\"codeName\":\"IT\",\"sort\":\"1\",\"id\":\"60\"}";
         StringReader sr = new StringReader(json);
         ArrayList<String> words = new ArrayList<>();
         String curW = "";
         while (true) {
             int cur = sr.read();
             if (cur == -1) break;
+            if ((char) cur == ',') {
+                words.add(",");
+            }
             if ((char) cur == '{') {
                 words.add("{");
             } else if ((char) cur == '}') {
                 words.add("}");
             } else if ((char) cur == ':') {
                 words.add(":");
-            } else if ((char) cur == ',') {
-                words.add(",");
-            } else if (cur != ' ' && cur != '\"') {
+            } else if ((char) cur == '[') {
+                words.add("[");
+            } else if ((char) cur == ']') {
+                words.add("]");
+            } else if (cur != ' ' && cur != '\"' && cur != ',') {
                 String w = "" + (char) cur;
                 while (true) {
                     int cur1 = sr.read();
                     if (cur1 == -1) break;
-                    if (cur1 == ',' || cur1 == '}') {
+                    if (cur1 == ',' || cur1 == '}' || cur1 == ']') {
                         words.add(w);
                         words.add("" + (char) cur1);
                         break;
@@ -70,9 +75,9 @@ public class SimpleJsonTest {
                 while (true) {
                     int cur1 = sr.read();
                     if (cur1 == -1) break;
-                    if (cur1 != '\"')
+                    if (cur1 != '\"') {
                         w += (char) cur1;
-                    else if (cur1 == '\"') {
+                    } else if (cur1 == '\"') {
                         words.add(w);
                         break;
                     }
