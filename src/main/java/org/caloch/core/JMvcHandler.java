@@ -37,7 +37,8 @@ public class JMvcHandler implements HttpHandler {
             String dbUrl = propertyUtil.getDbUrl();
             String dbUsername = propertyUtil.getDbUser();
             String dbPassword = propertyUtil.getDbPassword();
-            this.mySqlDbContext = new MySqlDbContext(dbUrl, dbUsername, dbPassword);
+            int poolSize=propertyUtil.getDbPoolSize();
+            this.mySqlDbContext = new MySqlDbContext(dbUrl, dbUsername, dbPassword,poolSize);
         }
     }
 

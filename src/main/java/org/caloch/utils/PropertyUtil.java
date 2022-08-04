@@ -44,6 +44,10 @@ public class PropertyUtil {
     public String getDbPassword(){
         return getValue("dbpassword");
     }
+
+    public int getDbPoolSize(){
+        return Integer.parseInt(getValue("dbpoolSize"));
+    }
     /**
      * 初始化propertiies
      *

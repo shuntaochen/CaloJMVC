@@ -24,7 +24,7 @@ public class MailSender {
         PropertyUtil propertyUtil = new PropertyUtil();
         this.mailAccount = propertyUtil.getMailAccount();
         this.mailKey = propertyUtil.getMailKey();
-        this.db = new MySqlDbContext(propertyUtil.getDbUrl(), propertyUtil.getDbUser(), propertyUtil.getDbPassword());
+        this.db = new MySqlDbContext(propertyUtil.getDbUrl(), propertyUtil.getDbUser(), propertyUtil.getDbPassword(),propertyUtil.getDbPoolSize());
     }
 
 

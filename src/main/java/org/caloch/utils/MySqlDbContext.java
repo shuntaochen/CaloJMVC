@@ -20,11 +20,13 @@ public class MySqlDbContext {
     private String dbURL;
     private String username;
     private String password;
+    private int poolSize;
 
-    public MySqlDbContext(String dbURL, String username, String password) {
+    public MySqlDbContext(String dbURL, String username, String password,int poolSize) {
         this.dbURL = dbURL;
         this.username = username;
         this.password = password;
+        this.poolSize = poolSize;
     }
 
     public <T extends Entity> void createTable(T bean) throws SQLException {
@@ -150,9 +152,9 @@ public class MySqlDbContext {
     MysqlConnectionPool pool;
 
     public void connect() {
-        pool = new MysqlConnectionPool(
+        pool =  MysqlConnectionPool.getInstance(
                 dbURL,
-                username, password, 5);
+                username, password, poolSize);
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conne = pool.getConnection();

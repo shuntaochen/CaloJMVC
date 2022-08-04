@@ -21,6 +21,15 @@ public class MysqlConnectionPool {
 
     Stack<Connection> freePool = new Stack<>();
     Set<Connection> occupiedPool = new HashSet<>();
+    private static MysqlConnectionPool instance;
+
+    public synchronized static MysqlConnectionPool getInstance(String databaseUrl, String userName,
+                                                  String password, int maxSize) {
+        if (instance == null)
+            instance = new MysqlConnectionPool(databaseUrl, userName,
+                    password, maxSize);
+        return instance;
+    }
 
     /**
      * Constructor
@@ -30,8 +39,8 @@ public class MysqlConnectionPool {
      * @param password    password
      * @param maxSize     max size of the connection pool
      */
-    public MysqlConnectionPool(String databaseUrl, String userName,
-                               String password, int maxSize) {
+    private MysqlConnectionPool(String databaseUrl, String userName,
+                                String password, int maxSize) {
         this.databaseUrl = databaseUrl;
         this.userName = userName;
         this.password = password;

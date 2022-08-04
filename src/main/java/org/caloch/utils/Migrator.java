@@ -18,7 +18,7 @@ public class Migrator {
     }
 
     public void run() throws SQLException, IOException {
-        MySqlDbContext db = new MySqlDbContext(dbUrl, user, password);
+        MySqlDbContext db = new MySqlDbContext(dbUrl, user, password,1000);
         db.connect();
 //        db.createBeansForDb("mycms");
         try {
