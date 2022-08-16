@@ -38,7 +38,7 @@ public class SimpleJsonTest {
 
     @Test
     public void test1() throws IOException {
-        String json = "{ \"deleteFlag\":23,\"codeId\":[\"1\",2,4],\"codeName\":\"IT\",\"sort\":\"1\",\"id\":\"60\"}";
+        String json = "{ \"deleteFlag\":23,\"codeId\":[\"1\",2,4],\"codeName\":{\"aa\":\"IT\"},\"sort\":\"1\",\"id\":\"60\"}";
         StringReader sr = new StringReader(json);
         ArrayList<String> words = new ArrayList<>();
         String curW = "";

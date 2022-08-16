@@ -1,9 +1,13 @@
 package org.caloch.utils;
 
 import org.junit.Test;
+import javax.tools.JavaCompiler.CompilationTask;
+import javax.tools.*;
 
+import javax.tools.ToolProvider;
 import java.io.IOException;
 import java.io.StringReader;
+import java.security.PublicKey;
 import java.sql.SQLException;
 
 public class ReflectionHelperTest {
@@ -37,5 +41,9 @@ public class ReflectionHelperTest {
 //    }
 //
 
+    @Test
+    public void t1(){
+        ToolProvider.getSystemJavaCompiler();
+    }
 
 }
