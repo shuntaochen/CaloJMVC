@@ -1,5 +1,5 @@
 # CaloJMVC
-An MVC project in java, my custom MVC project for use
+An MVC project in java, my custom MVC project for use, check out the **master** branch for the the full project.
 
 
 I planned on making the project a general mixture of MVC framework that uses all the java basises I have mastered; 
