@@ -9,6 +9,8 @@ Also integrated all utilities; I will make this a maven project later on;
 Of course, I may switch to use existing frameworks such as springboot etc. in actual practices, but this one is to gain general mastery,,
 
 
+## Checkout the 'master' branch to see this whole project in progress
+
 Todos: 
 1. performance tuning, load test
 2. fly weight for system created objects to avoid too many instantiation costing too much memory such as, satisfact, handler, some objects should be singleton.
