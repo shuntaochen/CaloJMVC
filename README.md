@@ -11,7 +11,7 @@ Of course, I may switch to use existing frameworks such as springboot etc. in ac
 
 Todos: 
 1. performance tuning, load test
-2. fly weight for system created objects such as, satisfact, handler, some objects should be singleton.
+2. fly weight for system created objects to avoid too many instantiation costing too much memory such as, satisfact, handler, some objects should be singleton.
 3. business logic caching, etc.
 
 
