@@ -9,6 +9,11 @@ Also integrated all utilities; I will make this a maven project later on;
 Of course, I may switch to use existing frameworks such as springboot etc. in actual practices, but this one is to gain general mastery,,
 
 
+Todos: 
+1. performance tuning, load test
+2. fly weight for system created objects such as, satisfact, handler, some objects should be singleton.
+3. business logic caching, etc.
+
 
 
 
