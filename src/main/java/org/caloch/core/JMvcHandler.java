@@ -16,9 +16,14 @@ import java.net.URI;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JMvcHandler implements HttpHandler {
+
+    static Map<String,Object> mapSatisfacts=new HashMap<>();
+
     static Logger logger;
     private PropertyUtil propertyUtil;
     private JwtUtil jwtUtil;
@@ -60,6 +65,22 @@ public class JMvcHandler implements HttpHandler {
         }
     }
 
+    private Satisfact getSatisfact(String name,CustomerContext helper) throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        Satisfact ctrl;
+        synchronized (JMvcHandler.class){
+            if(!mapSatisfacts.containsKey(name)){
+                Constructor<?>[] constructors = Class
+                        .forName(name)
+                        .getConstructors();
+                ctrl = (Satisfact) constructors[0].newInstance(helper, propertyUtil, jwtUtil);
+                mapSatisfacts.put(name,ctrl);
+            }
+            ctrl=(Satisfact) mapSatisfacts.get(name);
+        }
+        return ctrl;
+
+    }
+
     private void processRouteRequest(HttpExchange exchange) throws Exception {
         URI requestUri = exchange.getRequestURI();
         String path = requestUri.getPath();
@@ -70,10 +91,9 @@ public class JMvcHandler implements HttpHandler {
         String[] routeParts = path.substring(1).split("/");
         if (routeParts.length != 2) return;
         char ctlLeading = Character.toUpperCase(routeParts[0].charAt(0));
-        Constructor<?>[] constructors = Class
-                .forName("org.caloch.controllers." + ctlLeading + routeParts[0].toLowerCase().substring(1) + "Satisfact")
-                .getConstructors();
-        Satisfact ctrl = (Satisfact) constructors[0].newInstance(helper, propertyUtil, jwtUtil);
+
+        String satisfactName="org.caloch.controllers." + ctlLeading + routeParts[0].toLowerCase().substring(1) + "Satisfact";
+        Satisfact ctrl=getSatisfact(satisfactName,helper);
         if (mySqlDbContext != null)
             ctrl.setDbContextAndOpen(mySqlDbContext);
         String methodName = routeParts[1].toLowerCase();
@@ -97,6 +117,7 @@ public class JMvcHandler implements HttpHandler {
         if (mySqlDbContext != null)
             mySqlDbContext.doCommit();//提交事务,出错会回滚
         write200(exchange, result);
+        System.gc();//gc and recycle memory space used;
     }
 
     private void handleInvocationException(HttpExchange exchange, InvocationTargetException e) throws IOException {

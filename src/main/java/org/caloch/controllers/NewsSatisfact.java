@@ -15,5 +15,8 @@ public class NewsSatisfact extends BaseSatisfact<Feature> {
         setBeanName(News.class.getSimpleName());
     }
 
+    public String list(){
+        return "news haha";
+    }
 
 }
